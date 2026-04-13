@@ -6,7 +6,7 @@ export interface ParsedStructure {
   thirdInput: string;
 }
 
-export type ParseField = "sequence" | "pairs";
+export type ParseField = "sequence" | "pairs" | "thirdInput";
 
 export interface ParseIssue {
   field: ParseField;

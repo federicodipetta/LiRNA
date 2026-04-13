@@ -1,5 +1,12 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParserForm } from "../hooks/useParserForm";
+import {
+  formatFormula,
+  parseLtlFormula,
+  sat,
+  toReadableSatSet,
+  type LtlFormula,
+} from "../services/ltl-sat";
 import { parseAasContent } from "../services/parser";
 
 function TextAreaField(props: {
@@ -29,6 +36,46 @@ function TextAreaField(props: {
   );
 }
 
+function AstNodeView({ node }: { node: LtlFormula }) {
+  if (node.kind === "true" || node.kind === "false") {
+    return <span className="text-sea">{node.kind}</span>;
+  }
+
+  if (node.kind === "rho") {
+    return (
+      <span className="text-coral">
+        {node.rho.label}
+        {node.rho.kind === "up" ? "↑" : "↓"}
+      </span>
+    );
+  }
+
+  if (node.kind === "not" || node.kind === "next" || node.kind === "eventually") {
+    const operator = node.kind === "not" ? "!" : node.kind === "next" ? "O" : "<>";
+
+    return (
+      <details open className="ml-4">
+        <summary className="cursor-pointer font-semibold text-ink/80">{operator}</summary>
+        <div className="mt-1 border-l border-ink/20 pl-3">
+          <AstNodeView node={node.formula} />
+        </div>
+      </details>
+    );
+  }
+
+  const operator = node.kind === "or" ? "|" : "U";
+
+  return (
+    <details open className="ml-4">
+      <summary className="cursor-pointer font-semibold text-ink/80">{operator}</summary>
+      <div className="mt-1 space-y-1 border-l border-ink/20 pl-3">
+        <AstNodeView node={node.left} />
+        <AstNodeView node={node.right} />
+      </div>
+    </details>
+  );
+}
+
 export function ParserWorkbench() {
   const {
     sequenceInput,
@@ -45,6 +92,39 @@ export function ParserWorkbench() {
 
   const sequenceError = parseResult.issues.find((issue) => issue.field === "sequence");
   const pairsError = parseResult.issues.find((issue) => issue.field === "pairs");
+
+  const ltlPreview = useMemo(() => {
+    if (!thirdInput.trim()) {
+      return {
+        syntaxError: null as string | null,
+        ast: null as LtlFormula | null,
+        normalized: null as string | null,
+        satReadable: [] as ReturnType<typeof toReadableSatSet>,
+      };
+    }
+
+    const parsedFormula = parseLtlFormula(thirdInput);
+    if (!parsedFormula.formula) {
+      return {
+        syntaxError: parsedFormula.error ?? "Formula non valida.",
+        ast: null,
+        normalized: null,
+        satReadable: [],
+      };
+    }
+
+    const normalized = formatFormula(parsedFormula.formula);
+    const satReadable = parseResult.data
+      ? toReadableSatSet(sat(parseResult.data.sequence.length, parsedFormula.formula))
+      : [];
+
+    return {
+      syntaxError: null,
+      ast: parsedFormula.formula,
+      normalized,
+      satReadable,
+    };
+  }, [thirdInput, parseResult.data]);
 
   async function importAasFile(file: File) {
     if (!file.name.toLowerCase().endsWith(".aas")) {
@@ -147,12 +227,16 @@ export function ParserWorkbench() {
 
           <TextAreaField
             id="third-input"
-            label="Terza textarea (consuma la struttura parse-ata)"
+            label="Formula LTL (usa !, O, <>, U, | e atomi l↑/l↓)"
             value={thirdInput}
             onChange={setThirdInput}
             rows={5}
-            placeholder="LIRNA SYNTAX"
+            placeholder="Esempio: <>(l↑ U O(l↓ | true))"
+            error={ltlPreview.syntaxError ?? undefined}
           />
+          <p className="text-xs text-ink/65">
+            rho significa evento su arco AAS: l↑ (arco uscente/start), l↓ (arco entrante/end).
+          </p>
         </article>
 
         <article className="glass-card rounded-3xl p-5 shadow-glow sm:p-6">
@@ -178,6 +262,23 @@ export function ParserWorkbench() {
               null,
               2,
             )}
+          </pre>
+
+          <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">AST LTL</h2>
+          <div className="rounded-2xl border border-ink/15 bg-white/70 p-4 text-sm text-ink">
+            {ltlPreview.ast ? (
+              <>
+                <p className="mb-2 text-xs text-ink/60">Formula normalizzata: {ltlPreview.normalized}</p>
+                <AstNodeView node={ltlPreview.ast} />
+              </>
+            ) : (
+              <p className="text-ink/60">Inserisci una formula valida per visualizzare l'albero sintattico.</p>
+            )}
+          </div>
+
+          <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">SAT leggibile</h2>
+          <pre className="max-h-56 overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
+            {JSON.stringify(ltlPreview.satReadable, null, 2)}
           </pre>
         </article>
       </div>

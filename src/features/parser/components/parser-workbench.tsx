@@ -1,0 +1,186 @@
+import { useRef, useState } from "react";
+import { useParserForm } from "../hooks/useParserForm";
+import { parseAasContent } from "../services/parser";
+
+function TextAreaField(props: {
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  rows?: number;
+  onChange: (value: string) => void;
+  error?: string;
+}) {
+  const { id, label, value, placeholder, rows = 5, onChange, error } = props;
+
+  return (
+    <label htmlFor={id} className="block space-y-2">
+      <span className="text-sm font-semibold tracking-wide text-ink/80">{label}</span>
+      <textarea
+        id={id}
+        rows={rows}
+        value={value}
+        onChange={(event) => onChange(event.currentTarget.value)}
+        placeholder={placeholder}
+        className="w-full resize-y rounded-2xl border border-ink/15 bg-white/80 p-4 text-sm text-ink shadow-sm outline-none transition duration-200 placeholder:text-ink/40 focus:border-sea focus:ring-2 focus:ring-sea/30"
+      />
+      {error ? <p className="text-sm font-medium text-coral">{error}</p> : null}
+    </label>
+  );
+}
+
+export function ParserWorkbench() {
+  const {
+    sequenceInput,
+    setSequenceInput,
+    pairsInput,
+    setPairsInput,
+    thirdInput,
+    setThirdInput,
+    parseResult,
+  } = useParserForm();
+  const [importIssue, setImportIssue] = useState<string | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const sequenceError = parseResult.issues.find((issue) => issue.field === "sequence");
+  const pairsError = parseResult.issues.find((issue) => issue.field === "pairs");
+
+  async function importAasFile(file: File) {
+    if (!file.name.toLowerCase().endsWith(".aas")) {
+      setImportIssue("Seleziona un file .aas valido.");
+      return;
+    }
+
+    const content = await file.text();
+    const parsedImport = parseAasContent(content);
+
+    if (parsedImport.issue) {
+      setImportIssue(parsedImport.issue);
+      return;
+    }
+
+    setImportIssue(null);
+    setSequenceInput(parsedImport.sequence);
+    setPairsInput(parsedImport.pairsInput);
+  }
+
+  return (
+    <section className="mx-auto max-w-6xl animate-drift space-y-6">
+      <header className="space-y-3 text-center">
+        <h1 className="text-balance text-3xl font-bold tracking-tight text-ink sm:text-5xl">
+          LiRNA Workbench
+        </h1>
+        <p className="mx-auto max-w-2xl text-sm text-ink/80 sm:text-base">
+          Insert a sequence and a list of pairs to see the parsed structure. You can also import a .aas file
+        </p>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <article className="glass-card space-y-4 rounded-3xl p-5 shadow-glow sm:p-6">
+          <div
+            onDragOver={(event) => {
+              event.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={async (event) => {
+              event.preventDefault();
+              setIsDragOver(false);
+
+              const file = event.dataTransfer.files[0];
+              if (file) {
+                await importAasFile(file);
+              }
+            }}
+            className={`rounded-2xl border border-dashed p-4 transition ${
+              isDragOver ? "border-sea bg-sea/10" : "border-ink/20 bg-white/60"
+            }`}
+          >
+            <p className="text-sm font-medium text-ink/80">Import .aas</p>
+            <p className="text-xs text-ink/65">Trascina qui il file oppure usa il bottone.</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-xl bg-ink px-3 py-2 text-xs font-semibold uppercase tracking-wide text-mist transition hover:bg-ink/85"
+              >
+                Carica file .aas
+              </button>
+              <span className="text-xs text-ink/60">Formato: sequenza a riga 1, coppie a riga 2</span>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".aas,text/plain"
+              className="hidden"
+              onChange={async (event) => {
+                const file = event.currentTarget.files?.[0];
+                if (file) {
+                  await importAasFile(file);
+                }
+                event.currentTarget.value = "";
+              }}
+            />
+            {importIssue ? <p className="mt-2 text-sm font-medium text-coral">{importIssue}</p> : null}
+          </div>
+
+          <TextAreaField
+            id="sequence-input"
+            label="Sequenza (stringa singola)"
+            value={sequenceInput}
+            onChange={setSequenceInput}
+            rows={4}
+            placeholder="Esempio: AUAUAUAUAUA"
+            error={sequenceError?.message}
+          />
+
+          <TextAreaField
+            id="pairs-input"
+            label="Coppie (lista di tuple)"
+            value={pairsInput}
+            onChange={setPairsInput}
+            rows={6}
+            placeholder="Esempio: (1,2);(2,3);(12,32)"
+            error={pairsError?.message}
+          />
+
+          <TextAreaField
+            id="third-input"
+            label="Terza textarea (consuma la struttura parse-ata)"
+            value={thirdInput}
+            onChange={setThirdInput}
+            rows={5}
+            placeholder="LIRNA SYNTAX"
+          />
+        </article>
+
+        <article className="glass-card rounded-3xl p-5 shadow-glow sm:p-6">
+          <div className="mb-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wide">
+            <span className="rounded-full bg-sea/15 px-3 py-1 text-sea">
+              lunghezza seq: {parseResult.data?.sequence.length ?? 0}
+            </span>
+            <span className="rounded-full bg-coral/15 px-3 py-1 text-coral">
+              coppie: {parseResult.data?.pairs.length ?? 0}
+            </span>
+            <span className="rounded-full bg-ink/10 px-3 py-1 text-ink/70">
+              stato: {parseResult.data ? "valido" : "da correggere"}
+            </span>
+          </div>
+
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">Output parser</h2>
+
+          <pre className="max-h-[28rem] overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
+            {JSON.stringify(
+              parseResult.data ?? {
+                errors: parseResult.issues,
+              },
+              null,
+              2,
+            )}
+          </pre>
+        </article>
+      </div>
+    </section>
+  );
+}

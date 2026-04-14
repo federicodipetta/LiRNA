@@ -30,4 +30,19 @@ describe("constraint algebra", () => {
     expect(evaluateConstraint(atom, {})).toBeUndefined();
     expect(formatConstraint(orConstraint(atom, { kind: "false" }))).toBe("l = 1");
   });
+
+  it("simplifies nested formulas with neutral elements", () => {
+    const formula = {
+      kind: "and",
+      left: { kind: "atom", label: "l", value: 1 },
+      right: {
+        kind: "or",
+        left: { kind: "atom", label: "l", value: 2 },
+        right: { kind: "atom", label: "l", value: 1 },
+      },
+    } as const;
+    console.log(formatConstraint(formula));
+    console.log(simplifyConstraint(formula));
+    expect(simplifyConstraint(formula)).toEqual({ kind: "atom", label: "l", value: 1 });
+  })
 });

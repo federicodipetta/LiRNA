@@ -34,6 +34,8 @@ export interface SatContext {
   sequence: string;
   sequenceLength: number;
   arcs: SatArc[];
+  arcsByStart: SatArc[];
+  arcsByEnd: SatArc[];
 }
 
 export type AtomicRho =
@@ -51,6 +53,12 @@ export type LtlFormula =
   | { kind: "until"; left: LtlFormula; right: LtlFormula }
   | { kind: "eventually"; formula: LtlFormula };
 
+  /**
+   * Appen an entry at the end of the set, merging it with the last one if they have the same constraint and contiguous or overlapping ranges.
+   * @param entries 
+   * @param entry 
+   * @returns
+   */
 function appendSatEntry(entries: SatSet, entry: SatEntry): void {
   if (entry.range[0] > entry.range[1] || entry.constraint.kind === "false") {
     return;
@@ -67,7 +75,9 @@ function appendSatEntry(entries: SatSet, entry: SatEntry): void {
 
   entries.push(entry);
 }
-
+/**
+ * Da ottimizzare in qualche modo?
+ */
 function findConstraintAt(time: number, set: SatSet): ConstraintExpr {
   for (const entry of set) {
     if (entry.range[0] <= time && time <= entry.range[1]) {
@@ -115,22 +125,25 @@ export function satTop(sequenceLength: number): SatSet {
   return [{ range: [0, sequenceLength], constraint: TRUE }];
 }
 
-function sortSatEntries(entries: SatSet): SatSet {
-  return [...entries].sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1]);
-}
-
 export function buildSatContext(
   sequence: string,
   pairs: ReadonlyArray<readonly [number, number]>,
 ): SatContext {
+  const arcs = pairs.map(([left, right], index) => ({
+    id: String(index + 1),
+    start: Math.min(left, right),
+    end: Math.max(left, right),
+  }));
+
+  const byStart = [...arcs].sort((a, b) => a.start - b.start || a.end - b.end || Number(a.id) - Number(b.id));
+  const byEnd = [...arcs].sort((a, b) => a.end - b.end || a.start - b.start || Number(a.id) - Number(b.id));
+
   return {
     sequence,
-    sequenceLength: sequence.length,
-    arcs: pairs.map(([left, right], index) => ({
-      id: String(index + 1),
-      start: Math.min(left, right),
-      end: Math.max(left, right),
-    })),
+    sequenceLength: sequence.length - 1,
+    arcs,
+    arcsByStart: byStart,
+    arcsByEnd: byEnd,
   };
 }
 
@@ -140,13 +153,9 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
   }
 
   const entries: SatSet = [];
+  const orderedArcs = rho.kind === "up" ? context.arcsByStart : context.arcsByEnd;
 
-  for (const arc of sortSatEntries(context.arcs.map((item) => ({ range: [item.start, item.end] as TimeRange, constraint: TRUE })))) {
-    const currentArc = context.arcs.find((item) => item.start === arc.range[0] && item.end === arc.range[1]);
-    if (!currentArc) {
-      continue;
-    }
-
+  for (const currentArc of orderedArcs) {
     const start = rho.kind === "up" ? currentArc.start : currentArc.end;
     const end = rho.kind === "up" ? currentArc.start : currentArc.end;
 
@@ -175,8 +184,8 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
 export function satAtom(context: SatContext, value: string): SatSet {
   const result: SatSet = [];
 
-  for (let t = 1; t <= context.sequenceLength; t += 1) {
-    if (context.sequence[t - 1] === value) {
+  for (let t = 0; t <= context.sequenceLength; t += 1) {
+    if (context.sequence[t] === value) {
       appendSatEntry(result, {
         range: [t, t],
         constraint: TRUE,
@@ -188,7 +197,7 @@ export function satAtom(context: SatContext, value: string): SatSet {
 }
 
 export function satNext(set: SatSet): SatSet {
-  const shifted = sortSatEntries(set)
+  const shifted = set
     .map((entry) => {
       const start = entry.range[0] - 1;
       const end = entry.range[1] - 1;
@@ -213,8 +222,8 @@ export function satNext(set: SatSet): SatSet {
 }
 
 export function satOr(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
-  const leftNorm = sortSatEntries(left);
-  const rightNorm = sortSatEntries(right);
+  const leftNorm = left;
+  const rightNorm = right;
   const elementary = buildElementaryIntervals(sequenceLength, leftNorm, rightNorm);
 
   const result: SatSet = [];
@@ -234,7 +243,7 @@ export function satOr(sequenceLength: number, left: SatSet, right: SatSet): SatS
 }
 
 export function satEventually(sequenceLength: number, set: SatSet): SatSet {
-  const normalized = sortSatEntries(set);
+  const normalized = set;
 
   if (normalized.length === 0) {
     return [];
@@ -262,7 +271,7 @@ export function satEventually(sequenceLength: number, set: SatSet): SatSet {
 }
 
 export function satNot(sequenceLength: number, set: SatSet): SatSet {
-  const normalized = sortSatEntries(set);
+  const normalized = set;
   const result: SatSet = [];
 
   let currentTime = 0;
@@ -296,8 +305,8 @@ export function satNot(sequenceLength: number, set: SatSet): SatSet {
 }
 
 export function satUntil(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
-  const leftNorm = sortSatEntries(left);
-  const rightNorm = sortSatEntries(right);
+  const leftNorm = left;
+  const rightNorm = right;
   const elementary = buildElementaryIntervals(sequenceLength, leftNorm, rightNorm);
 
   const result: SatSet = [];
@@ -361,7 +370,7 @@ export function formatFormula(formula: LtlFormula): string {
     case "atom":
       return formula.value;
     case "rho":
-      return `${formula.rho.label}${formula.rho.kind === "up" ? "↑" : "↓"}`;
+      return `${formula.rho.label}${formula.rho.kind === "up" ? ">" : "<"}`;
     case "not":
       return `!(${formatFormula(formula.formula)})`;
     case "next":
@@ -456,6 +465,14 @@ function readRhoDirection(
   from: number,
 ): { direction: AtomicRho["kind"] | null; end: number } {
   const i = skipSpaces(source, from);
+
+  if (source[i] === ">") {
+    return { direction: "up", end: i + 1 };
+  }
+
+  if (source[i] === "<") {
+    return { direction: "down", end: i + 1 };
+  }
 
   if (source.startsWith("\\uparrow", i) || source.startsWith("\\updattow", i)) {
     return {

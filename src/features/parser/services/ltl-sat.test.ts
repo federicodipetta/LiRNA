@@ -33,8 +33,8 @@ describe("ltl sat draft", () => {
     );
 
     expect(satSet).toEqual([
-      { range: [1, 1], constraint: { kind: "true" } },
-      { range: [4, 4], constraint: { kind: "true" } },
+      { range: [0, 0], constraint: { kind: "true" } },
+      { range: [3, 3], constraint: { kind: "true" } },
     ]);
   });
 
@@ -55,6 +55,26 @@ describe("ltl sat draft", () => {
       { range: [4, 4], constraint: { kind: "atom", label: "x", value: "1" } },
       { range: [7, 7], constraint: { kind: "atom", label: "x", value: "2" } },
       { range: [8, 8], constraint: { kind: "atom", label: "x", value: "3" } },
+    ]);
+  });
+
+  it("satRho keeps temporal ordering even when input pairs are unsorted", () => {
+    const context = buildSatContext("ACGUACGUAC", [
+      [6, 8],
+      [1, 4],
+      [2, 7],
+    ]);
+
+    expect(satRho(context, { kind: "up", label: "l" })).toEqual([
+      { range: [1, 1], constraint: { kind: "atom", label: "l", value: "2" } },
+      { range: [2, 2], constraint: { kind: "atom", label: "l", value: "3" } },
+      { range: [6, 6], constraint: { kind: "atom", label: "l", value: "1" } },
+    ]);
+
+    expect(satRho(context, { kind: "down", label: "l" })).toEqual([
+      { range: [4, 4], constraint: { kind: "atom", label: "l", value: "2" } },
+      { range: [7, 7], constraint: { kind: "atom", label: "l", value: "3" } },
+      { range: [8, 8], constraint: { kind: "atom", label: "l", value: "1" } },
     ]);
   });
 
@@ -134,8 +154,8 @@ describe("ltl sat draft", () => {
   it("sat evaluates a composed formula", () => {
     const output = sat(
       buildSatContext("ACGU", [
+        [0, 2],
         [1, 3],
-        [2, 4],
       ]),
       {
         kind: "eventually",
@@ -151,12 +171,12 @@ describe("ltl sat draft", () => {
     expect(output.some((entry) => entry.constraint.kind !== FALSE.kind)).toBe(true);
   });
 
-  it("parseLtlFormula supports !, O, <>, U and l↑/l↓ atoms", () => {
-    const parsed = parseLtlFormula("<>(l↑ U O(l\\downarrow | true))");
+  it("parseLtlFormula supports !, O, <>, U and l>/l< atoms", () => {
+    const parsed = parseLtlFormula("<>(l> U O(l< | true))");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).not.toBeNull();
-    expect(parsed.formula && formatFormula(parsed.formula)).toBe("<>((l↑ U O((l↓ | true))))");
+    expect(parsed.formula && formatFormula(parsed.formula)).toBe("<>((l> U O((l< | true))))");
   });
 
   it("formatConstraint exposes true/false instead of top/bottom", () => {

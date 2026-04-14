@@ -36,7 +36,7 @@ export function parsePairsInput(rawPairs: string): { pairs: IndexPair[]; issue?:
   if (matches.length === 0) {
     return {
       pairs: [],
-      issue: "Invalid format. Use for example: (1,2);(2,3);(12,32)",
+      issue: "Invalid format. Use for example: (0,1);(1,2);(11,31)",
     };
   }
 
@@ -91,7 +91,7 @@ export function parseWorkbenchInput(
     if (invalidPair) {
       issues.push({
         field: "pairs",
-        message: `Pairs must have indices between 0 and ${sequence.length}. Invalid pair found: (${invalidPair[0]},${invalidPair[1]}).`,
+        message: `Pairs must have indices between 0 and ${sequence.length - 1}. Invalid pair found: (${invalidPair[0]},${invalidPair[1]}).`,
       });
     }
   }

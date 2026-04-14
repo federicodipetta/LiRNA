@@ -1,12 +1,21 @@
-export type TimeRange = readonly [start: number, end: number];
+import {
+  FALSE,
+  TRUE,
+  andConstraint,
+  eqConstraint,
+  evaluateConstraint,
+  formatConstraint,
+  isEqualConstraint,
+  negateConstraint,
+  orConstraint,
+  simplifyConstraint,
+  type ConstraintExpr,
+} from "./constraint-expr";
 
-export type ConstraintExpr =
-  | { kind: "top" }
-  | { kind: "bottom" }
-  | { kind: "atom"; value: string }
-  | { kind: "not"; expr: ConstraintExpr }
-  | { kind: "and"; left: ConstraintExpr; right: ConstraintExpr }
-  | { kind: "or"; left: ConstraintExpr; right: ConstraintExpr };
+export type { ConstraintAssignment, ConstraintExpr } from "./constraint-expr";
+export { FALSE, TRUE, andConstraint, evaluateConstraint, formatConstraint, negateConstraint, orConstraint, simplifyConstraint };
+
+export type TimeRange = readonly [start: number, end: number];
 
 export interface SatEntry {
   range: TimeRange;
@@ -15,6 +24,18 @@ export interface SatEntry {
 
 export type SatSet = SatEntry[];
 
+export interface SatArc {
+  id: string;
+  start: number;
+  end: number;
+}
+
+export interface SatContext {
+  sequence: string;
+  sequenceLength: number;
+  arcs: SatArc[];
+}
+
 export type AtomicRho =
   | { kind: "up"; label: string }
   | { kind: "down"; label: string };
@@ -22,6 +43,7 @@ export type AtomicRho =
 export type LtlFormula =
   | { kind: "true" }
   | { kind: "false" }
+  | { kind: "atom"; value: string }
   | { kind: "not"; formula: LtlFormula }
   | { kind: "or"; left: LtlFormula; right: LtlFormula }
   | { kind: "rho"; rho: AtomicRho }
@@ -29,125 +51,21 @@ export type LtlFormula =
   | { kind: "until"; left: LtlFormula; right: LtlFormula }
   | { kind: "eventually"; formula: LtlFormula };
 
-export const TOP: ConstraintExpr = { kind: "top" };
-export const BOTTOM: ConstraintExpr = { kind: "bottom" };
-
-function atom(value: string): ConstraintExpr {
-  return { kind: "atom", value };
-}
-
-function serializeConstraint(expr: ConstraintExpr): string {
-  switch (expr.kind) {
-    case "top":
-      return "TOP";
-    case "bottom":
-      return "BOTTOM";
-    case "atom":
-      return `ATOM(${expr.value})`;
-    case "not":
-      return `NOT(${serializeConstraint(expr.expr)})`;
-    case "and":
-      return `AND(${serializeConstraint(expr.left)},${serializeConstraint(expr.right)})`;
-    case "or":
-      return `OR(${serializeConstraint(expr.left)},${serializeConstraint(expr.right)})`;
-  }
-}
-
-function isEqualConstraint(a: ConstraintExpr, b: ConstraintExpr): boolean {
-  return serializeConstraint(a) === serializeConstraint(b);
-}
-
-function negateConstraint(expr: ConstraintExpr): ConstraintExpr {
-  if (expr.kind === "top") {
-    return BOTTOM;
+function appendSatEntry(entries: SatSet, entry: SatEntry): void {
+  if (entry.range[0] > entry.range[1] || entry.constraint.kind === "false") {
+    return;
   }
 
-  if (expr.kind === "bottom") {
-    return TOP;
+  const last = entries[entries.length - 1];
+  if (last && isEqualConstraint(last.constraint, entry.constraint) && last.range[1] + 1 >= entry.range[0]) {
+    entries[entries.length - 1] = {
+      range: [last.range[0], Math.max(last.range[1], entry.range[1])],
+      constraint: last.constraint,
+    };
+    return;
   }
 
-  if (expr.kind === "not") {
-    return expr.expr;
-  }
-
-  return { kind: "not", expr };
-}
-
-function andConstraint(left: ConstraintExpr, right: ConstraintExpr): ConstraintExpr {
-  if (left.kind === "bottom" || right.kind === "bottom") {
-    return BOTTOM;
-  }
-
-  if (left.kind === "top") {
-    return right;
-  }
-
-  if (right.kind === "top") {
-    return left;
-  }
-
-  if (isEqualConstraint(left, right)) {
-    return left;
-  }
-
-  return { kind: "and", left, right };
-}
-
-function orConstraint(left: ConstraintExpr, right: ConstraintExpr): ConstraintExpr {
-  if (left.kind === "top" || right.kind === "top") {
-    return TOP;
-  }
-
-  if (left.kind === "bottom") {
-    return right;
-  }
-
-  if (right.kind === "bottom") {
-    return left;
-  }
-
-  if (isEqualConstraint(left, right)) {
-    return left;
-  }
-
-  return { kind: "or", left, right };
-}
-
-function normalizeSatSet(entries: SatSet): SatSet {
-  const sorted = [...entries]
-    .filter((entry) => entry.range[0] <= entry.range[1] && entry.constraint.kind !== "bottom")
-    .sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1]);
-
-  if (sorted.length === 0) {
-    return [];
-  }
-
-  const normalized: SatSet = [
-    {
-      range: sorted[0].range,
-      constraint: sorted[0].constraint,
-    },
-  ];
-
-  for (let i = 1; i < sorted.length; i += 1) {
-    const current = sorted[i];
-    const last = normalized[normalized.length - 1];
-
-    if (
-      isEqualConstraint(last.constraint, current.constraint) &&
-      last.range[1] + 1 >= current.range[0]
-    ) {
-      normalized[normalized.length - 1] = {
-        range: [last.range[0], Math.max(last.range[1], current.range[1])],
-        constraint: last.constraint,
-      };
-      continue;
-    }
-
-    normalized.push(current);
-  }
-
-  return normalized;
+  entries.push(entry);
 }
 
 function findConstraintAt(time: number, set: SatSet): ConstraintExpr {
@@ -157,7 +75,7 @@ function findConstraintAt(time: number, set: SatSet): ConstraintExpr {
     }
   }
 
-  return BOTTOM;
+  return FALSE;
 }
 
 function buildElementaryIntervals(maxTime: number, ...sets: SatSet[]): TimeRange[] {
@@ -194,33 +112,83 @@ export function satTop(sequenceLength: number): SatSet {
     return [];
   }
 
-  return [{ range: [0, sequenceLength], constraint: TOP }];
+  return [{ range: [0, sequenceLength], constraint: TRUE }];
 }
 
-export function satRho(sequenceLength: number, rho: AtomicRho): SatSet {
-  if (sequenceLength <= 0) {
+function sortSatEntries(entries: SatSet): SatSet {
+  return [...entries].sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1]);
+}
+
+export function buildSatContext(
+  sequence: string,
+  pairs: ReadonlyArray<readonly [number, number]>,
+): SatContext {
+  return {
+    sequence,
+    sequenceLength: sequence.length,
+    arcs: pairs.map(([left, right], index) => ({
+      id: String(index + 1),
+      start: Math.min(left, right),
+      end: Math.max(left, right),
+    })),
+  };
+}
+
+export function satRho(context: SatContext, rho: AtomicRho): SatSet {
+  if (context.sequenceLength < 0 || context.arcs.length === 0) {
     return [];
   }
 
   const entries: SatSet = [];
 
-  for (let t = 1; t <= sequenceLength; t += 1) {
-    const comparison =
-      rho.kind === "up"
-        ? `arc(${rho.label}).start_${t} > arc(${rho.label}).start_${t - 1}`
-        : `arc(${rho.label}).end_${t} < arc(${rho.label}).end_${t - 1}`;
+  for (const arc of sortSatEntries(context.arcs.map((item) => ({ range: [item.start, item.end] as TimeRange, constraint: TRUE })))) {
+    const currentArc = context.arcs.find((item) => item.start === arc.range[0] && item.end === arc.range[1]);
+    if (!currentArc) {
+      continue;
+    }
 
-    entries.push({
-      range: [t, t],
-      constraint: atom(comparison),
+    const start = rho.kind === "up" ? currentArc.start : currentArc.end;
+    const end = rho.kind === "up" ? currentArc.start : currentArc.end;
+
+    if (start < 0 || end < 0) {
+      continue;
+    }
+
+    if (start > context.sequenceLength) {
+      continue;
+    }
+
+    const boundedEnd = Math.min(end, context.sequenceLength);
+    if (boundedEnd < start) {
+      continue;
+    }
+
+    appendSatEntry(entries, {
+      range: [start, boundedEnd],
+      constraint: eqConstraint(rho.label, currentArc.id),
     });
   }
 
   return entries;
 }
 
+export function satAtom(context: SatContext, value: string): SatSet {
+  const result: SatSet = [];
+
+  for (let t = 1; t <= context.sequenceLength; t += 1) {
+    if (context.sequence[t - 1] === value) {
+      appendSatEntry(result, {
+        range: [t, t],
+        constraint: TRUE,
+      });
+    }
+  }
+
+  return result;
+}
+
 export function satNext(set: SatSet): SatSet {
-  const shifted = set
+  const shifted = sortSatEntries(set)
     .map((entry) => {
       const start = entry.range[0] - 1;
       const end = entry.range[1] - 1;
@@ -236,12 +204,17 @@ export function satNext(set: SatSet): SatSet {
     })
     .filter((entry): entry is SatEntry => entry !== null);
 
-  return normalizeSatSet(shifted);
+  const result: SatSet = [];
+  for (const entry of shifted) {
+    appendSatEntry(result, entry);
+  }
+
+  return result;
 }
 
 export function satOr(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
-  const leftNorm = normalizeSatSet(left);
-  const rightNorm = normalizeSatSet(right);
+  const leftNorm = sortSatEntries(left);
+  const rightNorm = sortSatEntries(right);
   const elementary = buildElementaryIntervals(sequenceLength, leftNorm, rightNorm);
 
   const result: SatSet = [];
@@ -251,26 +224,24 @@ export function satOr(sequenceLength: number, left: SatSet, right: SatSet): SatS
     const rightConstraint = findConstraintAt(start, rightNorm);
     const curr = orConstraint(leftConstraint, rightConstraint);
 
-    if (curr.kind !== "bottom") {
-      result.push({
+    appendSatEntry(result, {
         range: [start, end],
         constraint: curr,
-      });
-    }
+    });
   }
 
-  return normalizeSatSet(result);
+  return result;
 }
 
 export function satEventually(sequenceLength: number, set: SatSet): SatSet {
-  const normalized = normalizeSatSet(set);
+  const normalized = sortSatEntries(set);
 
   if (normalized.length === 0) {
     return [];
   }
 
   const result: SatSet = [];
-  let accumulated: ConstraintExpr = BOTTOM;
+  let accumulated: ConstraintExpr = FALSE;
 
   for (let i = normalized.length - 1; i >= 0; i -= 1) {
     const current = normalized[i];
@@ -280,18 +251,18 @@ export function satEventually(sequenceLength: number, set: SatSet): SatSet {
     const end = current.range[1];
 
     if (start <= end && start <= sequenceLength) {
-      result.push({
+      appendSatEntry(result, {
         range: [start, Math.min(end, sequenceLength)],
         constraint: accumulated,
       });
     }
   }
 
-  return normalizeSatSet(result.reverse());
+  return result.reverse();
 }
 
 export function satNot(sequenceLength: number, set: SatSet): SatSet {
-  const normalized = normalizeSatSet(set);
+  const normalized = sortSatEntries(set);
   const result: SatSet = [];
 
   let currentTime = 0;
@@ -300,13 +271,13 @@ export function satNot(sequenceLength: number, set: SatSet): SatSet {
     const [start, end] = entry.range;
 
     if (start > currentTime) {
-      result.push({
+      appendSatEntry(result, {
         range: [currentTime, start - 1],
-        constraint: TOP,
+        constraint: TRUE,
       });
     }
 
-    result.push({
+    appendSatEntry(result, {
       range: [start, end],
       constraint: negateConstraint(entry.constraint),
     });
@@ -315,22 +286,22 @@ export function satNot(sequenceLength: number, set: SatSet): SatSet {
   }
 
   if (currentTime <= sequenceLength) {
-    result.push({
+    appendSatEntry(result, {
       range: [currentTime, sequenceLength],
-      constraint: TOP,
+      constraint: TRUE,
     });
   }
 
-  return normalizeSatSet(result);
+  return result;
 }
 
 export function satUntil(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
-  const leftNorm = normalizeSatSet(left);
-  const rightNorm = normalizeSatSet(right);
+  const leftNorm = sortSatEntries(left);
+  const rightNorm = sortSatEntries(right);
   const elementary = buildElementaryIntervals(sequenceLength, leftNorm, rightNorm);
 
   const result: SatSet = [];
-  let nextConstraint: ConstraintExpr = BOTTOM;
+  let nextConstraint: ConstraintExpr = FALSE;
 
   for (let i = elementary.length - 1; i >= 0; i -= 1) {
     const [start, end] = elementary[i];
@@ -339,62 +310,45 @@ export function satUntil(sequenceLength: number, left: SatSet, right: SatSet): S
     const v2 = findConstraintAt(start, rightNorm);
     const current = orConstraint(v2, andConstraint(v1, nextConstraint));
 
-    if (current.kind !== "bottom") {
-      result.push({
+    appendSatEntry(result, {
         range: [start, end],
         constraint: current,
-      });
-    }
+    });
 
     nextConstraint = current;
   }
 
-  return normalizeSatSet(result.reverse());
+  return result.reverse();
 }
 
-export function sat(sequenceLength: number, formula: LtlFormula): SatSet {
+export function sat(context: SatContext, formula: LtlFormula): SatSet {
   switch (formula.kind) {
     case "true":
-      return satTop(sequenceLength);
+      return satTop(context.sequenceLength);
     case "false":
       return [];
+    case "atom":
+      return satAtom(context, formula.value);
     case "rho":
-      return satRho(sequenceLength, formula.rho);
+      return satRho(context, formula.rho);
     case "next":
-      return satNext(sat(sequenceLength, formula.formula));
+      return satNext(sat(context, formula.formula));
     case "or":
       return satOr(
-        sequenceLength,
-        sat(sequenceLength, formula.left),
-        sat(sequenceLength, formula.right),
+        context.sequenceLength,
+        sat(context, formula.left),
+        sat(context, formula.right),
       );
     case "eventually":
-      return satEventually(sequenceLength, sat(sequenceLength, formula.formula));
+      return satEventually(context.sequenceLength, sat(context, formula.formula));
     case "not":
-      return satNot(sequenceLength, sat(sequenceLength, formula.formula));
+      return satNot(context.sequenceLength, sat(context, formula.formula));
     case "until":
       return satUntil(
-        sequenceLength,
-        sat(sequenceLength, formula.left),
-        sat(sequenceLength, formula.right),
+        context.sequenceLength,
+        sat(context, formula.left),
+        sat(context, formula.right),
       );
-  }
-}
-
-export function formatConstraint(expr: ConstraintExpr): string {
-  switch (expr.kind) {
-    case "top":
-      return "true";
-    case "bottom":
-      return "false";
-    case "atom":
-      return expr.value;
-    case "not":
-      return `!(${formatConstraint(expr.expr)})`;
-    case "and":
-      return `(${formatConstraint(expr.left)} && ${formatConstraint(expr.right)})`;
-    case "or":
-      return `(${formatConstraint(expr.left)} || ${formatConstraint(expr.right)})`;
   }
 }
 
@@ -404,6 +358,8 @@ export function formatFormula(formula: LtlFormula): string {
       return "true";
     case "false":
       return "false";
+    case "atom":
+      return formula.value;
     case "rho":
       return `${formula.rho.label}${formula.rho.kind === "up" ? "↑" : "↓"}`;
     case "not":
@@ -441,6 +397,7 @@ type TokenType =
   | "EVENTUALLY"
   | "TRUE"
   | "FALSE"
+  | "ATOM"
   | "RHO"
   | "EOF";
 
@@ -449,6 +406,22 @@ interface Token {
   value?: string;
   rho?: AtomicRho;
   pos: number;
+}
+
+function readQuotedAtom(source: string, start: number): { value: string; end: number } {
+  const quote = source[start];
+  const endQuote = source.indexOf(quote, start + 1);
+
+  if (endQuote === -1) {
+    throw new Error(`Unterminated quoted atom at position ${start + 1}`);
+  }
+
+  const value = source.slice(start + 1, endQuote).trim();
+  if (!/^[ACGU]$/.test(value)) {
+    throw new Error(`Invalid atom '${value}' at position ${start + 1}`);
+  }
+
+  return { value, end: endQuote + 1 };
 }
 
 function isIdentifierStart(ch: string): boolean {
@@ -526,6 +499,13 @@ function tokenizeFormula(source: string): Token[] {
 
     const ch = source[i];
 
+    if (ch === "'" || ch === '"') {
+      const { value, end } = readQuotedAtom(source, i);
+      tokens.push({ type: "ATOM", value, pos: i });
+      i = end;
+      continue;
+    }
+
     if (source.startsWith("<>", i)) {
       tokens.push({ type: "EVENTUALLY", pos: i });
       i += 2;
@@ -574,6 +554,7 @@ function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
+
     if (isIdentifierStart(ch)) {
       const { ident, end } = readIdentifier(source, i);
 
@@ -585,6 +566,12 @@ function tokenizeFormula(source: string): Token[] {
 
       if (ident === "false") {
         tokens.push({ type: "FALSE", pos: i });
+        i = end;
+        continue;
+      }
+
+      if (/^[ACG]$/.test(ident)) {
+        tokens.push({ type: "ATOM", value: ident, pos: i });
         i = end;
         continue;
       }
@@ -607,7 +594,7 @@ function tokenizeFormula(source: string): Token[] {
       }
     }
 
-    throw new Error(`Token non valido in posizione ${i + 1}`);
+    throw new Error(`Invalid token at position ${i + 1}`);
   }
 
   tokens.push({ type: "EOF", pos: source.length });
@@ -687,6 +674,16 @@ class FormulaParser {
       return { kind: "false" };
     }
 
+    if (token.type === "ATOM" && token.value) {
+      this.advance();
+      return { kind: "atom", value: token.value };
+    }
+
+      if (token.type === "ATOM" && token.value) {
+        this.advance();
+        return { kind: "atom", value: token.value };
+      }
+
     if (token.type === "RHO" && token.rho) {
       this.advance();
       return { kind: "rho", rho: token.rho };
@@ -699,13 +696,13 @@ class FormulaParser {
       return expr;
     }
 
-    throw new Error(`Formula non valida vicino alla posizione ${token.pos + 1}`);
+    throw new Error(`Invalid formula near position ${token.pos + 1}`);
   }
 
   private expect(type: TokenType): Token {
     const token = this.peek();
     if (token.type !== type) {
-      throw new Error(`Atteso ${type}, trovato ${token.type} alla posizione ${token.pos + 1}`);
+      throw new Error(`Expected ${type}, found ${token.type} at position ${token.pos + 1}`);
     }
     return this.advance();
   }
@@ -731,7 +728,7 @@ export function parseLtlFormula(input: string): ParsedFormulaResult {
   if (!source) {
     return {
       formula: null,
-      error: "Inserisci una formula LTL.",
+      error: "Enter an LTL formula.",
     };
   }
 
@@ -744,7 +741,7 @@ export function parseLtlFormula(input: string): ParsedFormulaResult {
   } catch (error) {
     return {
       formula: null,
-      error: error instanceof Error ? error.message : "Errore sconosciuto durante il parsing LTL.",
+      error: error instanceof Error ? error.message : "Unknown error while parsing LTL.",
     };
   }
 }

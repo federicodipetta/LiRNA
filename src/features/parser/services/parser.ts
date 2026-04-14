@@ -9,7 +9,19 @@ import type {
 const pairRegex = /\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/g;
 
 export function parseSequenceInput(rawSequence: string): string {
-  return rawSequence.replace(/\s+/g, "").trim();
+  return rawSequence.replace(/\s+/g, "").trim().toUpperCase();
+}
+
+export function validateSequenceInput(sequence: string): string | null {
+  if (sequence.length === 0) {
+    return "Enter a valid sequence.";
+  }
+
+  if (!/^[ACGU]+$/.test(sequence)) {
+    return "The sequence may contain only A, C, G, and U.";
+  }
+
+  return null;
 }
 
 export function parsePairsInput(rawPairs: string): { pairs: IndexPair[]; issue?: string } {
@@ -24,7 +36,7 @@ export function parsePairsInput(rawPairs: string): { pairs: IndexPair[]; issue?:
   if (matches.length === 0) {
     return {
       pairs: [],
-      issue: "Formato non valido. Usa ad esempio: (1,2);(2,3);(12,32)",
+      issue: "Invalid format. Use for example: (1,2);(2,3);(12,32)",
     };
   }
 
@@ -35,7 +47,7 @@ export function parsePairsInput(rawPairs: string): { pairs: IndexPair[]; issue?:
   if (leftovers.length > 0) {
     return {
       pairs: [],
-      issue: "Ci sono caratteri non riconosciuti nella lista delle coppie.",
+      issue: "There are unrecognized characters in the pair list.",
     };
   }
 
@@ -50,10 +62,11 @@ export function parseWorkbenchInput(
   const issues: ParseIssue[] = [];
 
   const sequence = parseSequenceInput(rawSequence);
-  if (sequence.length === 0) {
+  const sequenceIssue = validateSequenceInput(sequence);
+  if (sequenceIssue) {
     issues.push({
       field: "sequence",
-      message: "Inserisci una sequenza valida.",
+      message: sequenceIssue,
     });
   }
 
@@ -63,6 +76,24 @@ export function parseWorkbenchInput(
       field: "pairs",
       message: issue,
     });
+  }
+
+  if (!issue && sequence.length > 0) {
+    // IS 0-BASED
+    const invalidPair = pairs.find(
+      ([left, right]) =>
+        left < 0 ||
+        right < 0 ||
+        left >= sequence.length ||
+        right >= sequence.length,
+    );
+
+    if (invalidPair) {
+      issues.push({
+        field: "pairs",
+        message: `Pairs must have indices between 0 and ${sequence.length}. Invalid pair found: (${invalidPair[0]},${invalidPair[1]}).`,
+      });
+    }
   }
 
   if (issues.length > 0) {
@@ -88,7 +119,7 @@ export function parseAasContent(rawFileContent: string): AasImportResult {
     return {
       sequence: "",
       pairsInput: "",
-      issue: "Formato .aas non valido. Atteso: prima riga sequenza, seconda riga lista coppie.",
+      issue: "Invalid .aas format. Expected: first line sequence, second line pair list.",
     };
   }
 
@@ -99,7 +130,7 @@ export function parseAasContent(rawFileContent: string): AasImportResult {
     return {
       sequence: "",
       pairsInput: "",
-      issue: "Il file .aas deve contenere sia sequenza sia lista di coppie.",
+      issue: "The .aas file must contain both a sequence and a pair list.",
     };
   }
 

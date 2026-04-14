@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useParserForm } from "../hooks/useParserForm";
 import {
+  buildSatContext,
   formatFormula,
   parseLtlFormula,
   sat,
@@ -39,6 +40,10 @@ function TextAreaField(props: {
 function AstNodeView({ node }: { node: LtlFormula }) {
   if (node.kind === "true" || node.kind === "false") {
     return <span className="text-sea">{node.kind}</span>;
+  }
+
+  if (node.kind === "atom") {
+    return <span className="text-coral">{node.value}</span>;
   }
 
   if (node.kind === "rho") {
@@ -106,7 +111,7 @@ export function ParserWorkbench() {
     const parsedFormula = parseLtlFormula(thirdInput);
     if (!parsedFormula.formula) {
       return {
-        syntaxError: parsedFormula.error ?? "Formula non valida.",
+        syntaxError: parsedFormula.error ?? "Invalid formula.",
         ast: null,
         normalized: null,
         satReadable: [],
@@ -115,7 +120,12 @@ export function ParserWorkbench() {
 
     const normalized = formatFormula(parsedFormula.formula);
     const satReadable = parseResult.data
-      ? toReadableSatSet(sat(parseResult.data.sequence.length, parsedFormula.formula))
+      ? toReadableSatSet(
+          sat(
+            buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
+            parsedFormula.formula,
+          ),
+        )
       : [];
 
     return {
@@ -128,7 +138,7 @@ export function ParserWorkbench() {
 
   async function importAasFile(file: File) {
     if (!file.name.toLowerCase().endsWith(".aas")) {
-      setImportIssue("Seleziona un file .aas valido.");
+      setImportIssue("Select a valid .aas file.");
       return;
     }
 
@@ -152,7 +162,7 @@ export function ParserWorkbench() {
           LiRNA Workbench
         </h1>
         <p className="mx-auto max-w-2xl text-sm text-ink/80 sm:text-base">
-          Insert a sequence and a list of pairs to see the parsed structure. You can also import a .aas file
+          Insert a sequence and a list of pairs to see the parsed structure. You can also import a .aas file.
         </p>
       </header>
 
@@ -178,16 +188,16 @@ export function ParserWorkbench() {
             }`}
           >
             <p className="text-sm font-medium text-ink/80">Import .aas</p>
-            <p className="text-xs text-ink/65">Trascina qui il file oppure usa il bottone.</p>
+            <p className="text-xs text-ink/65">Drag the file here or use the button.</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 className="rounded-xl bg-ink px-3 py-2 text-xs font-semibold uppercase tracking-wide text-mist transition hover:bg-ink/85"
               >
-                Carica file .aas
+                Upload .aas file
               </button>
-              <span className="text-xs text-ink/60">Formato: sequenza a riga 1, coppie a riga 2</span>
+              <span className="text-xs text-ink/60">Format: sequence on line 1, pairs on line 2</span>
             </div>
             <input
               ref={fileInputRef}
@@ -207,11 +217,11 @@ export function ParserWorkbench() {
 
           <TextAreaField
             id="sequence-input"
-            label="Sequenza (stringa singola)"
+            label="RNA sequence (A, C, G, U only)"
             value={sequenceInput}
             onChange={setSequenceInput}
             rows={4}
-            placeholder="Esempio: AUAUAUAUAUA"
+            placeholder="Example: ACGUACGU"
             error={sequenceError?.message}
           />
 
@@ -227,15 +237,15 @@ export function ParserWorkbench() {
 
           <TextAreaField
             id="third-input"
-            label="Formula LTL (usa !, O, <>, U, | e atomi l↑/l↓)"
+            label="LTL formula (use !, O, <>, U, |, atoms A/C/G/U and l↑/l↓)"
             value={thirdInput}
             onChange={setThirdInput}
             rows={5}
-            placeholder="Esempio: <>(l↑ U O(l↓ | true))"
+            placeholder="Example: <>(l↑ U O(l↓ | true)) or A"
             error={ltlPreview.syntaxError ?? undefined}
           />
           <p className="text-xs text-ink/65">
-            rho significa evento su arco AAS: l↑ (arco uscente/start), l↓ (arco entrante/end).
+            rho means an event on an AAS arc: l↑ (outgoing arc/start), l↓ (incoming arc/end).
           </p>
         </article>
 
@@ -248,7 +258,7 @@ export function ParserWorkbench() {
               coppie: {parseResult.data?.pairs.length ?? 0}
             </span>
             <span className="rounded-full bg-ink/10 px-3 py-1 text-ink/70">
-              stato: {parseResult.data ? "valido" : "da correggere"}
+              status: {parseResult.data ? "valid" : "needs correction"}
             </span>
           </div>
 
@@ -268,15 +278,15 @@ export function ParserWorkbench() {
           <div className="rounded-2xl border border-ink/15 bg-white/70 p-4 text-sm text-ink">
             {ltlPreview.ast ? (
               <>
-                <p className="mb-2 text-xs text-ink/60">Formula normalizzata: {ltlPreview.normalized}</p>
+                <p className="mb-2 text-xs text-ink/60">Normalized formula: {ltlPreview.normalized}</p>
                 <AstNodeView node={ltlPreview.ast} />
               </>
             ) : (
-              <p className="text-ink/60">Inserisci una formula valida per visualizzare l'albero sintattico.</p>
+              <p className="text-ink/60">Enter a valid formula to display the syntax tree.</p>
             )}
           </div>
 
-          <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">SAT leggibile</h2>
+          <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">Readable SAT</h2>
           <pre className="max-h-56 overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
             {JSON.stringify(ltlPreview.satReadable, null, 2)}
           </pre>

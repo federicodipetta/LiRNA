@@ -1,4 +1,4 @@
-import { ParserWorkbench } from "./features/parser/components/parser-workbench";
+import { ParserWorkbench } from "./features/parser";
 
 function App() {
   return (

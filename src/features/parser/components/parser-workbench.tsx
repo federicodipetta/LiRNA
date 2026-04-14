@@ -227,11 +227,11 @@ export function ParserWorkbench() {
 
           <TextAreaField
             id="pairs-input"
-            label="Coppie (lista di tuple)"
+            label="bonds"
             value={pairsInput}
             onChange={setPairsInput}
             rows={6}
-            placeholder="Esempio: (1,2);(2,3);(12,32)"
+            placeholder="Esempio: (0,1);(2,3);(4,7)"
             error={pairsError?.message}
           />
 

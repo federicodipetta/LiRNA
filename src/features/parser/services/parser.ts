@@ -1,10 +1,20 @@
 import type {
   AasImportResult,
+  BatchExportResult,
+  BatchInputStructure,
+  BatchResultEntry,
   IndexPair,
   ParseIssue,
   ParseResult,
   ParsedStructure,
 } from "../types/parser";
+import {
+  buildSatContext,
+  formatFormula,
+  parseLtlFormula,
+  sat,
+  toReadableSatSet,
+} from "./ltl-sat";
 
 const pairRegex = /\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/g;
 
@@ -79,7 +89,6 @@ export function parseWorkbenchInput(
   }
 
   if (!issue && sequence.length > 0) {
-    // IS 0-BASED
     const invalidPair = pairs.find(
       ([left, right]) =>
         left < 0 ||
@@ -137,5 +146,61 @@ export function parseAasContent(rawFileContent: string): AasImportResult {
   return {
     sequence,
     pairsInput,
+  };
+}
+
+export function processBatchStructures(structures: BatchInputStructure[]): BatchExportResult {
+  const results: BatchResultEntry[] = structures.map((struct, index) => {
+    const parseResult = parseWorkbenchInput(struct.sequence, struct.pairs, struct.formula);
+    const errors = parseResult.issues.map((issue) => `${issue.field}: ${issue.message}`);
+    const normalizedName = struct.name.trim() || `structure_${index + 1}`;
+
+    if (!parseResult.data) {
+      return {
+        id: `structure_${index + 1}`,
+        name: normalizedName,
+        sequence: struct.sequence,
+        pairs: [],
+        formula: struct.formula,
+        isValid: false,
+        errors,
+        satResult: null,
+      };
+    }
+
+    const parsedFormula = parseLtlFormula(struct.formula);
+    if (!parsedFormula.formula) {
+      return {
+        id: `structure_${index + 1}`,
+        name: normalizedName,
+        sequence: struct.sequence,
+        pairs: parseResult.data.pairs,
+        formula: struct.formula,
+        isValid: false,
+        errors: [...errors, `formula: ${parsedFormula.error ?? "Invalid formula"}`],
+        satResult: null,
+      };
+    }
+
+    const satSet = sat(
+      buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
+      parsedFormula.formula,
+    );
+
+    return {
+      id: `structure_${index + 1}`,
+      name: normalizedName,
+      sequence: struct.sequence,
+      pairs: parseResult.data.pairs,
+      formula: formatFormula(parsedFormula.formula),
+      isValid: true,
+      satResult: toReadableSatSet(satSet),
+    };
+  });
+
+  return {
+    timestamp: new Date().toISOString(),
+    structureCount: structures.length,
+    results,
   };
 }

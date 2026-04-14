@@ -11,6 +11,7 @@ import {
   toReadableSatSet,
   type LtlFormula,
 } from "../services/ltl-sat";
+import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
 
 interface BaseModeProps {
@@ -20,10 +21,7 @@ interface BaseModeProps {
   setPairsInput: (value: string) => void;
   thirdInput: string;
   setThirdInput: (value: string) => void;
-  parseResult: {
-    data: { sequence: string; pairs: unknown[] } | null;
-    issues: Array<{ field: string; message: string }>;
-  };
+  parseResult: ParseResult;
 }
 
 export function BaseModePanel(props: BaseModeProps) {
@@ -64,7 +62,7 @@ export function BaseModePanel(props: BaseModeProps) {
     const satReadable = parseResult.data
       ? toReadableSatSet(
           sat(
-            buildSatContext(parseResult.data.sequence, parseResult.data.pairs as unknown[]),
+            buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
             parsedFormula.formula,
           ),
         )

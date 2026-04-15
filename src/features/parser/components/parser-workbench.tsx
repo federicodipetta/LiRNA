@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParserForm } from "../hooks/useParserForm";
 import { parseAasContent, processBatchStructures } from "../services/parser";
-import { parseLtlFormula } from "../services/ltl-sat";
+import { parseLtlFormula } from "../services/lirna-seq";
 import type { BatchExportResult, BatchResultEntry } from "../types/parser";
 import type { WorkbenchMode, BatchDraftStructure, BatchValidation } from "../types/batch";
 import {
@@ -340,3 +340,4 @@ export function ParserWorkbench() {
     </section>
   );
 }
+

@@ -2,7 +2,7 @@
  * Shared form field components
  */
 
-import type { LtlFormula } from "../services/ltl-sat";
+import type { LtlFormula } from "../services/lirna-seq";
 
 export function TextAreaField(props: {
   id: string;
@@ -74,3 +74,4 @@ export function AstNodeView({ node }: { node: LtlFormula }) {
     </details>
   );
 }
+

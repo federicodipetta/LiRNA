@@ -14,7 +14,7 @@ import {
   satTop,
   satUntil,
   type SatSet,
-} from "./ltl-sat";
+} from "./lirna-seq";
 
 describe("ltl sat draft", () => {
   it("satTop covers the whole temporal horizon", () => {
@@ -201,3 +201,4 @@ describe("ltl sat draft", () => {
     expect(evaluateConstraint({ kind: "atom", label: "l", value: 1 }, { l: 1 })).toBe(true);
   });
 });
+

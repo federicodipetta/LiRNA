@@ -10,7 +10,7 @@ import {
   sat,
   toReadableSatSet,
   type LtlFormula,
-} from "../services/ltl-sat";
+} from "../services/lirna-seq";
 import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
 
@@ -155,3 +155,4 @@ export function BaseModePanel(props: BaseModeProps) {
     </div>
   );
 }
+

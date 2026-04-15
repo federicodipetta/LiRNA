@@ -14,7 +14,7 @@ import {
   parseLtlFormula,
   sat,
   toReadableSatSet,
-} from "./ltl-sat";
+} from "./lirna-seq";
 
 const pairRegex = /\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/g;
 
@@ -204,3 +204,4 @@ export function processBatchStructures(structures: BatchInputStructure[]): Batch
     results,
   };
 }
+

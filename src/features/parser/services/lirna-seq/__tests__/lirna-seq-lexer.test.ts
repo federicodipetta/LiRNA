@@ -4,15 +4,15 @@ import { tokenizeFormula } from "../lexer";
 
 describe("lirna-seq-lexer", () => {
   it("tokenizes unary/binary operators and delimiters", () => {
-    const tokens = tokenizeFormula("<>(!(A | O(C)))");
+    const tokens = tokenizeFormula("[](!(A & O(C)))");
 
     expect(tokens.map((t) => t.type)).toEqual([
-      "EVENTUALLY",
+      "ALWAYS",
       "LPAREN",
       "NOT",
       "LPAREN",
       "ATOM",
-      "OR",
+      "AND",
       "NEXT",
       "LPAREN",
       "ATOM",
@@ -21,6 +21,13 @@ describe("lirna-seq-lexer", () => {
       "RPAREN",
       "EOF",
     ]);
+  });
+
+  it("tokenizes pipe implication and right-hand label", () => {
+    const tokens = tokenizeFormula("A |> l");
+
+    expect(tokens.map((t) => t.type)).toEqual(["ATOM", "PIPE_IMPL", "LABEL", "EOF"]);
+    expect(tokens.find((t) => t.type === "LABEL")?.value).toBe("l");
   });
 
   it("accepts unquoted A/C/G and quoted U atoms", () => {

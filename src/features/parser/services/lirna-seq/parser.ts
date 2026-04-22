@@ -11,9 +11,43 @@ class FormulaParser {
   }
 
   parse(): LtlFormula {
-    const expression = this.parseUntil();
+    const expression = this.parsePipeImpl();
     this.expect("EOF");
     return expression;
+  }
+
+  private parsePipeImpl(): LtlFormula {
+    let left = this.parseUntil();
+
+    while (this.peek().type === "PIPE_IMPL") {
+      this.advance();
+      const labelToken = this.expect("LABEL");
+      const label = labelToken.value;
+
+      if (!label) {
+        throw new Error(`Expected label after |>, found empty token at position ${labelToken.pos + 1}`);
+      }
+
+      left = {
+        kind: "eventually",
+        formula: {
+          kind: "and",
+          left: {
+            kind: "rho",
+            rho: {
+              kind: "down",
+              label,
+            },
+          },
+          right: {
+            kind: "next",
+            formula: left,
+          },
+        },
+      };
+    }
+
+    return left;
   }
 
   private parseUntil(): LtlFormula {
@@ -29,12 +63,24 @@ class FormulaParser {
   }
 
   private parseOr(): LtlFormula {
-    let left = this.parseUnary();
+    let left = this.parseAnd();
 
     while (this.peek().type === "OR") {
       this.advance();
-      const right = this.parseUnary();
+      const right = this.parseAnd();
       left = { kind: "or", left, right };
+    }
+
+    return left;
+  }
+
+  private parseAnd(): LtlFormula {
+    let left = this.parseUnary();
+
+    while (this.peek().type === "AND") {
+      this.advance();
+      const right = this.parseUnary();
+      left = { kind: "and", left, right };
     }
 
     return left;
@@ -56,6 +102,11 @@ class FormulaParser {
     if (token.type === "EVENTUALLY") {
       this.advance();
       return { kind: "eventually", formula: this.parseUnary() };
+    }
+
+    if (token.type === "ALWAYS") {
+      this.advance();
+      return { kind: "always", formula: this.parseUnary() };
     }
 
     return this.parsePrimary();

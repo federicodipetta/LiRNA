@@ -7,23 +7,29 @@ export type LtlFormula =
   | { kind: "false" }
   | { kind: "atom"; value: string }
   | { kind: "not"; formula: LtlFormula }
+  | { kind: "and"; left: LtlFormula; right: LtlFormula }
   | { kind: "or"; left: LtlFormula; right: LtlFormula }
   | { kind: "rho"; rho: AtomicRho }
   | { kind: "next"; formula: LtlFormula }
   | { kind: "until"; left: LtlFormula; right: LtlFormula }
-  | { kind: "eventually"; formula: LtlFormula };
+  | { kind: "eventually"; formula: LtlFormula }
+  | { kind: "always"; formula: LtlFormula };
 
 export type TokenType =
   | "LPAREN"
   | "RPAREN"
   | "NOT"
+  | "AND"
   | "OR"
+  | "PIPE_IMPL"
   | "UNTIL"
   | "NEXT"
   | "EVENTUALLY"
+  | "ALWAYS"
   | "TRUE"
   | "FALSE"
   | "ATOM"
+  | "LABEL"
   | "RHO"
   | "EOF";
 

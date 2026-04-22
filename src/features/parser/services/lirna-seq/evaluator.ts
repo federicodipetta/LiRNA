@@ -217,6 +217,24 @@ export function satOr(sequenceLength: number, left: SatSet, right: SatSet): SatS
   return result;
 }
 
+export function satAnd(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
+  const elementary = buildElementaryIntervals(sequenceLength, left, right);
+  const result: SatSet = [];
+
+  for (const [start, end] of elementary) {
+    const leftConstraint = findConstraintAt(start, left);
+    const rightConstraint = findConstraintAt(start, right);
+    const curr = andConstraint(leftConstraint, rightConstraint);
+
+    appendSatEntry(result, {
+      range: [start, end],
+      constraint: curr,
+    });
+  }
+
+  return result;
+}
+
 export function satEventually(sequenceLength: number, set: SatSet): SatSet {
   if (set.length === 0) {
     return [];
@@ -275,6 +293,12 @@ export function satNot(sequenceLength: number, set: SatSet): SatSet {
   return result;
 }
 
+export function satAlways(sequenceLength: number, set: SatSet): SatSet {
+  const negated = satNot(sequenceLength, set);
+  const eventuallyNegated = satEventually(sequenceLength, negated);
+  return satNot(sequenceLength, eventuallyNegated);
+}
+
 export function satUntil(sequenceLength: number, left: SatSet, right: SatSet): SatSet {
   const elementary = buildElementaryIntervals(sequenceLength, left, right);
   const result: SatSet = [];
@@ -316,8 +340,16 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
         sat(context, formula.left),
         sat(context, formula.right),
       );
+    case "and":
+      return satAnd(
+        context.sequenceLength,
+        sat(context, formula.left),
+        sat(context, formula.right),
+      );
     case "eventually":
       return satEventually(context.sequenceLength, sat(context, formula.formula));
+    case "always":
+      return satAlways(context.sequenceLength, sat(context, formula.formula));
     case "not":
       return satNot(context.sequenceLength, sat(context, formula.formula));
     case "until":
@@ -345,6 +377,10 @@ export function formatFormula(formula: LtlFormula): string {
       return `O(${formatFormula(formula.formula)})`;
     case "eventually":
       return `<>(${formatFormula(formula.formula)})`;
+    case "always":
+      return `[](${formatFormula(formula.formula)})`;
+    case "and":
+      return `(${formatFormula(formula.left)} & ${formatFormula(formula.right)})`;
     case "or":
       return `(${formatFormula(formula.left)} | ${formatFormula(formula.right)})`;
     case "until":

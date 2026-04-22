@@ -46,6 +46,8 @@ export {
   buildSatContext,
   formatFormula,
   sat,
+  satAlways,
+  satAnd,
   satAtom,
   satEventually,
   satNext,

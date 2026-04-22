@@ -254,6 +254,6 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
-
+        default: return satFalse(context);
     }
 }

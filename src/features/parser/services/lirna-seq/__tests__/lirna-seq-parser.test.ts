@@ -44,6 +44,51 @@ describe("lirna-seq-parser", () => {
     });
   });
 
+  it("parses AND with higher precedence than OR", () => {
+    const parsed = parseLtlFormula("A | C & G");
+
+    expect(parsed.error).toBeUndefined();
+    expect(parsed.formula).toEqual({
+      kind: "or",
+      left: { kind: "atom", value: "A" },
+      right: {
+        kind: "and",
+        left: { kind: "atom", value: "C" },
+        right: { kind: "atom", value: "G" },
+      },
+    });
+  });
+
+  it("parses always operator [] as unary", () => {
+    const parsed = parseLtlFormula("[]A");
+
+    expect(parsed.error).toBeUndefined();
+    expect(parsed.formula).toEqual({
+      kind: "always",
+      formula: { kind: "atom", value: "A" },
+    });
+  });
+
+  it("translates formula |> label into <>((label<) & O(formula))", () => {
+    const parsed = parseLtlFormula("A |> l");
+
+    expect(parsed.error).toBeUndefined();
+    expect(parsed.formula).toEqual({
+      kind: "eventually",
+      formula: {
+        kind: "and",
+        left: {
+          kind: "rho",
+          rho: { kind: "down", label: "l" },
+        },
+        right: {
+          kind: "next",
+          formula: { kind: "atom", value: "A" },
+        },
+      },
+    });
+  });
+
   it("returns parse error on missing closing parenthesis", () => {
     const parsed = parseLtlFormula("(A | C");
 

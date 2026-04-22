@@ -32,8 +32,10 @@ function segmentStart(set: SatSet, index: number): number {
   return index === 0 ? 0 : set.ends[index - 1] + 1;
 }
 
-  return FALSE;
+function constraintAt(set: SatSet, position: number): Constraint {
+  return set.constraints[position];
 }
+
 
 export function buildSatContext(sequence: string, pairs: BasePair[]): SatContext {
   return {
@@ -175,6 +177,10 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
     ends[endsIndex++] = position - 1;
     constraints.push(eq(rho.label, bond.id));
   }
+  return {
+    ends: ends,
+    constraints: constraints
+  };
 }
 
 export function satEventually(context: SatContext, set: SatSet): SatSet {
@@ -240,7 +246,10 @@ export function satOr(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
     return z3Or(left, right);
   });
 
-  return buildSatSet(sequenceLength, unifiedEnds, constraints);
+  return {
+    ends: new Uint32Array(unifiedEnds),
+    constraints: constraints
+  };
 }
 
 export function satUntil(context: SatContext, _s1: SatSet, _s2: SatSet): SatSet {
@@ -289,5 +298,6 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
         sat(context, formula.left),
         sat(context, formula.right),
       );
+            default: return satFalse(context);
   }
 }

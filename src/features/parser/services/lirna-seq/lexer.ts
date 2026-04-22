@@ -112,6 +112,30 @@ export function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
+    if (source.startsWith("[]", i)) {
+      tokens.push({ type: "ALWAYS", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (source.startsWith("|>", i)) {
+      tokens.push({ type: "PIPE_IMPL", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (source.startsWith("&&", i)) {
+      tokens.push({ type: "AND", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (ch === "&") {
+      tokens.push({ type: "AND", pos: i });
+      i += 1;
+      continue;
+    }
+
     if (source.startsWith("||", i)) {
       tokens.push({ type: "OR", pos: i });
       i += 2;
@@ -181,6 +205,18 @@ export function tokenizeFormula(source: string): Token[] {
         continue;
       }
 
+      if (ident.toLowerCase() === "and") {
+        tokens.push({ type: "AND", pos: i });
+        i = end;
+        continue;
+      }
+
+      if (ident.toLowerCase() === "always") {
+        tokens.push({ type: "ALWAYS", pos: i });
+        i = end;
+        continue;
+      }
+
       const direction = readRhoDirection(source, end);
       if (direction.direction) {
         tokens.push({
@@ -191,6 +227,10 @@ export function tokenizeFormula(source: string): Token[] {
         i = direction.end;
         continue;
       }
+
+      tokens.push({ type: "LABEL", value: ident, pos: i });
+      i = end;
+      continue;
     }
 
     throw new Error(`Invalid token at position ${i + 1}`);

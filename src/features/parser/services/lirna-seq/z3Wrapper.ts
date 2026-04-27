@@ -1,5 +1,5 @@
 
-import { Bool as b, init } from "z3-solver";
+import { Bool as b, init, Solver as ISolver } from "z3-solver";
 
 const { Context } = await init();
 
@@ -28,7 +28,7 @@ export const TRUE = Bool.val(true);
 export const FALSE = Bool.val(false);
 
 export class Z3Wrapper {
-    private solver: any;
+    private solver: ISolver;
     private maxDomain: number;
     private variables: Set<string>;
 

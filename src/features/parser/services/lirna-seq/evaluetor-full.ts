@@ -181,24 +181,29 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
 export function satEventually(context: SatContext, set: SatSet): SatSet {
     let result = [];
     let constraint = FALSE;
-    for (let i = set.length - 1; i > context.sequenceStart; i += 1) {
-        constraint = constraint.or(set[i].constraint);
+    for (let i = set.length - 1; i > 0; i -= 1) {
+        if (set[i].constraint !== FALSE) {
+           constraint = constraint.or(set[i].constraint);
+        }
         result.push({
             timeRange: {
-                start: set[i - 1].timeRange.end,
+                start: set[i].timeRange.start,
                 end: set[i].timeRange.end,
             },
             constraint: constraint,
         });
     }
-    result.push({
-        timeRange: {
-            start: context.sequenceStart,
-            end: set[0].timeRange.end,
-        },
-        constraint: constraint.or(set[0].constraint),
-    });
-    return result;
+    if (set[0].constraint !== FALSE) 
+        result.push({
+            timeRange: {
+                start: context.sequenceStart,
+                end: set[0].timeRange.end,
+            },
+            constraint: constraint.or(set[0].constraint),
+        });
+    else 
+        result[result.length - 1].timeRange.start = context.sequenceStart;
+    return result.reverse();
 }
 
 /*

@@ -31,14 +31,43 @@ export type SatEntry = {
 
 export type SatSet = SatEntry[];
 
-export function buildSatContext(sequence: string, pairs: BasePair[]): SatContext {
+export function buildSatContextFromBasePairs(sequence: string, pairs: BasePair[]): SatContext {
     return {
         bonsFromStart: pairs,
-        bonsFromEnd: pairs.reverse(),
+        bonsFromEnd: [...pairs].sort((a, b) => a.end - b.end || a.start - b.start || Number(a.id) - Number(b.id)),
         sequence: sequence,
         sequenceLength: sequence.length - 1,
         sequenceStart: 0,
     };
+}
+
+export function buildSatContextFromBasePairsWithStartIndex(sequence: string, pairs: BasePair[], startIndex: number): SatContext {
+    let context = buildSatContextFromBasePairs(sequence, pairs);
+    context.sequenceStart = startIndex;
+    return context;
+}
+
+
+export function buildSatContext(
+  sequence: string,
+  pairs: ReadonlyArray<readonly [number, number]>,
+): SatContext {
+  const arcs = pairs.map(([left, right], index) => ({
+    id: String(index + 1),
+    start: Math.min(left, right),
+    end: Math.max(left, right),
+  }));
+
+  const byStart = [...arcs].sort((a, b) => a.start - b.start || a.end - b.end || Number(a.id) - Number(b.id));
+  const byEnd = [...arcs].sort((a, b) => a.end - b.end || a.start - b.start || Number(a.id) - Number(b.id));
+
+  return {
+    sequence,
+    sequenceLength: sequence.length - 1,
+    sequenceStart: 0,
+    bonsFromStart: byStart,
+    bonsFromEnd: byEnd,
+  };
 }
 
 /*
@@ -116,7 +145,7 @@ export function satNot(set: SatSet): SatSet {
 export function satRho(context: SatContext, rho: AtomicRho): SatSet { 
     const entries: SatSet = [];
     const orderedBonds = rho.kind === "up" ? context.bonsFromStart : context.bonsFromEnd;
-    const lastPosition = context.sequenceStart;
+    let lastPosition = context.sequenceStart;
     for (const currentBond of orderedBonds) {
         const postiion = rho.kind === "up" ? currentBond.start : currentBond.end;
 
@@ -124,9 +153,9 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
             continue;
         }
 
-        if (postiion !== lastPosition) {
+        if (postiion > lastPosition) {
             entries.push({
-                timeRange: { start: postiion, end: postiion },
+                timeRange: { start: lastPosition, end: postiion - 1 },
                 constraint: FALSE,
             });
         }
@@ -135,6 +164,15 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
             timeRange: { start: postiion, end: postiion },
             constraint: eq(rho.label, Number(currentBond.id)),
         })
+
+        lastPosition = postiion + 1;
+    }
+
+    if (entries.length > 0 && lastPosition <= context.sequenceLength) {
+        entries.push({
+            timeRange: { start: lastPosition, end: context.sequenceLength },
+            constraint: FALSE,
+        });
     }
 
     return entries;

@@ -15,6 +15,7 @@ export type SatContext = {
      * The length of the sequence, is equal to @code{@link sequence}.length - 1 to use for 1-based indexing.
      */
     sequenceLength: number;
+    sequenceStart: number;
 
 }
 
@@ -36,6 +37,7 @@ export function buildSatContext(sequence: string, pairs: BasePair[]): SatContext
         bonsFromEnd: pairs.reverse(),
         sequence: sequence,
         sequenceLength: sequence.length - 1,
+        sequenceStart: 0,
     };
 }
 
@@ -46,20 +48,20 @@ export function buildSatContext(sequence: string, pairs: BasePair[]): SatContext
 export function satTrue(context: SatContext): SatSet {
     return [{
         constraint: TRUE,
-        timeRange: { start: 0, end: context.sequenceLength },
+        timeRange: { start: context.sequenceStart, end: context.sequenceLength },
     }];
 }
 
 export function satFalse(context: SatContext): SatSet {return [{
     constraint: FALSE,
-    timeRange: { start: 0, end: context.sequenceLength },
+    timeRange: { start: context.sequenceStart, end: context.sequenceLength },
 }]}
 
 export function satAtom(context: SatContext, value: string): SatSet {
     const result: SatSet = [];
-    let isTrue = context.sequence[0] === value;
-    let currentStart = 0;
-    for (let t = 0; t <= context.sequenceLength; t += 1) {
+    let isTrue = context.sequence[context.sequenceStart] === value;
+    let currentStart = context.sequenceStart;
+    for (let t = context.sequenceStart; t <= context.sequenceLength; t += 1) {
         if (isTrue === false && context.sequence[t] === value) {
                 isTrue = true;
                 result.push({
@@ -86,18 +88,17 @@ export function satAtom(context: SatContext, value: string): SatSet {
 }
 
 export function satNext(set: SatSet): SatSet {
-    for (const entry of set) {
+    set.map((entry) => {
         entry.timeRange = {
             start: entry.timeRange.start - 1,
             end: entry.timeRange.end - 1,
-        };
-        if (entry.timeRange.start < 0) {
+        }
+        if (entry.timeRange.start < 0)
             entry.timeRange.start = 0;
-        }
-        if (entry.timeRange.end < 0) {
-            entry.timeRange.end = 0;
-        }
-    }
+        return entry;
+    })
+    // Remove the entry corresponding to time 0, as it does not have a predecessor.
+    .filter((entry) => entry.timeRange.start <= 0 && entry.timeRange.end < 0)
     return set;
 }
 
@@ -115,11 +116,11 @@ export function satNot(set: SatSet): SatSet {
 export function satRho(context: SatContext, rho: AtomicRho): SatSet { 
     const entries: SatSet = [];
     const orderedBonds = rho.kind === "up" ? context.bonsFromStart : context.bonsFromEnd;
-    const lastPosition = 0;
+    const lastPosition = context.sequenceStart;
     for (const currentBond of orderedBonds) {
         const postiion = rho.kind === "up" ? currentBond.start : currentBond.end;
 
-        if (postiion < 0 || postiion > context.sequenceLength) {
+        if (postiion < context.sequenceStart || postiion > context.sequenceLength) {
             continue;
         }
 
@@ -142,7 +143,7 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
 export function satEventually(context: SatContext, set: SatSet): SatSet {
     let result = [];
     let constraint = FALSE;
-    for (let i = set.length - 1; i > 0; i += 1) {
+    for (let i = set.length - 1; i > context.sequenceStart; i += 1) {
         constraint = constraint.or(set[i].constraint);
         result.push({
             timeRange: {
@@ -154,7 +155,7 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
     }
     result.push({
         timeRange: {
-            start: 0,
+            start: context.sequenceStart,
             end: set[0].timeRange.end,
         },
         constraint: constraint.or(set[0].constraint),

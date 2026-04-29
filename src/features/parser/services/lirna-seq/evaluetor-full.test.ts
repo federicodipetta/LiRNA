@@ -1,6 +1,6 @@
 import { it, describe, expect } from "vitest";
 
-import { BasePair, buildSatContextFromBasePairs, satAtom, SatContext, satEventually, satRho, SatSet, satTrue } from "./evaluetor-full";
+import { BasePair, buildSatContextFromBasePairs, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
 import { And, Constraint, eq, FALSE, Or, Solver, TRUE } from "./z3Wrapper";
 import { AtomicRho } from "./ast";
 
@@ -139,5 +139,63 @@ describe("Evaluator with full time range", () => {
             }
         ]);
     });
-});
 
+    it("should evaluate satUntil correctly", async () => {
+        const set = [
+            {
+                constraint: FALSE,
+                timeRange: { start: 0, end: 2 },
+            },
+            {
+                constraint: eq("l", 1),
+                timeRange: { start: 3, end: 5 },
+            },
+            {
+                constraint: eq("l", 2),
+                timeRange: { start: 6, end: 6 },
+            },
+            {
+                constraint: FALSE,
+                timeRange: { start: 7, end: 8 },
+            }
+        ];
+        const set2 = [
+            {
+                constraint: FALSE,
+                timeRange: { start: 0, end: 4 },
+            },
+            {
+                constraint: eq("l", 3),
+                timeRange: { start: 5, end: 5 },
+            },
+            {
+                constraint: FALSE,
+                timeRange: { start: 6, end: 8 },
+            }
+        ]
+
+        const result = satUntil(context, set, set2);
+        await expectSatSetEquivalent(result, [
+            {
+                constraint: FALSE,
+                timeRange: { start: 0, end: 2 },
+            },
+            {
+                constraint: eq("l", 1),
+                timeRange: { start: 3, end: 4 },
+            },
+            {
+                constraint: Or(eq("l", 1), And(eq("l", 3), eq("l", 1))),
+                timeRange: { start: 5, end: 5 },
+            },
+            {
+                constraint: eq("l", 2),
+                timeRange: { start: 6, end: 6 },
+            },
+            {
+                constraint: FALSE,
+                timeRange: { start: 7, end: 8 },
+            }
+        ]);
+    });
+});

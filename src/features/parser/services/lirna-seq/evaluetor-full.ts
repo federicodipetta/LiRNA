@@ -237,7 +237,7 @@ export function satOr(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
     return result;
 }
 
-export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
+export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet { 
     const result: SatSet = [];
     let i = s1.length - 1;
     let j = s2.length - 1;
@@ -260,6 +260,9 @@ export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
             i -= 1;
         }
         else if (entry2.timeRange.end > entry1.timeRange.end) {
+            j -= 1;
+        } else {
+            i -= 1;
             j -= 1;
         }
     }

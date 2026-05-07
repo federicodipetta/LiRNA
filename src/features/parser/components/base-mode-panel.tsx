@@ -101,11 +101,11 @@ export function BaseModePanel(props: BaseModeProps) {
 
         <TextAreaField
           id="third-input"
-          label="LTL formula (use !, O, <>, U, |, atoms A/C/G/U and l↑/l↓)"
+          label="LTL formula (use !, O, <>, U, |, atoms A/C/G/U and l>/l<)"
           value={thirdInput}
           onChange={setThirdInput}
           rows={5}
-          placeholder="Example: <>(l↑ U O(l↓ | true)) or A"
+          placeholder="Example: <>(l> U O(l< | true)) or A"
           error={ltlPreview.syntaxError ?? undefined}
         />
       </article>
@@ -122,7 +122,7 @@ export function BaseModePanel(props: BaseModeProps) {
             status: {parseResult.data ? "valid" : "needs correction"}
           </span>
         </div>
-
+        {/*
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">Parser output</h2>
 
         <pre className="max-h-[28rem] overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
@@ -144,11 +144,11 @@ export function BaseModePanel(props: BaseModeProps) {
             </>
           ) : (
             <p className="text-ink/60">Enter a valid formula to display the syntax tree.</p>
-          )}
-        </div>
+          )} }
+        </div>*/}
 
         <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">Readable SAT</h2>
-        <pre className="max-h-56 overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
+        <pre className=" overflow-auto rounded-2xl border border-ink/15 bg-ink p-4 text-xs leading-relaxed text-mist sm:text-sm">
           {JSON.stringify(ltlPreview.satReadable, null, 2)}
         </pre>
       </article>

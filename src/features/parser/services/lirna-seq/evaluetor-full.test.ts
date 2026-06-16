@@ -1,8 +1,8 @@
 import { it, describe, expect } from "vitest";
 
-import { AlignSatSets, BasePair, buildSatContextFromBasePairs, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
+import { AlignSatSets, BasePair, buildSatContextFromBasePairs, cutSatContext, satAt, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
 import { And, Constraint, eq, FALSE, Int, Or, Solver, TRUE } from "./z3Wrapper";
-import { AtomicRho } from "./ast";
+import { AtomicRho, LtlFormula } from "./ast";
 
 async function expectConstraintEquivalent(actual: Constraint, expected: Constraint) {
     const solver = new Solver();
@@ -37,7 +37,7 @@ describe("Evaluator with full time range", () => {
         { id: "2", start: 2, end: 7 },
         { id: "3", start: 3, end: 6 },
         { id: "4", start: 4, end: 5 },
-    ])
+    ]);
     it("should evaluate satTrue correctly", async () => {
         const result = satTrue(context);
         await expectSatSetEquivalent(result, [{
@@ -211,7 +211,30 @@ describe("Evaluator with full time range", () => {
     });
 
 
+    it("should evaluate satAt correctly", async () => {
+        const formula = { kind: "atom", value: "U" } as LtlFormula;
+        const result = satAt(context, formula);
+        console.log(JSON.stringify(result, null, 2));
+        await expectSatSetEquivalent(result, [
+            {
+                constraint: eq("l", 1).or(eq("l", 3)),
+                timeRange: { start: 0, end: 0 },
+            },
+            {
+                constraint: eq("l", 3),
+                timeRange: { start: 1, end: 1 },
+            },
+            {
+                constraint: eq("l", 3),
+                timeRange: { start: 2, end: 2 },
+            },
+            {
+                constraint: FALSE,
+                timeRange: { start: 3, end: 8 },
+            },
+        ]);
 
+    });
 
     it("should align SatSets by splitting on the earliest end boundary", async () => {
         const s1: SatSet = [
@@ -237,4 +260,20 @@ describe("Evaluator with full time range", () => {
             { constraint: TRUE, timeRange: { start: 3, end: 5 } },
         ]);
     });
+
+    it("should cut SatContext correctly", async () => {
+        const cutContext = cutSatContext(context, 2, 5);
+        expect(cutContext.sequence).toBe("UAUA");
+        expect(cutContext.sequenceStart).toBe(0);
+        expect(cutContext.sequenceLength).toBe(3);
+        expect(cutContext.bonsFromStart).toStrictEqual([
+                { id: "3", start: 1, end: 4 },
+                { id: "4", start: 2, end: 3 },
+        ]);
+        expect(cutContext.bonsFromEnd).toStrictEqual([
+                { id: "4", start: 2, end: 3 },
+                { id: "3", start: 1, end: 4 },
+        ]);
+    });
+            
 });

@@ -212,27 +212,14 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
 
 export function satOr(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
     const result: SatSet = [];
-    let i = 0;
-    let j = 0;
-    while (i < s1.length && j < s2.length) {
+    [s1, s2] = AlignSatSets(s1, s2);
+    for (let i = 0; i < s1.length; i += 1) {
         const entry1 = s1[i];
-        const entry2 = s2[j];
-        const start = Math.max(entry1.timeRange.start, entry2.timeRange.start);
-        const end = Math.min(entry1.timeRange.end, entry2.timeRange.end);
-
-
-        if (start <= end) {
-            result.push({
-                timeRange: { start, end },
-                constraint: entry1.constraint.or(entry2.constraint),
-            });
-        }
-        if (entry1.timeRange.end < entry2.timeRange.end) {
-            i += 1;
-        }
-        else if (entry2.timeRange.end < entry1.timeRange.end) {
-            j += 1;
-        }
+        const entry2 = s2[i];
+        result.push({
+            timeRange: { start: entry1.timeRange.start, end: entry1.timeRange.end },
+            constraint: entry1.constraint.or(entry2.constraint),
+        });
     }
     return result;
 }
@@ -286,9 +273,34 @@ export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     return result.reverse();
 };
 
-
-
-
+export function satAt(context: SatContext, formula: LtlFormula): SatSet {
+    let satAt: SatSet = satFalse(context);
+    for (const bond of context.bonsFromStart) {
+        let newContext = cutSatContext(context, bond.start + 1, bond.end - 1);
+        if (newContext.sequenceLength < newContext.sequenceStart) {
+            continue;
+        }
+        const newSat = sat(newContext, formula);
+        const newEntry = {
+            ...newSat[0],
+            timeRange: {
+                start: context.sequenceStart,
+                end: bond.start - 1,
+            },
+            constraint: newSat[0].constraint.and(eq("l", Number(bond.id))),
+        }
+        const complementEntry = {
+            timeRange: {
+                start: bond.start,
+                end: context.sequenceLength,
+            },
+            constraint: FALSE,
+        }
+        satAt = satOr(context.sequenceLength, satAt, [newEntry, complementEntry]);
+    } 
+    
+    return satAt;
+}
 
 export function sat(context: SatContext, formula: LtlFormula): SatSet {
     switch (formula.kind) {
@@ -356,4 +368,27 @@ export function AlignSatSets(s1: SatSet, s2: SatSet): [SatSet, SatSet] {
 
     }
     return [alignedS1, alignedS2];
+}
+
+export function cutSatContext(context: SatContext, start: number, end: number): SatContext {
+    const cutSequence = context.sequence.slice(start, end + 1);
+    const cutBondsFromStart = context.bonsFromStart.filter((bond) => bond.start > start || bond.end < end)
+        .map((bond) => ({
+            ...bond,
+            start: bond.start - start,
+            end: bond.end - start,
+        }));
+    const cutBondsFromEnd = context.bonsFromEnd.filter((bond) => bond.start > start || bond.end < end)
+        .map((bond) => ({
+            ...bond,
+            start: bond.start - start,
+            end: bond.end - start,
+        }));
+    return {
+        sequence: cutSequence,
+        sequenceLength: cutSequence.length - 1,
+        sequenceStart: 0,
+        bonsFromStart: cutBondsFromStart,
+        bonsFromEnd: cutBondsFromEnd,
+    };
 }

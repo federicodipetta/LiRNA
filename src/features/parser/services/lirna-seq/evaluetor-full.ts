@@ -237,7 +237,24 @@ export function satOr(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
     return result;
 }
 
-export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet { 
+export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
+    [s1, s2] = AlignSatSets(s1, s2);
+    let result: SatSet = [];
+    let nextConstraint = FALSE;
+    for (let i = s1.length - 1; i >= 0; i -= 1) {
+        const entry1 = s1[i];
+        const entry2 = s2[i];
+        const constraint = entry2.constraint.or(entry1.constraint.and(nextConstraint));
+        nextConstraint = constraint;
+        result.push({
+            timeRange: { start: entry1.timeRange.start, end: entry1.timeRange.end },
+            constraint: constraint,
+        });
+    }
+    return result.reverse();
+}
+
+export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet { 
     const result: SatSet = [];
     let i = s1.length - 1;
     let j = s2.length - 1;
@@ -303,4 +320,40 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
             );
         default: return satFalse(context);
     }
+}
+
+
+export function AlignSatSets(s1: SatSet, s2: SatSet): [SatSet, SatSet] {
+    const alignedS1: SatSet = [];
+    const alignedS2: SatSet = [];
+    let i = 0;
+    let j = 0;
+    let start = 0;
+    while (i < s1.length && j < s2.length) {
+        let entry1 = s1[i];
+        let entry2 = s2[j];
+        const end = Math.min(entry1.timeRange.end, entry2.timeRange.end);
+        const maxEnd = Math.max(entry1.timeRange.end, entry2.timeRange.end);
+        alignedS1.push({
+            timeRange: { start, end },
+            constraint: entry1.constraint,
+        });
+        alignedS2.push({
+            timeRange: { start, end },
+            constraint: entry2.constraint,
+        });
+
+        if (entry1.timeRange.end < entry2.timeRange.end) {
+            i += 1;
+        } else if (entry2.timeRange.end < entry1.timeRange.end) {
+            j += 1;
+        } else {
+            i += 1;
+            j += 1;
+        }
+
+        start = end + 1;
+
+    }
+    return [alignedS1, alignedS2];
 }

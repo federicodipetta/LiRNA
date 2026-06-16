@@ -1,12 +1,22 @@
 import { it, describe, expect } from "vitest";
 
-import { BasePair, buildSatContextFromBasePairs, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
-import { And, Constraint, eq, FALSE, Or, Solver, TRUE } from "./z3Wrapper";
+import { AlignSatSets, BasePair, buildSatContextFromBasePairs, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
+import { And, Constraint, eq, FALSE, Int, Or, Solver, TRUE } from "./z3Wrapper";
 import { AtomicRho } from "./ast";
 
 async function expectConstraintEquivalent(actual: Constraint, expected: Constraint) {
     const solver = new Solver();
     solver.add(Or(And(actual, expected.not()), And(actual.not(), expected)));
+    let result = await solver.check();
+    if (result === "sat") {
+            const model = await solver.model();
+            console.log("Counterexample found:");
+            model.decls().forEach(decl => {
+                console.log(`${decl.name()} = ${model.get(decl)}`);
+            });
+            console.log("Actual constraint:", actual.toString());
+            console.log("Expected constraint:", expected.toString());
+    }
     expect(await solver.check()).toBe("unsat");
 }
 
@@ -15,6 +25,7 @@ async function expectSatSetEquivalent(actual: SatSet, expected: SatSet) {
 
     for (let index = 0; index < expected.length; index += 1) {
         expect(actual[index].timeRange).toEqual(expected[index].timeRange);
+        console.log("INDEX:", index);
         await expectConstraintEquivalent(actual[index].constraint, expected[index].constraint);
     }
 }
@@ -174,7 +185,7 @@ describe("Evaluator with full time range", () => {
             }
         ]
 
-        const result = satUntil(context, set, set2);
+        const result = satUntil(context, set2, set);
         await expectSatSetEquivalent(result, [
             {
                 constraint: FALSE,
@@ -196,6 +207,34 @@ describe("Evaluator with full time range", () => {
                 constraint: FALSE,
                 timeRange: { start: 7, end: 8 },
             }
+        ]);
+    });
+
+
+
+
+    it("should align SatSets by splitting on the earliest end boundary", async () => {
+        const s1: SatSet = [
+        { constraint: TRUE, timeRange: { start: 0, end: 2 } },
+        { constraint: FALSE, timeRange: { start: 3, end: 5 } },
+        ];
+        const s2: SatSet = [
+            { constraint: FALSE, timeRange: { start: 0, end: 1 } },
+            { constraint: TRUE, timeRange: { start: 2, end: 5 } },
+        ];
+
+        const [alignedS1, alignedS2] = AlignSatSets(s1, s2);
+
+        await expectSatSetEquivalent(alignedS1, [
+            { constraint: TRUE, timeRange: { start: 0, end: 1 } },
+            { constraint: TRUE, timeRange: { start: 2, end: 2 } },
+            { constraint: FALSE, timeRange: { start: 3, end: 5 } },
+        ]);
+
+        await expectSatSetEquivalent(alignedS2, [
+            { constraint: FALSE, timeRange: { start: 0, end: 1 } },
+            { constraint: TRUE, timeRange: { start: 2, end: 2 } },
+            { constraint: TRUE, timeRange: { start: 3, end: 5 } },
         ]);
     });
 });

@@ -11,7 +11,7 @@ class FormulaParser {
   }
 
   parse(): LtlFormula {
-    const expression = this.parsePipeImpl();
+    const expression = this.parseAt();
     this.expect("EOF");
     return expression;
   }

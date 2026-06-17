@@ -4,7 +4,7 @@ import { tokenizeFormula } from "../lexer";
 
 describe("lirna-seq-lexer", () => {
   it("tokenizes unary/binary operators and delimiters", () => {
-    const tokens = tokenizeFormula("[](!(A & O(C)))");
+    const tokens = tokenizeFormula("[](!(A & O(C)))@");
 
     expect(tokens.map((t) => t.type)).toEqual([
       "ALWAYS",
@@ -19,6 +19,7 @@ describe("lirna-seq-lexer", () => {
       "RPAREN",
       "RPAREN",
       "RPAREN",
+      "AT",
       "EOF",
     ]);
   });

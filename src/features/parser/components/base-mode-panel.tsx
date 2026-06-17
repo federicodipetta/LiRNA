@@ -4,13 +4,11 @@
 
 import { useMemo } from "react";
 import {
-  buildSatContext,
   formatFormula,
   parseLtlFormula,
-  sat,
-  toReadableSatSet,
   type LtlFormula,
 } from "../services/lirna-seq";
+import { sat, buildSatContext, toReadableSatSet } from "../services/lirna-seq/evaluetor-full";
 import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
 

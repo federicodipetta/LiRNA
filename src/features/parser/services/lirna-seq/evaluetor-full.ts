@@ -402,3 +402,15 @@ export function cutSatContext(context: SatContext, start: number, end: number): 
         bonsFromEnd: cutBondsFromEnd,
     };
 }
+
+/** UI SERVICE */
+export interface ReadableSatEntry {
+  interval: string;
+  constraint: string;
+}
+export function toReadableSatSet(set: SatSet): ReadableSatEntry[] {
+  return set.map((entry) => ({
+    interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
+    constraint: entry.constraint.toString(),
+  }));
+}

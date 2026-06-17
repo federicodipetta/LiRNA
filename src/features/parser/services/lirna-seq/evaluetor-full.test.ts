@@ -213,7 +213,7 @@ describe("Evaluator with full time range", () => {
 
     it("should evaluate satAt correctly", async () => {
         const formula = { kind: "atom", value: "U" } as LtlFormula;
-        const result = satAt(context, formula);
+        const result = satAt(context, formula, "l");
         console.log(JSON.stringify(result, null, 2));
         await expectSatSetEquivalent(result, [
             {

@@ -273,7 +273,7 @@ export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     return result.reverse();
 };
 
-export function satAt(context: SatContext, formula: LtlFormula): SatSet {
+export function satAt(context: SatContext, formula: LtlFormula, label: string): SatSet {
     let satAt: SatSet = satFalse(context);
     for (const bond of context.bonsFromStart) {
         let newContext = cutSatContext(context, bond.start + 1, bond.end - 1);
@@ -287,7 +287,7 @@ export function satAt(context: SatContext, formula: LtlFormula): SatSet {
                 start: context.sequenceStart,
                 end: bond.start - 1,
             },
-            constraint: newSat[0].constraint.and(eq("l", Number(bond.id))),
+            constraint: newSat[0].constraint.and(eq(label, Number(bond.id))),
         }
         const complementEntry = {
             timeRange: {
@@ -330,6 +330,16 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
+        case "At":
+            return satAt(context, formula.formula, formula.label);
+        case "always":
+            return satEventually(context, satNot(sat(context, formula.formula)));
+        case "and":
+            return satNot(satOr(
+                context.sequenceLength,
+                satNot(sat(context, formula.left)),
+                satNot(sat(context, formula.right)),
+            ));    
         default: return satFalse(context);
     }
 }

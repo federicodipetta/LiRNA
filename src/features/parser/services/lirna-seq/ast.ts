@@ -13,6 +13,7 @@ export type LtlFormula =
   | { kind: "next"; formula: LtlFormula }
   | { kind: "until"; left: LtlFormula; right: LtlFormula }
   | { kind: "eventually"; formula: LtlFormula }
+  | { kind: "At"; formula: LtlFormula, label: string }
   | { kind: "always"; formula: LtlFormula };
 
 export type TokenType =
@@ -30,6 +31,7 @@ export type TokenType =
   | "FALSE"
   | "ATOM"
   | "LABEL"
+  | "AT"
   | "RHO"
   | "EOF";
 

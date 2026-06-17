@@ -50,6 +50,23 @@ class FormulaParser {
     return left;
   }
 
+  private parseAt(): LtlFormula {
+    let left = this.parsePipeImpl();
+    
+    while (this.peek().type === "AT") {
+      this.advance();
+      const labelToken = this.expect("LABEL");
+      left = {
+        kind: "At",
+        formula: left,
+        label: labelToken.value || "",
+      } as LtlFormula;
+      
+    }
+
+    return left;
+  }
+
   private parseUntil(): LtlFormula {
     let left = this.parseOr();
 

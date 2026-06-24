@@ -395,7 +395,8 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
             return satExists(context, sat(context, formula.formula), formula.label);
         case "forall":
             return satForAll(context, sat(context, formula.formula), formula.label); 
-        default: return satFalse(context);
+        // No defulat because all cases MUST be handled, and TypeScript will give an error if a case is missing.
+        // default: return satFalse(context);
     }
 }
 

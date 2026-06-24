@@ -1,11 +1,23 @@
 
 import { Bool as b, init, Solver as ISolver } from "z3-solver";
+let contextInstance: Awaited<ReturnType<typeof init>>["Context"] | null = null;
+let initPromise: Promise<void> | null = null;
 
-const { Context } = await init();
+async function getContext() {
+  if (contextInstance) return contextInstance;
+  if (!initPromise) {
+    initPromise = init().then(({ Context }) => {
+      contextInstance = Context;
+    });
+  }
+  await initPromise;
+  return contextInstance!;
+}
 
-export const { Solver, Int, Or, And, Bool } = Context("main");
+export const { Solver, Int, Or, And, Bool } = (await getContext())("main");
 
 export type Constraint = b;
+
 
 
 export function or(left: Constraint, right: Constraint): Constraint {
@@ -36,11 +48,10 @@ export class Z3Wrapper {
         this.solver = new Solver();
         this.maxDomain = maxDomain;
         this.variables = variables;
-        this.initializeDomainConstraints();
     }
 
 
-    private initializeDomainConstraints() {
+    private initializeDomainConstraints(    ) {
         this.variables.forEach(variable => {
             const varInt = Int.const(variable);
             this.solver.add(varInt.ge(0), varInt.le(this.maxDomain));
@@ -53,8 +64,10 @@ export class Z3Wrapper {
 
     public async getSolutions(constraint: Constraint): Promise<Record<string, string>[]> {
         const solution = [];
+        this.initializeDomainConstraints();
         this.solver.add(constraint);
         while (await this.solver.check() === "sat") {
+
             const model = this.solver.model();
             const solutionEntry: Record<string, string> = {};
             this.variables.forEach(variable => {

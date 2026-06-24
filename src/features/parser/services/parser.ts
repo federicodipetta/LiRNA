@@ -11,6 +11,7 @@ import type {
 import {
   buildSatContext,
   formatFormula,
+  LtlFormula,
   parseLtlFormula,
   sat,
   toReadableSatSet,
@@ -149,14 +150,15 @@ export function parseAasContent(rawFileContent: string): AasImportResult {
   };
 }
 
-export function processBatchStructures(structures: BatchInputStructure[]): BatchExportResult {
-  const results: BatchResultEntry[] = structures.map((struct, index) => {
+export async function processBatchStructures(structures: BatchInputStructure[]): Promise<BatchExportResult> {
+  const results: BatchResultEntry[] = [];
+  for (const [index, struct] of structures.entries()) {
     const parseResult = parseWorkbenchInput(struct.sequence, struct.pairs, struct.formula);
     const errors = parseResult.issues.map((issue) => `${issue.field}: ${issue.message}`);
     const normalizedName = struct.name.trim() || `structure_${index + 1}`;
 
     if (!parseResult.data) {
-      return {
+      results.push({
         id: `structure_${index + 1}`,
         name: normalizedName,
         sequence: struct.sequence,
@@ -165,12 +167,13 @@ export function processBatchStructures(structures: BatchInputStructure[]): Batch
         isValid: false,
         errors,
         satResult: null,
-      };
+      });
+      continue;
     }
 
     const parsedFormula = parseLtlFormula(struct.formula);
     if (!parsedFormula.formula) {
-      return {
+      results.push({ 
         id: `structure_${index + 1}`,
         name: normalizedName,
         sequence: struct.sequence,
@@ -179,24 +182,33 @@ export function processBatchStructures(structures: BatchInputStructure[]): Batch
         isValid: false,
         errors: [...errors, `formula: ${parsedFormula.error ?? "Invalid formula"}`],
         satResult: null,
-      };
+      });
+      continue;
     }
 
-    const satSet = sat(
+    
+    const variables = extractVariablesFromAst(parsedFormula.formula);
+    const maxDomain = parseResult.data?.pairs.length ?? 0; 
+    const satSet = parseResult.data ? sat(
       buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
-      parsedFormula.formula,
-    );
+      parsedFormula.formula
+    ) : [];
 
-    return {
+    const satReadable = parseResult.data 
+      ? await toReadableSatSet(satSet, variables, maxDomain) 
+      : [];
+
+
+    results.push({
       id: `structure_${index + 1}`,
       name: normalizedName,
       sequence: struct.sequence,
       pairs: parseResult.data.pairs,
       formula: formatFormula(parsedFormula.formula),
       isValid: true,
-      satResult: toReadableSatSet(satSet),
-    };
-  });
+      satResult: satReadable,
+    });
+  };
 
   return {
     timestamp: new Date().toISOString(),
@@ -205,3 +217,20 @@ export function processBatchStructures(structures: BatchInputStructure[]): Batch
   };
 }
 
+function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
+  const variables = new Set<string>();
+  function traverse(node: LtlFormula) {
+    if (node.kind === "atom") {
+      variables.add(node.value);
+    } else if (node.kind === "rho") {
+      variables.add(node.rho.label);
+    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always" || node.kind === "exists" || node.kind === "forall" || node.kind === "at") {
+      traverse(node.formula);
+    } else if (node.kind === "or" || node.kind === "and" || node.kind === "until") {
+      traverse(node.left);
+      traverse(node.right);
+    }
+  }
+  traverse(formula);
+  return variables;
+}

@@ -11,15 +11,15 @@ export type Constraint = {
     }
 }
 
-export const ZERO = BigInt(0);
-var NUMBER_OF_BITS = 64;
-/**
- * Constant to change when the number of bits in a mask changes. The number of bits is indicated by the number of bonds in the current structure.
- */
-var FULL_MASK = BigInt.asUintN(NUMBER_OF_BITS, BigInt("-1"));
+// export const ZERO = BigInt(0);
+// var NUMBER_OF_BITS = 64;
+// /**
+//  * Constant to change when the number of bits in a mask changes. The number of bits is indicated by the number of bonds in the current structure.
+//  */
+// var FULL_MASK = BigInt.asUintN(NUMBER_OF_BITS, BigInt("-1"));
 
-export function setUpModule(numberOfBits: number) {
-    NUMBER_OF_BITS = numberOfBits;
-    FULL_MASK = BigInt.asUintN(NUMBER_OF_BITS, BigInt("-1"));
-}
+// export function setUpModule(numberOfBits: number) {
+//     NUMBER_OF_BITS = numberOfBits;
+//     FULL_MASK = BigInt.asUintN(NUMBER_OF_BITS, BigInt("-1"));
+// }
 

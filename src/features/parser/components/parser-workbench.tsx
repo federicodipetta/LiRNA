@@ -210,7 +210,7 @@ export function ParserWorkbench() {
 
     try {
       setIsBatchRunning(true);
-      const exportJson = processBatchStructures(
+      const exportJson = await processBatchStructures(
         candidates.map((row) => ({
           name: row.name,
           sequence: row.sequence,

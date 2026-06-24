@@ -1,5 +1,5 @@
 import { AtomicRho, LtlFormula } from "./ast";
-import { Constraint, TRUE, FALSE, eq } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, Z3Wrapper } from "./z3Wrapper";
 
 export type BasePair =  {
   id: string;
@@ -210,7 +210,7 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
 * BINARY OPERATORS
 */
 
-export function satOr(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
+export function satOr(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     const result: SatSet = [];
     [s1, s2] = AlignSatSets(s1, s2);
     for (let i = 0; i < s1.length; i += 1) {
@@ -296,7 +296,7 @@ export function satAt(context: SatContext, formula: LtlFormula, label: string): 
             },
             constraint: FALSE,
         }
-        satAt = satOr(context.sequenceLength, satAt, [newEntry, complementEntry]);
+        satAt = satOr(context, satAt, [newEntry, complementEntry]);
     } 
     
     return satAt;
@@ -338,7 +338,7 @@ export function satForAll(context: SatContext, satSet: SatSet, label: string): S
     return result;
 }
 
-export function satAnd(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
+export function satAnd(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     const result: SatSet = [];
     [s1, s2] = AlignSatSets(s1, s2);
     for (let i = 0; i < s1.length; i += 1) {
@@ -367,13 +367,13 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
             return satNext(sat(context, formula.formula));
         case "or":
             return satOr(
-                context.sequenceLength,
+                context,
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
         case "and":
             return satAnd(
-                context.sequenceLength,
+                context,
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
@@ -460,13 +460,67 @@ export function cutSatContext(context: SatContext, start: number, end: number): 
 }
 
 /** UI SERVICE */
+export interface ReadableSubstitution {
+  variable: string;
+  bond: string;
+}
+
 export interface ReadableSatEntry {
   interval: string;
   constraint: string;
+  substitutions: ReadableSubstitution[];
+  satisfied: boolean;
 }
-export function toReadableSatSet(set: SatSet): ReadableSatEntry[] {
-  return set.map((entry) => ({
-    interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
-    constraint: entry.constraint.toString(),
-  }));
+
+export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
+  const result: ReadableSatEntry[] = [];
+  wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+  for (const entry of set) {
+    wrapper.getSolutions(entry.constraint).then(s => {
+        result.push({
+            interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
+            constraint: entry.constraint.toString(),
+            substitutions: s.map((sol) => ({
+                variable: Object.keys(sol)[0],
+                bond: sol[Object.keys(sol)[0]],
+                })),
+            satisfied: s.length > 0 ? true : false, 
+        });
+    });
+  }
+  return result;
+}
+
+
+export function formatFormula(formula: LtlFormula): string {
+  switch (formula.kind) {
+    case "true":
+      return "true";
+    case "false":
+      return "false";
+    case "atom":
+      return formula.value;
+    case "rho":
+      return `${formula.rho.label}${formula.rho.kind === "up" ? ">" : "<"}`;
+    case "not":
+      return `!(${formatFormula(formula.formula)})`;
+    case "next":
+      return `O(${formatFormula(formula.formula)})`;
+    case "eventually":
+      return `<>(${formatFormula(formula.formula)})`;
+    case "always":
+      return `[](${formatFormula(formula.formula)})`;
+    case "and":
+      return `(${formatFormula(formula.left)} & ${formatFormula(formula.right)})`;
+    case "or":
+      return `(${formatFormula(formula.left)} | ${formatFormula(formula.right)})`;
+    case "until":
+      return `(${formatFormula(formula.left)} U ${formatFormula(formula.right)})`;
+    case "at":
+        return `@(${formatFormula(formula.formula)}, ${formula.label})`;
+    case "exists":
+        return `E(${formatFormula(formula.formula)}, ${formula.label})`;
+    case "forall":
+        return `A(${formatFormula(formula.formula)}, ${formula.label})`;
+  }
 }

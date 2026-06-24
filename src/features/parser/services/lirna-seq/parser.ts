@@ -154,7 +154,7 @@ class FormulaParser {
 
     if (token.type === "LPAREN") {
       this.advance();
-      const expr = this.parseUntil();
+      const expr = this.parseAt();
       this.expect("RPAREN");
       return expr;
     }

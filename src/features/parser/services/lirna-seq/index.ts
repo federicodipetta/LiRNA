@@ -35,18 +35,17 @@ export { parseLtlFormula } from "./parser";
 
 export type {
   ReadableSatEntry,
-  SatArc,
+  ReadableSubstitution,
   SatContext,
   SatEntry,
   SatSet,
   TimeRange,
-} from "./evaluator";
+} from "./evaluetor-full";
 
 export {
   buildSatContext,
   formatFormula,
   sat,
-  satAlways,
   satAnd,
   satAtom,
   satEventually,
@@ -54,7 +53,7 @@ export {
   satNot,
   satOr,
   satRho,
-  satTop,
+  satTrue,
   satUntil,
   toReadableSatSet,
-} from "./evaluator";
+} from "./evaluetor-full";

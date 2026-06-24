@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { parseLtlFormula } from "../parser";
+import { tokenizeFormula } from "../lexer";
 
 describe("lirna-seq-parser", () => {
   it("parses OR as left-associative", () => {
@@ -71,7 +72,7 @@ describe("lirna-seq-parser", () => {
 
   it("translates formula |> label into <>((label<) & O(formula))", () => {
     const parsed = parseLtlFormula("'A' |> l");
-    
+
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
       kind: "eventually",
@@ -118,31 +119,32 @@ describe("lirna-seq-parser", () => {
     });
   });
 
-  it("parse correctly parent", () => {
-    const parsed = parseLtlFormula('<>(l> "A" && <>(l< "U"))');
-
+  it("parse correctly", () => {
+    const parsed = parseLtlFormula('<>(l> && "A" && <>(l< && "U"))');
+    const lexer = tokenizeFormula('<>(l> && "A" && <>(l< && "U"))');
+    console.log("Lexer output:", lexer);
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
       kind: "eventually",
       formula: {
         kind: "and",
         left: {
-          kind: "at",
-          formula: {
+          kind: "and",
+          left: {
             kind: "rho",
             rho: { kind: "up", label: "l" },
           },
-          label: "A",
+          right: { kind: "atom", value: "A" },
         },
         right: {
           kind: "eventually",
           formula: {
-            kind: "at",
-            formula: {
+            kind: "and",
+            left: {
               kind: "rho",
               rho: { kind: "down", label: "l" },
             },
-            label: "U",
+            right: { kind: "atom", value: "U" },
           },
         },
       },

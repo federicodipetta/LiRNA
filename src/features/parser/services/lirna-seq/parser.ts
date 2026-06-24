@@ -57,7 +57,7 @@ class FormulaParser {
       this.advance();
       const labelToken = this.expect("LABEL");
       left = {
-        kind: "At",
+        kind: "at",
         formula: left,
         label: labelToken.value || "",
       } as LtlFormula;
@@ -118,12 +118,12 @@ class FormulaParser {
 
     if (token.type === "EVENTUALLY") {
       this.advance();
-      return { kind: "eventually", formula: this.parseUnary() };
+      return { kind: "eventually", formula: this.parseAt() };
     }
 
     if (token.type === "ALWAYS") {
       this.advance();
-      return { kind: "always", formula: this.parseUnary() };
+      return { kind: "always", formula: this.parseAt() };
     }
 
     return this.parsePrimary();
@@ -154,7 +154,7 @@ class FormulaParser {
 
     if (token.type === "LPAREN") {
       this.advance();
-      const expr = this.parseUntil();
+      const expr = this.parseAt();
       this.expect("RPAREN");
       return expr;
     }

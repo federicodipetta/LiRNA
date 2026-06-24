@@ -13,8 +13,11 @@ export type LtlFormula =
   | { kind: "next"; formula: LtlFormula }
   | { kind: "until"; left: LtlFormula; right: LtlFormula }
   | { kind: "eventually"; formula: LtlFormula }
-  | { kind: "At"; formula: LtlFormula, label: string }
-  | { kind: "always"; formula: LtlFormula };
+  | { kind: "at"; formula: LtlFormula, label: string }
+  | { kind: "always"; formula: LtlFormula }
+  | { kind: "exists"; formula: LtlFormula, label: string }
+  | { kind: "forall"; formula: LtlFormula, label: string }
+  ;
 
 export type TokenType =
   | "LPAREN"
@@ -33,7 +36,10 @@ export type TokenType =
   | "LABEL"
   | "AT"
   | "RHO"
-  | "EOF";
+  | "EXISTS"
+  | "FORALL"
+  | "EOF"
+  ;
 
 export interface Token {
   type: TokenType;

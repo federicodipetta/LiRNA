@@ -302,6 +302,57 @@ export function satAt(context: SatContext, formula: LtlFormula, label: string): 
     return satAt;
 }
 
+export function satExists(context: SatContext, satSet: SatSet, label: string): SatSet {
+    let result: SatSet = [];
+    for (const entry of satSet) {
+        let constraint = entry.constraint;
+        for (const bond of context.bonsFromStart) {
+            if (bond.start >= entry.timeRange.start && bond.end <= entry.timeRange.end) {
+                constraint = constraint.or(eq(label, Number(bond.id)));
+            }
+        }
+        const newEntry = {
+            timeRange: entry.timeRange,
+            constraint: constraint,
+        }
+        result.push(newEntry);
+    }
+    return result;
+}
+
+export function satForAll(context: SatContext, satSet: SatSet, label: string): SatSet {
+    let result: SatSet = [];
+    for (const entry of satSet) {
+        let constraint = entry.constraint;
+        for (const bond of context.bonsFromStart) {
+            if (bond.start >= entry.timeRange.start && bond.end <= entry.timeRange.end) {
+                constraint = constraint.and(eq(label, Number(bond.id)));
+            }
+        }
+        const newEntry = {
+            timeRange: entry.timeRange,
+            constraint: constraint,
+        }
+        result.push(newEntry);
+    }
+    return result;
+}
+
+export function satAnd(sequenceLength: number, s1: SatSet, s2: SatSet): SatSet {
+    const result: SatSet = [];
+    [s1, s2] = AlignSatSets(s1, s2);
+    for (let i = 0; i < s1.length; i += 1) {
+        const entry1 = s1[i];
+        const entry2 = s2[i];
+        result.push({
+            timeRange: { start: entry1.timeRange.start, end: entry1.timeRange.end },
+            constraint: entry1.constraint.and(entry2.constraint),
+        });
+    }
+    return result;
+}
+
+
 export function sat(context: SatContext, formula: LtlFormula): SatSet {
     switch (formula.kind) {
         case "true":
@@ -320,6 +371,12 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
+        case "and":
+            return satAnd(
+                context.sequenceLength,
+                sat(context, formula.left),
+                sat(context, formula.right),
+            );
         case "eventually":
             return satEventually(context, sat(context, formula.formula));
         case "not":
@@ -330,16 +387,14 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
                 sat(context, formula.left),
                 sat(context, formula.right),
             );
-        case "At":
+        case "at":
             return satAt(context, formula.formula, formula.label);
         case "always":
             return satEventually(context, satNot(sat(context, formula.formula)));
-        case "and":
-            return satNot(satOr(
-                context.sequenceLength,
-                satNot(sat(context, formula.left)),
-                satNot(sat(context, formula.right)),
-            ));    
+        case "exists":
+            return satExists(context, sat(context, formula.formula), formula.label);
+        case "forall":
+            return satForAll(context, sat(context, formula.formula), formula.label); 
         default: return satFalse(context);
     }
 }

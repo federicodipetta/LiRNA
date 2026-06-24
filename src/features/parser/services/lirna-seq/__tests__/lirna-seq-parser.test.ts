@@ -4,7 +4,7 @@ import { parseLtlFormula } from "../parser";
 
 describe("lirna-seq-parser", () => {
   it("parses OR as left-associative", () => {
-    const parsed = parseLtlFormula("A | C | G");
+    const parsed = parseLtlFormula("'A' | 'C' | 'G'");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
@@ -19,7 +19,7 @@ describe("lirna-seq-parser", () => {
   });
 
   it("parses UNTIL as right-associative", () => {
-    const parsed = parseLtlFormula("A U C U G");
+    const parsed = parseLtlFormula("'A' U 'C' U 'G'");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
@@ -34,7 +34,7 @@ describe("lirna-seq-parser", () => {
   });
 
   it("gives unary operators higher precedence than OR", () => {
-    const parsed = parseLtlFormula("!A | O(C)");
+    const parsed = parseLtlFormula("!'A' | O('C')");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
@@ -45,7 +45,7 @@ describe("lirna-seq-parser", () => {
   });
 
   it("parses AND with higher precedence than OR", () => {
-    const parsed = parseLtlFormula("A | C & G");
+    const parsed = parseLtlFormula("'A' | 'C' & 'G'");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
@@ -60,7 +60,7 @@ describe("lirna-seq-parser", () => {
   });
 
   it("parses always operator [] as unary", () => {
-    const parsed = parseLtlFormula("[]A");
+    const parsed = parseLtlFormula("[]'A'");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
@@ -70,8 +70,8 @@ describe("lirna-seq-parser", () => {
   });
 
   it("translates formula |> label into <>((label<) & O(formula))", () => {
-    const parsed = parseLtlFormula("A |> l");
-
+    const parsed = parseLtlFormula("'A' |> l");
+    
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({
       kind: "eventually",
@@ -90,7 +90,7 @@ describe("lirna-seq-parser", () => {
   });
 
   it("returns parse error on missing closing parenthesis", () => {
-    const parsed = parseLtlFormula("(A | C");
+    const parsed = parseLtlFormula("('A' | C");
 
     expect(parsed.formula).toBeNull();
     expect(parsed.error).toContain("Expected RPAREN");
@@ -101,6 +101,52 @@ describe("lirna-seq-parser", () => {
 
     expect(parsed.formula).toBeNull();
     expect(parsed.error).toBe("Enter an LTL formula.");
+  });
+
+  it("should parse correctly parentheses", () => {
+    const parsed = parseLtlFormula('"A" | (C & G)');
+
+    expect(parsed.error).toBeUndefined();
+    expect(parsed.formula).toEqual({
+      kind: "or",
+      left: { kind: "atom", value: "A" },
+      right: {
+        kind: "and",
+        left: { kind: "atom", value: "C" },
+        right: { kind: "atom", value: "G" },
+      },
+    });
+  });
+
+  it("parse correctly parent", () => {
+    const parsed = parseLtlFormula('<>(l> "A" && <>(l< "U"))');
+
+    expect(parsed.error).toBeUndefined();
+    expect(parsed.formula).toEqual({
+      kind: "eventually",
+      formula: {
+        kind: "and",
+        left: {
+          kind: "at",
+          formula: {
+            kind: "rho",
+            rho: { kind: "up", label: "l" },
+          },
+          label: "A",
+        },
+        right: {
+          kind: "eventually",
+          formula: {
+            kind: "at",
+            formula: {
+              kind: "rho",
+              rho: { kind: "down", label: "l" },
+            },
+            label: "U",
+          },
+        },
+      },
+    });
   });
 });
 

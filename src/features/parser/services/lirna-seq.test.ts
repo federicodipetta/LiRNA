@@ -21,8 +21,8 @@ describe("ltl sat draft", () => {
     expect(satTop(4)).toMatchObject([{ range: [0, 4], constraint: { kind: "true" } }]);
   });
 
-  it("parses and evaluates a bare RNA atom like A", () => {
-    const parsed = parseLtlFormula("A");
+  it("parses and evaluates a bare RNA atom like 'A'", () => {
+    const parsed = parseLtlFormula("'A'");
 
     expect(parsed.error).toBeUndefined();
     expect(parsed.formula).toEqual({ kind: "atom", value: "A" });

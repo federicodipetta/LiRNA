@@ -4,7 +4,7 @@ import { tokenizeFormula } from "../lexer";
 
 describe("lirna-seq-lexer", () => {
   it("tokenizes unary/binary operators and delimiters", () => {
-    const tokens = tokenizeFormula("[](!(A & O(C)))@");
+    const tokens = tokenizeFormula("[](!('A' & O(C)))@AE");
 
     expect(tokens.map((t) => t.type)).toEqual([
       "ALWAYS",
@@ -20,19 +20,21 @@ describe("lirna-seq-lexer", () => {
       "RPAREN",
       "RPAREN",
       "AT",
+      "FORALL",
+      "EXISTS",
       "EOF",
     ]);
   });
 
   it("tokenizes pipe implication and right-hand label", () => {
-    const tokens = tokenizeFormula("A |> l");
+    const tokens = tokenizeFormula("'A' |> l");
 
     expect(tokens.map((t) => t.type)).toEqual(["ATOM", "PIPE_IMPL", "LABEL", "EOF"]);
     expect(tokens.find((t) => t.type === "LABEL")?.value).toBe("l");
   });
 
   it("accepts unquoted A/C/G and quoted U atoms", () => {
-    const unquoted = tokenizeFormula("A | C | G");
+    const unquoted = tokenizeFormula("'A' | 'C' | 'G'");
     const quoted = tokenizeFormula("'A' | \"U\"");
 
     expect(unquoted.filter((t) => t.type === "ATOM").map((t) => t.value)).toEqual(["A", "C", "G"]);

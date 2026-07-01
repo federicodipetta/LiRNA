@@ -1,0 +1,86 @@
+[
+  {
+    "interval": "[0, 1]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[2, 3]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[4, 19]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[20, 20]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[21, 24]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[25, 27]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[28, 32]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[33, 33]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[34, 56]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[57, 69]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[70, 71]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[72, 75]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  }
+]

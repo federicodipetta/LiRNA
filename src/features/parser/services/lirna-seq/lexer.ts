@@ -185,14 +185,26 @@ export function tokenizeFormula(source: string): Token[] {
     }
 
     if (ch === "E") {
-      tokens.push({ type: "EXISTS", pos: i });
       i += 1;
+      i = skipSpaces(source, i);
+      if (!isIdentifierStart(source[i])) {
+        throw new Error(`Expected label after 'E' at position ${i + 1}`);
+      }
+      const { ident, end } = readIdentifier(source, i);
+      tokens.push({ type: "EXISTS", pos: i - 1, value: ident });
+      i = end;
       continue;
     }
 
     if (ch === "A") {
-      tokens.push({ type: "FORALL", pos: i });
       i += 1;
+      i = skipSpaces(source, i);
+      if (!isIdentifierStart(source[i])) {
+        throw new Error(`Expected label after 'A' at position ${i + 1}`);
+      }
+      const { ident, end } = readIdentifier(source, i);
+      tokens.push({ type: "FORALL", pos: i - 1, value: ident });
+      i = end;
       continue;
     }
 
@@ -251,7 +263,7 @@ export function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
-    throw new Error(`Invalid token at position ${i + 1}`);
+    throw new Error(`Invalid token at position ${i + 1}, Token: ${ch}, in ${source.slice(i - 5, i + 10)}`);
   }
 
   tokens.push({ type: "EOF", pos: source.length });

@@ -217,20 +217,26 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
   };
 }
 
+
 function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
   const variables = new Set<string>();
+  const variableFixed = new Set<string>();
   function traverse(node: LtlFormula) {
-    if (node.kind === "atom") {
-      variables.add(node.value);
-    } else if (node.kind === "rho") {
+    if (node.kind === "rho") {
       variables.add(node.rho.label);
-    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always" || node.kind === "exists" || node.kind === "forall" || node.kind === "at") {
+    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always") {
       traverse(node.formula);
     } else if (node.kind === "or" || node.kind === "and" || node.kind === "until") {
       traverse(node.left);
       traverse(node.right);
+    } else if (node.kind === "exists" || node.kind === "forall") {
+      variableFixed.add(node.label);
+      traverse(node.formula);
+    } else if (node.kind === "at") {
+      variables.add(node.label);
+      traverse(node.formula);
     }
   }
   traverse(formula);
-  return variables;
+  return new Set([...variables].filter((v) => !variableFixed.has(v)));
 }

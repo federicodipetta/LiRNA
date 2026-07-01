@@ -24,10 +24,6 @@ export type SatSet = {
   constraints: Constraint[];
 };
 
-function sameConstraint(left: Constraint, right: Constraint): boolean {
-  return left === right;
-}
-
 function segmentStart(set: SatSet, index: number): number {
   return index === 0 ? 0 : set.ends[index - 1] + 1;
 }

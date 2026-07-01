@@ -102,7 +102,7 @@ class FormulaParser {
 
     return left;
   }
-
+    
   private parseUnary(): LtlFormula {
     const token = this.peek();
 
@@ -118,15 +118,46 @@ class FormulaParser {
 
     if (token.type === "EVENTUALLY") {
       this.advance();
-      return { kind: "eventually", formula: this.parseAt() };
+      return { kind: "eventually", formula: this.parseUnary() };
     }
 
     if (token.type === "ALWAYS") {
       this.advance();
-      return { kind: "always", formula: this.parseAt() };
+      return { kind: "always", formula: this.parseUnary() };
     }
 
-    return this.parsePrimary();
+    if (token.type === "EXISTS") {
+      this.advance();
+      if (!token.value) {
+        throw new Error(`Expected label after 'exists', found empty token at position ${token.pos + 1}`);
+      }
+      return { kind: "exists", formula: this.parseUnary(), label: token.value || "" };
+    }
+
+    if (token.type === "FORALL") {
+      this.advance();
+      if (!token.value) {
+        throw new Error(`Expected label after 'forall', found empty token at position ${token.pos + 1}`);
+      }
+      return { kind: "forall", formula: this.parseUnary(), label: token.value || "" };
+    }
+
+    return this.parseParen(); // ← invece di parsePrimary
+  }
+
+  // Nuovo metodo: se c'è una parentesi, ricomincia dall'inizio della gerarchia.
+  // Altrimenti, vai ai letterali (atom, true, false, rho).
+  private parseParen(): LtlFormula {
+    const token = this.peek();
+
+    if (token.type === "LPAREN") {
+      this.advance();
+      const expr = this.parseExpression(); 
+      this.expect("RPAREN");
+      return expr;
+    }
+
+    return this.parsePrimary(); // nessuna parentesi → letterali
   }
 
   private parsePrimary(): LtlFormula {
@@ -152,13 +183,6 @@ class FormulaParser {
       return { kind: "rho", rho: token.rho };
     }
 
-    if (token.type === "LPAREN") {
-      this.advance();
-      const expr = this.parseAt();
-      this.expect("RPAREN");
-      return expr;
-    }
-
     throw new Error(`Invalid formula near position ${token.pos + 1}`);
   }
 
@@ -178,6 +202,10 @@ class FormulaParser {
     const token = this.tokens[this.cursor];
     this.cursor += 1;
     return token;
+  }
+  /**Return the top-level formula */
+  private parseExpression(): LtlFormula {
+    return this.parseAt();
   }
 }
 

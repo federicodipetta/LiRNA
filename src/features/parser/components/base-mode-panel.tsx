@@ -8,7 +8,8 @@ import {
   parseLtlFormula,
   type LtlFormula,
 } from "../services/lirna-seq";
-import { sat, buildSatContext, toReadableSatSet, ReadableSatEntry } from "../services/lirna-seq/evaluetor-full";
+import { sat, buildSatContext, toReadableSatSet } from "../services/lirna-seq/evaluetor-full";
+import type { ReadableSatEntry, ReadableSubstitution } from "../services/lirna-seq/evaluetor-full";
 import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
 import { init } from "z3-solver";
@@ -191,19 +192,24 @@ export function BaseModePanel(props: BaseModeProps) {
 
 function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
   const variables = new Set<string>();
+  const variableFixed = new Set<string>();
   function traverse(node: LtlFormula) {
-    if (node.kind === "atom") {
-      variables.add(node.value);
-    } else if (node.kind === "rho") {
+    if (node.kind === "rho") {
       variables.add(node.rho.label);
-    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always" || node.kind === "exists" || node.kind === "forall" || node.kind === "at") {
+    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always") {
       traverse(node.formula);
     } else if (node.kind === "or" || node.kind === "and" || node.kind === "until") {
       traverse(node.left);
       traverse(node.right);
+    } else if (node.kind === "exists" || node.kind === "forall") {
+      variableFixed.add(node.label);
+      traverse(node.formula);
+    } else if (node.kind === "at") {
+      variables.add(node.label);
+      traverse(node.formula);
     }
   }
   traverse(formula);
-  return variables;
+  return new Set([...variables].filter((v) => !variableFixed.has(v)));
 }
 

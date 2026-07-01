@@ -1,5 +1,5 @@
-import { AtomicRho, LtlFormula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Z3Wrapper } from "./z3Wrapper";
+import { AtomicRho, LtlFormula as Formula } from "./ast";
+import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3 } from "./z3Wrapper";
 
 export type BasePair =  {
   id: string;
@@ -119,15 +119,13 @@ export function satAtom(context: SatContext, value: string): SatSet {
 export function satNext(set: SatSet): SatSet {
     set.map((entry) => {
         entry.timeRange = {
-            start: entry.timeRange.start - 1,
+            start: Math.max(entry.timeRange.start - 1, 0),
             end: entry.timeRange.end - 1,
         }
-        if (entry.timeRange.start < 0)
-            entry.timeRange.start = 0;
         return entry;
     })
     // Remove the entry corresponding to time 0, as it does not have a predecessor.
-    .filter((entry) => entry.timeRange.start <= 0 && entry.timeRange.end < 0)
+    .filter((entry) => entry.timeRange.end >= 0);
     return set;
 }
 
@@ -273,7 +271,7 @@ export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     return result.reverse();
 };
 
-export function satAt(context: SatContext, formula: LtlFormula, label: string): SatSet {
+export function satAt(context: SatContext, formula: Formula, label: string): SatSet {
     let satAt: SatSet = satFalse(context);
     for (const bond of context.bonsFromStart) {
         let newContext = cutSatContext(context, bond.start + 1, bond.end - 1);
@@ -301,39 +299,38 @@ export function satAt(context: SatContext, formula: LtlFormula, label: string): 
     
     return satAt;
 }
-
-export function satExists(context: SatContext, satSet: SatSet, label: string): SatSet {
+export function satForAll(context: SatContext, satSet: SatSet, label: string): SatSet {
     let result: SatSet = [];
     for (const entry of satSet) {
-        let constraint = entry.constraint;
+        let constraint: Constraint = TRUE;
         for (const bond of context.bonsFromStart) {
-            if (bond.start >= entry.timeRange.start && bond.end <= entry.timeRange.end) {
-                constraint = constraint.or(eq(label, Number(bond.id)));
+            if (bond.start >= context.sequenceStart && bond.end <= context.sequenceLength) {
+                const substituted = substitute(entry.constraint, label, Number(bond.id));
+                constraint = constraint.and(substituted);
             }
         }
-        const newEntry = {
+        result.push({
             timeRange: entry.timeRange,
             constraint: constraint,
-        }
-        result.push(newEntry);
+        });
     }
     return result;
 }
 
-export function satForAll(context: SatContext, satSet: SatSet, label: string): SatSet {
+export function satExists(context: SatContext, satSet: SatSet, label: string): SatSet {
     let result: SatSet = [];
     for (const entry of satSet) {
-        let constraint = entry.constraint;
+        let constraint: Constraint = FALSE;
         for (const bond of context.bonsFromStart) {
-            if (bond.start >= entry.timeRange.start && bond.end <= entry.timeRange.end) {
-                constraint = constraint.and(eq(label, Number(bond.id)));
+            if (bond.start >= context.sequenceStart && bond.end <= context.sequenceLength) {
+                const substituted = substitute(entry.constraint, label, Number(bond.id));
+                constraint = constraint.or(substituted);
             }
         }
-        const newEntry = {
+        result.push({
             timeRange: entry.timeRange,
             constraint: constraint,
-        }
-        result.push(newEntry);
+        });
     }
     return result;
 }
@@ -353,7 +350,7 @@ export function satAnd(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
 }
 
 
-export function sat(context: SatContext, formula: LtlFormula): SatSet {
+export function sat(context: SatContext, formula: Formula): SatSet {
     switch (formula.kind) {
         case "true":
             return satTrue(context);
@@ -395,8 +392,7 @@ export function sat(context: SatContext, formula: LtlFormula): SatSet {
             return satExists(context, sat(context, formula.formula), formula.label);
         case "forall":
             return satForAll(context, sat(context, formula.formula), formula.label); 
-        // No defulat because all cases MUST be handled, and TypeScript will give an error if a case is missing.
-        // default: return satFalse(context);
+
     }
 }
 
@@ -460,10 +456,7 @@ export function cutSatContext(context: SatContext, start: number, end: number): 
 }
 
 /** UI SERVICE */
-export interface ReadableSubstitution {
-  variable: string;
-  bond: string;
-}
+export type ReadableSubstitution = Record<string, string>;
 
 export interface ReadableSatEntry {
   interval: string;
@@ -473,26 +466,76 @@ export interface ReadableSatEntry {
 }
 
 export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
-  const result: ReadableSatEntry[] = [];
-  wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
-  for (const entry of set) {
-    wrapper.getSolutions(entry.constraint).then(s => {
+    const result: ReadableSatEntry[] = [];
+    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+    for (const entry of set) {
+        const solutions = await wrapper.getSolutions(await Z3.simplify(entry.constraint) as Constraint);
+        const readableSolutions = solutions.map((solution) => {
+            return Object.keys(solution)
+                .sort()
+                .reduce<ReadableSubstitution>((accumulator, variable) => {
+                    accumulator[variable] = solution[variable];
+                    return accumulator;
+                }, {});
+        });
         result.push({
             interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
             constraint: entry.constraint.toString(),
-            substitutions: s.map((sol) => ({
-                variable: Object.keys(sol)[0],
-                bond: sol[Object.keys(sol)[0]],
-                })),
-            satisfied: s.length > 0 ? true : false, 
+            substitutions: readableSolutions,
+            satisfied: readableSolutions.length > 0,
         });
-    });
-  }
-  return result;
+        //  let solver = new Solver();
+        // if (await solver.check(entry.constraint) === "unsat") {
+        //     result.push({
+        //         interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
+        //         constraint: entry.constraint.toString(),
+        //         substitutions: [],
+        //         satisfied: false,
+        //     });
+        //     continue;
+        // } else {
+        //     let solutions = [];
+        //     do {
+        //         const solutionEntry: Record<string, string> = {};
+        //         const model = solver.model();
+        //         variables.forEach(variable => {
+        //             solutionEntry[variable] = model.get(Int.const(variable)).toString();
+        //         });
+        //         solutions.push(solutionEntry);
+        //         const neqConstraints = Array.from(variables).map(variable => 
+        //             Int.const(variable).neq(model.get(Int.const(variable)))
+        //         );
+        //         solver.add(Or(...neqConstraints));
+        //     } while (await solver.check(entry.constraint) === "sat" && await solver.model() !== null);
+        //     result.push({
+        //         interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
+        //         constraint: entry.constraint.toString(),
+        //         substitutions: solutions.map(solution => ({
+        //             variable: Object.keys(solution)[0],
+        //             bond: solution[Object.keys(solution)[0]],
+        //         })),
+        //         satisfied: true,
+        //     });
+        // }
+    }
+    // Now merge intervals with the same substitutions and satisfied status
+
+    const mergedResult: ReadableSatEntry[] = [];
+    for (const entry of result) {
+        const lastEntry = mergedResult[mergedResult.length - 1];
+        if (lastEntry && lastEntry.satisfied === entry.satisfied && JSON.stringify(lastEntry.substitutions) === JSON.stringify(entry.substitutions)) {
+            lastEntry.interval = `[${lastEntry.interval.split(",")[0].slice(1)}, ${entry.interval.split(",")[1].slice(0, -1)}]`;
+        }
+        else {
+            mergedResult.push(entry);
+        }
+    }
+
+    return mergedResult;
 }
 
 
-export function formatFormula(formula: LtlFormula): string {
+export function formatFormula(formula: Formula): string {
   switch (formula.kind) {
     case "true":
       return "true";

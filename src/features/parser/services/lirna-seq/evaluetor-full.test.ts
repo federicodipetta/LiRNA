@@ -1,6 +1,6 @@
 import { it, describe, expect } from "vitest";
 
-import { AlignSatSets, BasePair, buildSatContextFromBasePairs, cutSatContext, satAt, satAtom, SatContext, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
+import { AlignSatSets, BasePair, buildSatContextFromBasePairs, cutSatContext, satAt, satAtom, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
 import { And, Constraint, eq, FALSE, Int, Or, Solver, TRUE } from "./z3Wrapper";
 import { AtomicRho, LtlFormula } from "./ast";
 
@@ -275,5 +275,6 @@ describe("Evaluator with full time range", () => {
                 { id: "3", start: 1, end: 4 },
         ]);
     });
+
             
 });

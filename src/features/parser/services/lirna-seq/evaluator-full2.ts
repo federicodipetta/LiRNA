@@ -1,4 +1,4 @@
-import { AtomicRho, LtlFormula } from "./ast";
+import { AtomicRho, LiRNAFormula } from "./ast";
 import { Constraint, TRUE, FALSE, eq, or as z3Or } from "./z3Wrapper";
 
 export type BasePair = {
@@ -266,7 +266,7 @@ export function toEntries(set: SatSet): Array<{ start: number; end: number; cons
   return entries;
 }
 
-export function sat(context: SatContext, formula: LtlFormula): SatSet {
+export function sat(context: SatContext, formula: LiRNAFormula): SatSet {
   switch (formula.kind) {
     case "true":
       return satTrue(context);

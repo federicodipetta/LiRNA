@@ -2,21 +2,21 @@ export type AtomicRho =
   | { kind: "up"; label: string }
   | { kind: "down"; label: string };
 
-export type LtlFormula =
+export type LiRNAFormula =
   | { kind: "true" }
   | { kind: "false" }
   | { kind: "atom"; value: string }
-  | { kind: "not"; formula: LtlFormula }
-  | { kind: "and"; left: LtlFormula; right: LtlFormula }
-  | { kind: "or"; left: LtlFormula; right: LtlFormula }
+  | { kind: "not"; formula: LiRNAFormula }
+  | { kind: "and"; left: LiRNAFormula; right: LiRNAFormula }
+  | { kind: "or"; left: LiRNAFormula; right: LiRNAFormula }
   | { kind: "rho"; rho: AtomicRho }
-  | { kind: "next"; formula: LtlFormula }
-  | { kind: "until"; left: LtlFormula; right: LtlFormula }
-  | { kind: "eventually"; formula: LtlFormula }
-  | { kind: "at"; formula: LtlFormula, label: string }
-  | { kind: "always"; formula: LtlFormula }
-  | { kind: "exists"; formula: LtlFormula, label: string }
-  | { kind: "forall"; formula: LtlFormula, label: string }
+  | { kind: "next"; formula: LiRNAFormula }
+  | { kind: "until"; left: LiRNAFormula; right: LiRNAFormula }
+  | { kind: "eventually"; formula: LiRNAFormula }
+  | { kind: "at"; formula: LiRNAFormula, label: string }
+  | { kind: "always"; formula: LiRNAFormula }
+  | { kind: "exists"; formula: LiRNAFormula, label: string }
+  | { kind: "forall"; formula: LiRNAFormula, label: string }
   ;
 
 export type TokenType =
@@ -49,6 +49,6 @@ export interface Token {
 }
 
 export interface ParsedFormulaResult {
-  formula: LtlFormula | null;
+  formula: LiRNAFormula | null;
   error?: string;
 }

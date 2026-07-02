@@ -1,4 +1,4 @@
-import type { LtlFormula, ParsedFormulaResult, Token, TokenType } from "./ast";
+import type { LiRNAFormula, ParsedFormulaResult, Token, TokenType } from "./ast";
 import { tokenizeFormula } from "./lexer";
 
 class FormulaParser {
@@ -10,13 +10,13 @@ class FormulaParser {
     this.tokens = tokens;
   }
 
-  parse(): LtlFormula {
+  parse(): LiRNAFormula {
     const expression = this.parseAt();
     this.expect("EOF");
     return expression;
   }
 
-  private parsePipeImpl(): LtlFormula {
+  private parsePipeImpl(): LiRNAFormula {
     let left = this.parseUntil();
 
     while (this.peek().type === "PIPE_IMPL") {
@@ -50,7 +50,7 @@ class FormulaParser {
     return left;
   }
 
-  private parseAt(): LtlFormula {
+  private parseAt(): LiRNAFormula {
     let left = this.parsePipeImpl();
     
     while (this.peek().type === "AT") {
@@ -60,14 +60,14 @@ class FormulaParser {
         kind: "at",
         formula: left,
         label: labelToken.value || "",
-      } as LtlFormula;
+      } as LiRNAFormula;
       
     }
 
     return left;
   }
 
-  private parseUntil(): LtlFormula {
+  private parseUntil(): LiRNAFormula {
     let left = this.parseOr();
 
     while (this.peek().type === "UNTIL") {
@@ -79,7 +79,7 @@ class FormulaParser {
     return left;
   }
 
-  private parseOr(): LtlFormula {
+  private parseOr(): LiRNAFormula {
     let left = this.parseAnd();
 
     while (this.peek().type === "OR") {
@@ -91,7 +91,7 @@ class FormulaParser {
     return left;
   }
 
-  private parseAnd(): LtlFormula {
+  private parseAnd(): LiRNAFormula {
     let left = this.parseUnary();
 
     while (this.peek().type === "AND") {
@@ -103,7 +103,7 @@ class FormulaParser {
     return left;
   }
     
-  private parseUnary(): LtlFormula {
+  private parseUnary(): LiRNAFormula {
     const token = this.peek();
 
     if (token.type === "NOT") {
@@ -147,7 +147,7 @@ class FormulaParser {
 
   // Nuovo metodo: se c'è una parentesi, ricomincia dall'inizio della gerarchia.
   // Altrimenti, vai ai letterali (atom, true, false, rho).
-  private parseParen(): LtlFormula {
+  private parseParen(): LiRNAFormula {
     const token = this.peek();
 
     if (token.type === "LPAREN") {
@@ -160,7 +160,7 @@ class FormulaParser {
     return this.parsePrimary(); // nessuna parentesi → letterali
   }
 
-  private parsePrimary(): LtlFormula {
+  private parsePrimary(): LiRNAFormula {
     const token = this.peek();
 
     if (token.type === "TRUE") {
@@ -204,7 +204,7 @@ class FormulaParser {
     return token;
   }
   /**Return the top-level formula */
-  private parseExpression(): LtlFormula {
+  private parseExpression(): LiRNAFormula {
     return this.parseAt();
   }
 }

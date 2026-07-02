@@ -2,7 +2,7 @@ import { it, describe, expect } from "vitest";
 
 import { AlignSatSets, BasePair, buildSatContextFromBasePairs, cutSatContext, satAt, satAtom, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
 import { And, Constraint, eq, FALSE, Int, Or, Solver, TRUE } from "./z3Wrapper";
-import { AtomicRho, LtlFormula } from "./ast";
+import { AtomicRho, LiRNAFormula } from "./ast";
 
 async function expectConstraintEquivalent(actual: Constraint, expected: Constraint) {
     const solver = new Solver();
@@ -212,7 +212,7 @@ describe("Evaluator with full time range", () => {
 
 
     it("should evaluate satAt correctly", async () => {
-        const formula = { kind: "atom", value: "U" } as LtlFormula;
+        const formula = { kind: "atom", value: "U" } as LiRNAFormula;
         const result = satAt(context, formula, "l");
         console.log(JSON.stringify(result, null, 2));
         await expectSatSetEquivalent(result, [

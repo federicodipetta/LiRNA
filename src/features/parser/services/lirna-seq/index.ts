@@ -23,7 +23,7 @@ export {
 
 export type {
   AtomicRho,
-  LtlFormula,
+  LiRNAFormula as LtlFormula,
   ParsedFormulaResult,
   Token,
   TokenType,

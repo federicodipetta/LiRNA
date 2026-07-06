@@ -32,7 +32,7 @@ export function TextAreaField(props: {
 }
 
 export function AstNodeView({ node }: { node: LtlFormula }) {
-  if (node.kind === "true" || node.kind === "false") {
+  if (node.kind === "true" || node.kind === "false" || node.kind === "dot") {
     return <span className="text-sea">{node.kind}</span>;
   }
 

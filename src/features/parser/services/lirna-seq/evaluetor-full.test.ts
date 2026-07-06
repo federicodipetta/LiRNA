@@ -9,13 +9,13 @@ async function expectConstraintEquivalent(actual: Constraint, expected: Constrai
     solver.add(Or(And(actual, expected.not()), And(actual.not(), expected)));
     let result = await solver.check();
     if (result === "sat") {
-            const model = await solver.model();
-            console.log("Counterexample found:");
-            model.decls().forEach(decl => {
-                console.log(`${decl.name()} = ${model.get(decl)}`);
-            });
-            console.log("Actual constraint:", actual.toString());
-            console.log("Expected constraint:", expected.toString());
+        const model = await solver.model();
+        console.log("Counterexample found:");
+        model.decls().forEach(decl => {
+            console.log(`${decl.name()} = ${model.get(decl)}`);
+        });
+        console.log("Actual constraint:", actual.toString());
+        console.log("Expected constraint:", expected.toString());
     }
     expect(await solver.check()).toBe("unsat");
 }
@@ -31,7 +31,7 @@ async function expectSatSetEquivalent(actual: SatSet, expected: SatSet) {
 }
 
 describe("Evaluator with full time range", () => {
-                                            //  012345678
+    //  012345678
     var context = buildSatContextFromBasePairs("AAUAUAUCG", [
         { id: "1", start: 1, end: 8 },
         { id: "2", start: 2, end: 7 },
@@ -238,8 +238,8 @@ describe("Evaluator with full time range", () => {
 
     it("should align SatSets by splitting on the earliest end boundary", async () => {
         const s1: SatSet = [
-        { constraint: TRUE, timeRange: { start: 0, end: 2 } },
-        { constraint: FALSE, timeRange: { start: 3, end: 5 } },
+            { constraint: TRUE, timeRange: { start: 0, end: 2 } },
+            { constraint: FALSE, timeRange: { start: 3, end: 5 } },
         ];
         const s2: SatSet = [
             { constraint: FALSE, timeRange: { start: 0, end: 1 } },
@@ -267,14 +267,14 @@ describe("Evaluator with full time range", () => {
         expect(cutContext.sequenceStart).toBe(0);
         expect(cutContext.sequenceLength).toBe(3);
         expect(cutContext.bonsFromStart).toStrictEqual([
-                { id: "3", start: 1, end: 4 },
-                { id: "4", start: 2, end: 3 },
+            { id: "3", start: 1, end: 4 },
+            { id: "4", start: 2, end: 3 },
         ]);
         expect(cutContext.bonsFromEnd).toStrictEqual([
-                { id: "4", start: 2, end: 3 },
-                { id: "3", start: 1, end: 4 },
+            { id: "4", start: 2, end: 3 },
+            { id: "3", start: 1, end: 4 },
         ]);
     });
 
-            
+
 });

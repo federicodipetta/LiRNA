@@ -4,19 +4,19 @@ let contextInstance: Awaited<ReturnType<typeof init>>["Context"] | null = null;
 let initPromise: Promise<void> | null = null;
 
 async function getContext() {
-  if (contextInstance) return contextInstance;
-  if (!initPromise) {
-    initPromise = init().then(({ Context }) => {
-      contextInstance = Context;
-    });
-  }
-  await initPromise;
-  return contextInstance!;
+    if (contextInstance) return contextInstance;
+    if (!initPromise) {
+        initPromise = init().then(({ Context }) => {
+            contextInstance = Context;
+        });
+    }
+    await initPromise;
+    return contextInstance!;
 }
 
 const ctx = (await getContext())("main");
 export const { Solver, Int, Or, And, Bool } = ctx;
-export const Z3 = ctx; 
+export const Z3 = ctx;
 export type Constraint = b;
 
 
@@ -41,8 +41,8 @@ export function neq(variable: string, value: number): Constraint {
  * constr \ [variable = value].
  */
 export function substitute(constraint: Constraint, variable: string, value: number): Constraint {
-  const varAst = Int.const(variable);
-  return Z3.substitute(constraint, [varAst, Int.val(value)]) as Constraint;
+    const varAst = Int.const(variable);
+    return Z3.substitute(constraint, [varAst, Int.val(value)]) as Constraint;
 }
 
 export const TRUE = Bool.val(true);
@@ -58,7 +58,7 @@ export class Z3Wrapper {
     }
 
 
-    private initializeDomainConstraints(solver: ISolver) {
+    public initializeDomainConstraints(solver: ISolver) {
         this.variables.forEach(variable => {
             const varInt = Int.const(variable);
             solver.add(varInt.ge(0), varInt.le(this.maxDomain));
@@ -73,17 +73,22 @@ export class Z3Wrapper {
         const solution = [];
         let solver = new Solver();
         solver.add(constraint);
-        
+
         this.initializeDomainConstraints(solver);
         try {
             while (await solver.check() === "sat") {
+                if (this.variables.size === 0) {
+                    solution.push({});
+                    break; // No variables to constrain, exit the loop
+                }
                 const model = solver.model();
                 const solutionEntry: Record<string, string> = {};
                 this.variables.forEach(variable => {
                     solutionEntry[variable] = model.get(Int.const(variable)).toString();
                 });
                 solution.push(solutionEntry);
-                const neqConstraints = Array.from(this.variables).map(variable => 
+
+                const neqConstraints = Array.from(this.variables).map(variable =>
                     Int.const(variable).neq(model.get(Int.const(variable)))
                 );
                 solver.add(Or(...neqConstraints));
@@ -94,5 +99,5 @@ export class Z3Wrapper {
         }
         return solution;
     }
-    
+
 }

@@ -52,7 +52,7 @@ class FormulaParser {
 
   private parseAt(): LiRNAFormula {
     let left = this.parsePipeImpl();
-    
+
     while (this.peek().type === "AT") {
       this.advance();
       const labelToken = this.expect("LABEL");
@@ -61,7 +61,7 @@ class FormulaParser {
         formula: left,
         label: labelToken.value || "",
       } as LiRNAFormula;
-      
+
     }
 
     return left;
@@ -102,7 +102,7 @@ class FormulaParser {
 
     return left;
   }
-    
+
   private parseUnary(): LiRNAFormula {
     const token = this.peek();
 
@@ -152,7 +152,7 @@ class FormulaParser {
 
     if (token.type === "LPAREN") {
       this.advance();
-      const expr = this.parseExpression(); 
+      const expr = this.parseExpression();
       this.expect("RPAREN");
       return expr;
     }
@@ -181,6 +181,11 @@ class FormulaParser {
     if (token.type === "RHO" && token.rho) {
       this.advance();
       return { kind: "rho", rho: token.rho };
+    }
+
+    if (token.type === "DOT") {
+      this.advance();
+      return { kind: "dot" };
     }
 
     throw new Error(`Invalid formula near position ${token.pos + 1}`);

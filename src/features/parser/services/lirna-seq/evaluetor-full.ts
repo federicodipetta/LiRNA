@@ -1,10 +1,10 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
 import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3 } from "./z3Wrapper";
 
-export type BasePair =  {
-  id: string;
-  start: number;
-  end: number;
+export type BasePair = {
+    id: string;
+    start: number;
+    end: number;
 }
 
 export type SatContext = {
@@ -49,25 +49,25 @@ export function buildSatContextFromBasePairsWithStartIndex(sequence: string, pai
 
 
 export function buildSatContext(
-  sequence: string,
-  pairs: ReadonlyArray<readonly [number, number]>,
+    sequence: string,
+    pairs: ReadonlyArray<readonly [number, number]>,
 ): SatContext {
-  const arcs = pairs.map(([left, right], index) => ({
-    id: String(index + 1),
-    start: Math.min(left, right),
-    end: Math.max(left, right),
-  }));
+    const arcs = pairs.map(([left, right], index) => ({
+        id: String(index + 1),
+        start: Math.min(left, right),
+        end: Math.max(left, right),
+    }));
 
-  const byStart = [...arcs].sort((a, b) => a.start - b.start || a.end - b.end || Number(a.id) - Number(b.id));
-  const byEnd = [...arcs].sort((a, b) => a.end - b.end || a.start - b.start || Number(a.id) - Number(b.id));
+    const byStart = [...arcs].sort((a, b) => a.start - b.start);
+    const byEnd = [...arcs].sort((a, b) => a.end - b.end);
 
-  return {
-    sequence,
-    sequenceLength: sequence.length - 1,
-    sequenceStart: 0,
-    bonsFromStart: byStart,
-    bonsFromEnd: byEnd,
-  };
+    return {
+        sequence,
+        sequenceLength: sequence.length - 1,
+        sequenceStart: 0,
+        bonsFromStart: byStart,
+        bonsFromEnd: byEnd,
+    };
 }
 
 /*
@@ -81,10 +81,12 @@ export function satTrue(context: SatContext): SatSet {
     }];
 }
 
-export function satFalse(context: SatContext): SatSet {return [{
-    constraint: FALSE,
-    timeRange: { start: context.sequenceStart, end: context.sequenceLength },
-}]}
+export function satFalse(context: SatContext): SatSet {
+    return [{
+        constraint: FALSE,
+        timeRange: { start: context.sequenceStart, end: context.sequenceLength },
+    }]
+}
 
 export function satAtom(context: SatContext, value: string): SatSet {
     const result: SatSet = [];
@@ -92,12 +94,12 @@ export function satAtom(context: SatContext, value: string): SatSet {
     let currentStart = context.sequenceStart;
     for (let t = context.sequenceStart; t <= context.sequenceLength; t += 1) {
         if (isTrue === false && context.sequence[t] === value) {
-                isTrue = true;
-                result.push({
-                    constraint: FALSE,
-                    timeRange: { start: currentStart, end: t - 1 },
-                });
-                currentStart = t;
+            isTrue = true;
+            result.push({
+                constraint: FALSE,
+                timeRange: { start: currentStart, end: t - 1 },
+            });
+            currentStart = t;
         } else if (isTrue === true && context.sequence[t] !== value) {
             isTrue = false;
             result.push({
@@ -117,22 +119,22 @@ export function satAtom(context: SatContext, value: string): SatSet {
 }
 
 export function satNext(set: SatSet): SatSet {
-    set.map((entry) => {
+
+    return set.map((entry) => {
         entry.timeRange = {
             start: Math.max(entry.timeRange.start - 1, 0),
             end: entry.timeRange.end - 1,
         }
         return entry;
     })
-    // Remove the entry corresponding to time 0, as it does not have a predecessor.
-    .filter((entry) => entry.timeRange.end >= 0);
-    return set;
+        // Remove the entry corresponding to time 0, as it does not have a predecessor.
+        .filter((entry) => entry.timeRange.end >= 0);
 }
 
 export function satNot(set: SatSet): SatSet {
     return set.map((entry) => ({
         timeRange: entry.timeRange,
-        constraint: entry.constraint === TRUE 
+        constraint: entry.constraint === TRUE
             ? FALSE
             : entry.constraint === FALSE
                 ? TRUE
@@ -140,7 +142,7 @@ export function satNot(set: SatSet): SatSet {
     }));
 }
 
-export function satRho(context: SatContext, rho: AtomicRho): SatSet { 
+export function satRho(context: SatContext, rho: AtomicRho): SatSet {
     const entries: SatSet = [];
     const orderedBonds = rho.kind === "up" ? context.bonsFromStart : context.bonsFromEnd;
     let lastPosition = context.sequenceStart;
@@ -181,7 +183,7 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
     let constraint = FALSE;
     for (let i = set.length - 1; i > 0; i -= 1) {
         if (set[i].constraint !== FALSE) {
-           constraint = constraint.or(set[i].constraint);
+            constraint = constraint.or(set[i].constraint);
         }
         result.push({
             timeRange: {
@@ -191,7 +193,7 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
             constraint: constraint,
         });
     }
-    if (set[0].constraint !== FALSE) 
+    if (set[0].constraint !== FALSE)
         result.push({
             timeRange: {
                 start: context.sequenceStart,
@@ -199,7 +201,7 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
             },
             constraint: constraint.or(set[0].constraint),
         });
-    else 
+    else
         result[result.length - 1].timeRange.start = context.sequenceStart;
     return result.reverse();
 }
@@ -239,11 +241,11 @@ export function satUntil(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     return result.reverse();
 }
 
-export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet { 
+export function satUntil2(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     const result: SatSet = [];
     let i = s1.length - 1;
     let j = s2.length - 1;
-    
+
     let accumulated: Constraint = FALSE;
     while (i >= 0 && j >= 0) {
         const entry1 = s1[i];
@@ -295,8 +297,8 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
             constraint: FALSE,
         }
         satAt = satOr(context, satAt, [newEntry, complementEntry]);
-    } 
-    
+    }
+
     return satAt;
 }
 export function satForAll(context: SatContext, satSet: SatSet, label: string): SatSet {
@@ -349,6 +351,27 @@ export function satAnd(context: SatContext, s1: SatSet, s2: SatSet): SatSet {
     return result;
 }
 
+/**
+ * The dot operator return [k,k] true if in that position there are no bonds.
+ * Otherwise it returns [k,k] false. 
+ */
+export function satDot(context: SatContext): SatSet {
+    const result: SatSet = [];
+    const bondPoints = new Set<number>();
+    for (const bond of context.bonsFromStart) {
+        bondPoints.add(bond.start);
+        bondPoints.add(bond.end);
+    }
+
+    for (let i = context.sequenceStart; i <= context.sequenceLength; i += 1) {
+        result.push({
+            timeRange: { start: i, end: i },
+            constraint: bondPoints.has(i) ? FALSE : TRUE,
+        });
+    }
+    return result;
+}
+
 
 export function sat(context: SatContext, formula: Formula): SatSet {
     switch (formula.kind) {
@@ -360,6 +383,8 @@ export function sat(context: SatContext, formula: Formula): SatSet {
             return satAtom(context, formula.value);
         case "rho":
             return satRho(context, formula.rho);
+        case "dot":
+            return satDot(context);
         case "next":
             return satNext(sat(context, formula.formula));
         case "or":
@@ -391,7 +416,7 @@ export function sat(context: SatContext, formula: Formula): SatSet {
         case "exists":
             return satExists(context, sat(context, formula.formula), formula.label);
         case "forall":
-            return satForAll(context, sat(context, formula.formula), formula.label); 
+            return satForAll(context, sat(context, formula.formula), formula.label);
 
     }
 }
@@ -434,13 +459,13 @@ export function AlignSatSets(s1: SatSet, s2: SatSet): [SatSet, SatSet] {
 
 export function cutSatContext(context: SatContext, start: number, end: number): SatContext {
     const cutSequence = context.sequence.slice(start, end + 1);
-    const cutBondsFromStart = context.bonsFromStart.filter((bond) => bond.start > start || bond.end < end)
+    const cutBondsFromStart = context.bonsFromStart.filter((bond) => bond.start > start && bond.end < end)
         .map((bond) => ({
             ...bond,
             start: bond.start - start,
             end: bond.end - start,
         }));
-    const cutBondsFromEnd = context.bonsFromEnd.filter((bond) => bond.start > start || bond.end < end)
+    const cutBondsFromEnd = context.bonsFromEnd.filter((bond) => bond.start > start && bond.end < end)
         .map((bond) => ({
             ...bond,
             start: bond.start - start,
@@ -459,17 +484,17 @@ export function cutSatContext(context: SatContext, start: number, end: number): 
 export type ReadableSubstitution = Record<string, string>;
 
 export interface ReadableSatEntry {
-  interval: string;
-  constraint: string;
-  substitutions: ReadableSubstitution[];
-  satisfied: boolean;
+    interval: string;
+    constraint: string;
+    substitutions: ReadableSubstitution[];
+    satisfied: boolean;
 }
 
 export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
     const result: ReadableSatEntry[] = [];
     wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
     for (const entry of set) {
-        const solutions = await wrapper.getSolutions(await Z3.simplify(entry.constraint) as Constraint);
+        const solutions = await wrapper.getSolutions(entry.constraint);
         const readableSolutions = solutions.map((solution) => {
             return Object.keys(solution)
                 .sort()
@@ -480,7 +505,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
         });
         result.push({
             interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
-            constraint: entry.constraint.toString(),
+            constraint: "entry.constraint",
             substitutions: readableSolutions,
             satisfied: readableSolutions.length > 0,
         });
@@ -534,36 +559,53 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     return mergedResult;
 }
 
+export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<boolean> {
+    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+    let solver = new Solver();
+    let constraint = FALSE;
+    variables.forEach(variable => {
+        const varInt = Int.const(variable);
+        solver.add(varInt.ge(0), varInt.le(maxDomain));
+    });
+    for (const entry of set) {
+        if (await solver.check(entry.constraint) === "sat") {
+            return true;
+        }
+    }
+    return false;
+}
 
 export function formatFormula(formula: Formula): string {
-  switch (formula.kind) {
-    case "true":
-      return "true";
-    case "false":
-      return "false";
-    case "atom":
-      return formula.value;
-    case "rho":
-      return `${formula.rho.label}${formula.rho.kind === "up" ? ">" : "<"}`;
-    case "not":
-      return `!(${formatFormula(formula.formula)})`;
-    case "next":
-      return `O(${formatFormula(formula.formula)})`;
-    case "eventually":
-      return `<>(${formatFormula(formula.formula)})`;
-    case "always":
-      return `[](${formatFormula(formula.formula)})`;
-    case "and":
-      return `(${formatFormula(formula.left)} & ${formatFormula(formula.right)})`;
-    case "or":
-      return `(${formatFormula(formula.left)} | ${formatFormula(formula.right)})`;
-    case "until":
-      return `(${formatFormula(formula.left)} U ${formatFormula(formula.right)})`;
-    case "at":
-        return `@(${formatFormula(formula.formula)}, ${formula.label})`;
-    case "exists":
-        return `E(${formatFormula(formula.formula)}, ${formula.label})`;
-    case "forall":
-        return `A(${formatFormula(formula.formula)}, ${formula.label})`;
-  }
+    switch (formula.kind) {
+        case "true":
+            return "true";
+        case "false":
+            return "false";
+        case "atom":
+            return formula.value;
+        case "rho":
+            return `${formula.rho.label}${formula.rho.kind === "up" ? ">" : "<"}`;
+        case "dot":
+            return ".";
+        case "not":
+            return `!(${formatFormula(formula.formula)})`;
+        case "next":
+            return `O(${formatFormula(formula.formula)})`;
+        case "eventually":
+            return `<>(${formatFormula(formula.formula)})`;
+        case "always":
+            return `[](${formatFormula(formula.formula)})`;
+        case "and":
+            return `(${formatFormula(formula.left)} & ${formatFormula(formula.right)})`;
+        case "or":
+            return `(${formatFormula(formula.left)} | ${formatFormula(formula.right)})`;
+        case "until":
+            return `(${formatFormula(formula.left)} U ${formatFormula(formula.right)})`;
+        case "at":
+            return `@(${formatFormula(formula.formula)}, ${formula.label})`;
+        case "exists":
+            return `E(${formatFormula(formula.formula)}, ${formula.label})`;
+        case "forall":
+            return `A(${formatFormula(formula.formula)}, ${formula.label})`;
+    }
 }

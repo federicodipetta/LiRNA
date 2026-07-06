@@ -208,6 +208,12 @@ export function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
+    if (ch === ".") {
+      tokens.push({ type: "DOT", pos: i });
+      i += 1;
+      continue;
+    }   
+
     if (isIdentifierStart(ch)) {
       const { ident, end } = readIdentifier(source, i);
 

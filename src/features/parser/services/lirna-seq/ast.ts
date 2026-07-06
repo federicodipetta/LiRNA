@@ -10,6 +10,7 @@ export type LiRNAFormula =
   | { kind: "and"; left: LiRNAFormula; right: LiRNAFormula }
   | { kind: "or"; left: LiRNAFormula; right: LiRNAFormula }
   | { kind: "rho"; rho: AtomicRho }
+  | { kind: "dot" }
   | { kind: "next"; formula: LiRNAFormula }
   | { kind: "until"; left: LiRNAFormula; right: LiRNAFormula }
   | { kind: "eventually"; formula: LiRNAFormula }
@@ -38,6 +39,7 @@ export type TokenType =
   | "RHO"
   | "EXISTS"
   | "FORALL"
+  | "DOT"
   | "EOF"
   ;
 

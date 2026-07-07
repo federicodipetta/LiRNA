@@ -25,9 +25,11 @@ const NOT_PAIRED_SEQUENCE = `
 `
 
 const PSEUDOKNOT = `
-<>( l1> && O(
-    !l1< U(l2> && !l2< U l1<)
-)) 
+<>((((<>l2>) && !(<> l2<)) @ l1) || ((<>(l2<) && !(<> l2>)) @ l1))
+`
+
+const HAIRPIN = `
+ <>((. && [] .) @ l)
 `
 
 function parseFormula(formula: string) {
@@ -43,6 +45,8 @@ const LiRNA_TRIPLE_HELIX = parseFormula(TRIPLE_HELIX_FORMULA);
 const LiRNA_NOT_PAIRED = parseFormula(NOT_PAIRED_SEQUENCE);
 
 const LiRNA_PSEUDOKNOT = parseFormula(PSEUDOKNOT);
+
+const LiRNA_HAIRPIN = parseFormula(HAIRPIN);
 
 // --- DATA STRUCTURES ---
 type Molecule = {
@@ -206,16 +210,21 @@ import fs from "fs";
 const ITERATIONS = 1;
 
 const benchmarks = [
-    // {
-    //     name: "TRIPLE_HELIX",
-    //     formula: LiRNA_TRIPLE_HELIX,
-    //     vars: new Set(["l1", "l2", "l3"])
-    // },
-    // {
-    //     name: "NOT_PAIRED",
-    //     formula: LiRNA_NOT_PAIRED,
-    //     vars: new Set<string>()
-    // },
+    {
+        name: "TRIPLE_HELIX",
+        formula: LiRNA_TRIPLE_HELIX,
+        vars: new Set(["l1", "l2", "l3"])
+    },
+    {
+        name: "NOT_PAIRED",
+        formula: LiRNA_NOT_PAIRED,
+        vars: new Set<string>()
+    },
+    {
+        name: "HAIRPIN",
+        formula: LiRNA_HAIRPIN,
+        vars: new Set<string>("l")
+    },
     {
         name: "PSEUDOKNOT",
         formula: LiRNA_PSEUDOKNOT,
@@ -242,7 +251,8 @@ describe("Benchmark", () => {
                 "justOne_ms",
                 "readable_ms",
                 "total_ms",
-                "solutions"
+                "solutions",
+                "Sat"
             ].join(",")
         );
 
@@ -256,6 +266,7 @@ describe("Benchmark", () => {
                 let justOneTotal = 0;
                 let readableTotal = 0;
                 let solutions = 0;
+                let satisfied = false;
 
                 for (let i = 0; i < ITERATIONS; i++) {
 
@@ -291,6 +302,10 @@ describe("Benchmark", () => {
                     readableTotal += t3 - t2;
 
                     solutions = readable.filter(r => r.satisfied).length;
+                    if (i === 0) {
+                        fs.writeFileSync(`${bench.name}_${molecule.name}_output.json`, JSON.stringify(readable, null, 2));
+                    }
+                    satisfied = readable[0]?.satisfied || false;
                 }
 
                 const buildAvg = buildTotal / ITERATIONS;
@@ -308,7 +323,8 @@ describe("Benchmark", () => {
                     justAvg.toFixed(3),
                     readAvg.toFixed(3),
                     total.toFixed(3),
-                    solutions
+                    solutions,
+                    satisfied
                 ].join(","));
 
                 console.log(

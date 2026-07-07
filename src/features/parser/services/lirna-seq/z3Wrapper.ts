@@ -73,7 +73,6 @@ export class Z3Wrapper {
         const solution = [];
         let solver = new Solver();
         solver.add(constraint);
-
         this.initializeDomainConstraints(solver);
         try {
             while (await solver.check() === "sat") {
@@ -98,6 +97,22 @@ export class Z3Wrapper {
             console.error("Error while solving constraints:", error);
         }
         return solution;
+    }
+
+    public async areEquivalent(a: Constraint, b: Constraint): Promise<boolean> {
+        const solver = new Solver();
+
+        this.initializeDomainConstraints(solver);
+
+        // (A && !B) || (B && !A)
+        solver.add(
+            Or(
+                And(a, Z3.Not(b)),
+                And(b, Z3.Not(a))
+            )
+        );
+
+        return (await solver.check()) === "unsat";
     }
 
 }

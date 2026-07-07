@@ -68,7 +68,9 @@ describe("TEST for generating JSON for 4plx", () => {
         // Write the result to a JSON file
         fs.writeFileSync("4plx.json", JSON.stringify(readableSatSet, null, 2));
 
-        expect(readableSatSet.filter(r => r.satisfied).length).toBeGreaterThan(1);
+        expect(readableSatSet.filter(r => r.satisfied).length).equal(1);
+        let satified = readableSatSet.filter(r => r.satisfied)[0];
+        expect(satified.substitutions.length).equal(5);
     });
 
     it("should find triple helix", async () => {
@@ -87,7 +89,7 @@ describe("TEST for generating JSON for 4plx", () => {
                 l3: { start: 5, end: 4 }
             }
         ];
-        expect(result.filter(r => r.satisfied).length).toEqual(2);
+        expect(result.filter(r => r.satisfied).length).toEqual(3);
 
     })
 })

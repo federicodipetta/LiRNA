@@ -1,5 +1,5 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3 } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3, And } from "./z3Wrapper";
 
 export type BasePair = {
     id: string;
@@ -144,8 +144,16 @@ export function satNot(set: SatSet): SatSet {
 
 export function satRho(context: SatContext, rho: AtomicRho): SatSet {
     const entries: SatSet = [];
-    const orderedBonds = rho.kind === "up" ? context.bonsFromStart : context.bonsFromEnd;
+    const orderedBonds = rho.kind === "up" 
+        ? context.bonsFromStart.filter(bond => bond.start >= context.sequenceStart && bond.start <= context.sequenceLength)
+        : context.bonsFromEnd.filter(bond => bond.end >= context.sequenceStart && bond.end <= context.sequenceLength);
     let lastPosition = context.sequenceStart;
+    if (orderedBonds.length === 0) {
+        entries.push({
+            timeRange: { start: context.sequenceStart, end: context.sequenceLength },
+            constraint: FALSE,
+        });
+    }
     for (const currentBond of orderedBonds) {
         const postiion = rho.kind === "up" ? currentBond.start : currentBond.end;
 
@@ -181,10 +189,8 @@ export function satRho(context: SatContext, rho: AtomicRho): SatSet {
 export function satEventually(context: SatContext, set: SatSet): SatSet {
     let result = [];
     let constraint = FALSE;
-    for (let i = set.length - 1; i > 0; i -= 1) {
-        if (set[i].constraint !== FALSE) {
-            constraint = constraint.or(set[i].constraint);
-        }
+    for (let i = set.length - 1; i >= 0; i -= 1) {
+        constraint = constraint.or(set[i].constraint);
         result.push({
             timeRange: {
                 start: set[i].timeRange.start,
@@ -193,16 +199,22 @@ export function satEventually(context: SatContext, set: SatSet): SatSet {
             constraint: constraint,
         });
     }
-    if (set[0].constraint !== FALSE)
+    return result.reverse();
+}
+
+export function satAlways(context: SatContext, set: SatSet): SatSet {
+    let result = [];
+    let constraint = TRUE;
+    for (let i = set.length - 1; i >= 0; i -= 1) {
+        constraint = constraint.and(set[i].constraint);
         result.push({
             timeRange: {
-                start: context.sequenceStart,
-                end: set[0].timeRange.end,
+                start: set[i].timeRange.start,
+                end: set[i].timeRange.end,
             },
-            constraint: constraint.or(set[0].constraint),
+            constraint: constraint,
         });
-    else
-        result[result.length - 1].timeRange.start = context.sequenceStart;
+    }
     return result.reverse();
 }
 
@@ -284,19 +296,27 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
         const newEntry = {
             ...newSat[0],
             timeRange: {
-                start: context.sequenceStart,
-                end: bond.start - 1,
+                start: bond.start,
+                end: bond.start,
             },
             constraint: newSat[0].constraint.and(eq(label, Number(bond.id))),
         }
         const complementEntry = {
             timeRange: {
-                start: bond.start,
+                start: bond.start + 1,
                 end: context.sequenceLength,
             },
             constraint: FALSE,
         }
-        satAt = satOr(context, satAt, [newEntry, complementEntry]);
+        
+        const prev = {
+            timeRange: {
+                start: context.sequenceStart,
+                end: bond.start - 1,
+            },
+            constraint: FALSE,
+        }
+        satAt = satOr(context, satAt, [prev, newEntry, complementEntry]);
     }
 
     return satAt;
@@ -359,8 +379,12 @@ export function satDot(context: SatContext): SatSet {
     const result: SatSet = [];
     const bondPoints = new Set<number>();
     for (const bond of context.bonsFromStart) {
-        bondPoints.add(bond.start);
-        bondPoints.add(bond.end);
+        if (bond.start >= context.sequenceStart && bond.start <= context.sequenceLength) {
+            bondPoints.add(bond.start);
+        }
+        if (bond.end >= context.sequenceStart && bond.end <= context.sequenceLength) {
+            bondPoints.add(bond.end);
+        }
     }
 
     for (let i = context.sequenceStart; i <= context.sequenceLength; i += 1) {
@@ -412,7 +436,7 @@ export function sat(context: SatContext, formula: Formula): SatSet {
         case "at":
             return satAt(context, formula.formula, formula.label);
         case "always":
-            return satEventually(context, satNot(sat(context, formula.formula)));
+            return satNot(satEventually(context, satNot(sat(context, formula.formula))));
         case "exists":
             return satExists(context, sat(context, formula.formula), formula.label);
         case "forall":
@@ -459,24 +483,32 @@ export function AlignSatSets(s1: SatSet, s2: SatSet): [SatSet, SatSet] {
 
 export function cutSatContext(context: SatContext, start: number, end: number): SatContext {
     const cutSequence = context.sequence.slice(start, end + 1);
-    const cutBondsFromStart = context.bonsFromStart.filter((bond) => bond.start > start && bond.end < end)
-        .map((bond) => ({
-            ...bond,
-            start: bond.start - start,
-            end: bond.end - start,
-        }));
-    const cutBondsFromEnd = context.bonsFromEnd.filter((bond) => bond.start > start && bond.end < end)
-        .map((bond) => ({
-            ...bond,
-            start: bond.start - start,
-            end: bond.end - start,
-        }));
+    // const cutBondsFromStart = context.bonsFromStart.filter((bond) => bond.start > start && bond.end < end)
+    //     .map((bond) => ({
+    //         ...bond,
+    //         start: bond.start - start,
+    //         end: bond.end - start,
+    //     }));
+    // const cutBondsFromEnd = context.bonsFromEnd.filter((bond) => bond.start > start && bond.end < end)
+    //     .map((bond) => ({
+    //         ...bond,
+    //         start: bond.start - start,
+    //         end: bond.end - start,
+    //     }));
     return {
         sequence: cutSequence,
         sequenceLength: cutSequence.length - 1,
         sequenceStart: 0,
-        bonsFromStart: cutBondsFromStart,
-        bonsFromEnd: cutBondsFromEnd,
+        bonsFromStart: context.bonsFromStart.map((bond) => ({
+            ...bond,
+            start: bond.start - start,
+            end: bond.end - start,
+        })),
+        bonsFromEnd: context.bonsFromEnd.map((bond) => ({
+            ...bond,
+            start: bond.start - start,
+            end: bond.end - start,
+        })),
     };
 }
 
@@ -493,62 +525,61 @@ export interface ReadableSatEntry {
 export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
     const result: ReadableSatEntry[] = [];
     wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+
+    const groups: {
+        representative: Constraint;
+        entries: typeof set;
+    }[] = [];
+
     for (const entry of set) {
-        const solutions = await wrapper.getSolutions(entry.constraint);
-        const readableSolutions = solutions.map((solution) => {
-            return Object.keys(solution)
+        if (groups.length === 0) {
+            groups.push({
+                representative: entry.constraint,
+                entries: [entry],
+            });
+            continue;
+        }
+
+        const currentGroup = groups[groups.length - 1];
+
+        if (await wrapper.areEquivalent(entry.constraint, currentGroup.representative)) {
+            currentGroup.entries.push(entry);
+        } else {
+            groups.push({
+                representative: entry.constraint,
+                entries: [entry],
+            });
+        }
+    }
+
+    for (const group of groups) {
+        const solutions = await wrapper.getSolutions(group.representative);
+
+        const readableSolutions = solutions.map(solution =>
+            Object.keys(solution)
                 .sort()
-                .reduce<ReadableSubstitution>((accumulator, variable) => {
-                    accumulator[variable] = solution[variable];
-                    return accumulator;
-                }, {});
-        });
-        result.push({
-            interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
-            constraint: "entry.constraint",
-            substitutions: readableSolutions,
-            satisfied: readableSolutions.length > 0,
-        });
-        //  let solver = new Solver();
-        // if (await solver.check(entry.constraint) === "unsat") {
-        //     result.push({
-        //         interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
-        //         constraint: entry.constraint.toString(),
-        //         substitutions: [],
-        //         satisfied: false,
-        //     });
-        //     continue;
-        // } else {
-        //     let solutions = [];
-        //     do {
-        //         const solutionEntry: Record<string, string> = {};
-        //         const model = solver.model();
-        //         variables.forEach(variable => {
-        //             solutionEntry[variable] = model.get(Int.const(variable)).toString();
-        //         });
-        //         solutions.push(solutionEntry);
-        //         const neqConstraints = Array.from(variables).map(variable => 
-        //             Int.const(variable).neq(model.get(Int.const(variable)))
-        //         );
-        //         solver.add(Or(...neqConstraints));
-        //     } while (await solver.check(entry.constraint) === "sat" && await solver.model() !== null);
-        //     result.push({
-        //         interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
-        //         constraint: entry.constraint.toString(),
-        //         substitutions: solutions.map(solution => ({
-        //             variable: Object.keys(solution)[0],
-        //             bond: solution[Object.keys(solution)[0]],
-        //         })),
-        //         satisfied: true,
-        //     });
-        // }
+                .reduce<ReadableSubstitution>((acc, variable) => {
+                    acc[variable] = solution[variable];
+                    return acc;
+                }, {})
+        );
+
+        for (const entry of group.entries) {
+            result.push({
+                interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
+                constraint: entry.constraint.toString(),
+                substitutions: readableSolutions,
+                satisfied: readableSolutions.length > 0,
+            });
+        }
     }
     // Now merge intervals with the same substitutions and satisfied status
 
     const mergedResult: ReadableSatEntry[] = [];
     for (const entry of result) {
         const lastEntry = mergedResult[mergedResult.length - 1];
-        if (lastEntry && lastEntry.satisfied === entry.satisfied && JSON.stringify(lastEntry.substitutions) === JSON.stringify(entry.substitutions)) {
+        // check if the last entry has the same substitutions and satisfied status as the current entry
+        if (lastEntry && lastEntry.satisfied === entry.satisfied && equalsSubstitutions(lastEntry.substitutions || [], entry.substitutions || [])) {
             lastEntry.interval = `[${lastEntry.interval.split(",")[0].slice(1)}, ${entry.interval.split(",")[1].slice(0, -1)}]`;
         }
         else {
@@ -608,4 +639,21 @@ export function formatFormula(formula: Formula): string {
         case "forall":
             return `A(${formatFormula(formula.formula)}, ${formula.label})`;
     }
+}
+
+function equalsSubstitutions(s1: ReadableSubstitution[], s2: ReadableSubstitution[]): boolean {
+    if (s1.length !== s2.length) {
+        return false;
+    }
+
+    for (const subst of s1) {
+        for (const key in subst) {
+            if (!s2.some(s => s[key] === subst[key])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+
 }

@@ -1,139 +1,17 @@
 [
   {
-    "interval": "[0,  0]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or (or false (= l2 16))\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!18 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!19 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!20 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!22 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!24 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!27 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!28 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!29 (or (or false (= l2 16))\n                (= l2 15)\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)))\n      (a!30 (or false\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!32 (or false\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!33 (or false\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!35 (or false\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!39 (or false\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!21 (and a!20 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!23 (and a!22 (not (or a!20 (= l2 9))) (= l1 8)))\n      (a!25 (and (or (or a!20 (= l2 9)) (= l2 8)) (not a!24) (= l1 7)))\n      (a!26 (not (or (or a!20 (= l2 9)) (= l2 8))))\n      (a!31 (or (or (or a!9 (= l2 14)) (= l2 13))\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)\n                (= l2 5))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false))\n      (a!17 (or (or (or a!2 false) false) a!16 false false false false false))\n      (a!34 (and a!33 (not (or a!31 (= l2 4))) (= l1 3)))\n      (a!36 (and (or (or a!31 (= l2 4)) (= l2 3)) (not a!35) (= l1 2)))\n      (a!37 (not (or (or a!31 (= l2 4)) (= l2 3))))\n      (a!38 (or (or (or a!31 (= l2 4)) (= l2 3)) (= l2 2))))\n(let ((a!4 (or (or (or (or a!3 false) false) false) false)))\n  (or false\n      (or a!4 a!4)\n      (or (or (or a!3 false) false) false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or (or (or a!3 false) false) false)\n      a!6\n      (or (or a!3 false) false)\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      (or (or a!3 false) false)\n      a!8\n      false\n      (or a!3 false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or a!3 false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      a!3\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      a!3\n      a!12\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      a!14\n      false\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      a!17\n      a!17\n      (or a!2 false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      a!19\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      a!21\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      (and (or false (= l2 10) (= l2 11) false) (not a!20) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      (and (or a!20 (= l2 9)) (not a!22) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!23\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!25\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and a!24 a!26 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      (or a!1 false)\n      (and a!27 (not a!28) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and a!28 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!29 (not a!30) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!30 (not a!29) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!31 (not a!32) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!32 (not a!31) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      (and (or a!31 (= l2 4)) (not a!33) (= l1 3))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      a!34\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or false false)\n      a!36\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or false false)\n      (and a!35 a!37 (= l1 2))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (and a!38 (not a!39) (= l1 1))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (and a!39 (not a!38) (= l1 1))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!4 a!4))))))",
+    "interval": "[0, -1]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[0, 0]",
+    "constraint": "(let ((a!1 (and (or false\n                    false\n                    (= l2 16)\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4)\n                    (= l2 3)\n                    (= l2 2))\n                (not (or false\n                         (= l2 2)\n                         (= l2 3)\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         false\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 1))))\n  (or false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
       {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "4",
-        "l2": "12"
-      },
-      {
-        "l1": "4",
+        "l1": "1",
         "l2": "13"
-      },
-      {
-        "l1": "4",
-        "l2": "14"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "3",
-        "l2": "16"
-      },
-      {
-        "l1": "3",
-        "l2": "14"
-      },
-      {
-        "l1": "6",
-        "l2": "14"
-      },
-      {
-        "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "2",
-        "l2": "16"
-      },
-      {
-        "l1": "5",
-        "l2": "16"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "5",
-        "l2": "14"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "5",
-        "l2": "12"
-      },
-      {
-        "l1": "3",
-        "l2": "12"
-      },
-      {
-        "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "3",
-        "l2": "13"
-      },
-      {
-        "l1": "2",
-        "l2": "12"
-      },
-      {
-        "l1": "2",
-        "l2": "14"
-      },
-      {
-        "l1": "2",
-        "l2": "13"
-      },
-      {
-        "l1": "2",
-        "l2": "15"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
       },
       {
         "l1": "1",
@@ -141,990 +19,142 @@
       },
       {
         "l1": "1",
-        "l2": "13"
+        "l2": "15"
+      },
+      {
+        "l1": "1",
+        "l2": "16"
       },
       {
         "l1": "1",
         "l2": "14"
-      },
-      {
-        "l1": "5",
-        "l2": "13"
-      },
-      {
-        "l1": "4",
-        "l2": "16"
-      },
-      {
-        "l1": "1",
-        "l2": "16"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "4",
-        "l2": "15"
-      },
-      {
-        "l1": "1",
-        "l2": "15"
-      },
-      {
-        "l1": "5",
-        "l2": "15"
-      },
-      {
-        "l1": "6",
-        "l2": "15"
-      },
-      {
-        "l1": "3",
-        "l2": "15"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
       }
     ],
     "satisfied": true
   },
   {
     "interval": "[1, 1]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or (or false (= l2 16))\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!18 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!19 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!20 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!22 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!24 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!27 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!28 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!29 (or (or false (= l2 16))\n                (= l2 15)\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)))\n      (a!30 (or false\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!32 (or false\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!33 (or false\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!35 (or false\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!21 (and a!20 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!23 (and a!22 (not (or a!20 (= l2 9))) (= l1 8)))\n      (a!25 (and (or (or a!20 (= l2 9)) (= l2 8)) (not a!24) (= l1 7)))\n      (a!26 (not (or (or a!20 (= l2 9)) (= l2 8))))\n      (a!31 (or (or (or a!9 (= l2 14)) (= l2 13))\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)\n                (= l2 5))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false))\n      (a!17 (or (or (or a!2 false) false) a!16 false false false false false))\n      (a!34 (and a!33 (not (or a!31 (= l2 4))) (= l1 3)))\n      (a!36 (and (or (or a!31 (= l2 4)) (= l2 3)) (not a!35) (= l1 2)))\n      (a!37 (not (or (or a!31 (= l2 4)) (= l2 3)))))\n(let ((a!4 (or (or (or (or a!3 false) false) false) false)))\n  (or false\n      (or a!4 a!4)\n      (or (or (or a!3 false) false) false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or (or (or a!3 false) false) false)\n      a!6\n      (or (or a!3 false) false)\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      (or (or a!3 false) false)\n      a!8\n      false\n      (or a!3 false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or a!3 false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      a!3\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      a!3\n      a!12\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      a!14\n      false\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      a!17\n      a!17\n      (or a!2 false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      a!19\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      a!21\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      (and (or false (= l2 10) (= l2 11) false) (not a!20) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      (and (or a!20 (= l2 9)) (not a!22) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!23\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!25\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and a!24 a!26 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      (or a!1 false)\n      (and a!27 (not a!28) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and a!28 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!29 (not a!30) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!30 (not a!29) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!31 (not a!32) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!32 (not a!31) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      (and (or a!31 (= l2 4)) (not a!33) (= l1 3))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      a!34\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or false false)\n      a!36\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or false false)\n      (and a!35 a!37 (= l1 2))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false)))))",
+    "constraint": "(let ((a!1 (and (or (or false false)\n                    (= l2 16)\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4)\n                    (= l2 3))\n                (not (or false\n                         (= l2 3)\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         false\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 2))))\n  (or (or false false)\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
       {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "5",
-        "l2": "12"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "4",
-        "l2": "13"
-      },
-      {
-        "l1": "4",
-        "l2": "15"
-      },
-      {
-        "l1": "4",
-        "l2": "12"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "3",
-        "l2": "15"
-      },
-      {
-        "l1": "5",
-        "l2": "15"
-      },
-      {
-        "l1": "6",
-        "l2": "15"
-      },
-      {
-        "l1": "2",
-        "l2": "15"
-      },
-      {
-        "l1": "2",
-        "l2": "14"
-      },
-      {
-        "l1": "2",
-        "l2": "13"
-      },
-      {
-        "l1": "2",
-        "l2": "12"
-      },
-      {
-        "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "3",
-        "l2": "12"
-      },
-      {
-        "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "3",
-        "l2": "13"
-      },
-      {
-        "l1": "5",
-        "l2": "13"
-      },
-      {
-        "l1": "6",
-        "l2": "14"
-      },
-      {
-        "l1": "3",
-        "l2": "14"
-      },
-      {
-        "l1": "5",
-        "l2": "14"
-      },
-      {
-        "l1": "4",
-        "l2": "14"
-      },
-      {
         "l1": "2",
         "l2": "16"
       },
       {
-        "l1": "3",
-        "l2": "16"
+        "l1": "2",
+        "l2": "12"
       },
       {
-        "l1": "5",
-        "l2": "16"
+        "l1": "2",
+        "l2": "15"
       },
       {
-        "l1": "4",
-        "l2": "16"
+        "l1": "2",
+        "l2": "13"
       },
       {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
+        "l1": "2",
+        "l2": "14"
       }
     ],
     "satisfied": true
   },
   {
     "interval": "[2, 2]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or (or false (= l2 16))\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!18 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!19 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!20 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!22 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!24 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!27 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!28 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!29 (or (or false (= l2 16))\n                (= l2 15)\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)))\n      (a!30 (or false\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!32 (or false\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!33 (or false\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!21 (and a!20 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!23 (and a!22 (not (or a!20 (= l2 9))) (= l1 8)))\n      (a!25 (and (or (or a!20 (= l2 9)) (= l2 8)) (not a!24) (= l1 7)))\n      (a!26 (not (or (or a!20 (= l2 9)) (= l2 8))))\n      (a!31 (or (or (or a!9 (= l2 14)) (= l2 13))\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)\n                (= l2 5))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false))\n      (a!17 (or (or (or a!2 false) false) a!16 false false false false false))\n      (a!34 (and a!33 (not (or a!31 (= l2 4))) (= l1 3))))\n(let ((a!4 (or (or (or (or a!3 false) false) false) false)))\n  (or false\n      (or a!4 a!4)\n      (or (or (or a!3 false) false) false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or (or (or a!3 false) false) false)\n      a!6\n      (or (or a!3 false) false)\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      (or (or a!3 false) false)\n      a!8\n      false\n      (or a!3 false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or a!3 false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      a!3\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      a!3\n      a!12\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      a!14\n      false\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      a!17\n      a!17\n      (or a!2 false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      a!19\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      a!21\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      (and (or false (= l2 10) (= l2 11) false) (not a!20) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      (and (or a!20 (= l2 9)) (not a!22) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!23\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!25\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and a!24 a!26 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      (or a!1 false)\n      (and a!27 (not a!28) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and a!28 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!29 (not a!30) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!30 (not a!29) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!31 (not a!32) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!32 (not a!31) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      (and (or a!31 (= l2 4)) (not a!33) (= l1 3))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or false false) false)\n      a!34\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false)))))",
+    "constraint": "(let ((a!1 (and (or (or false false)\n                    (= l2 16)\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4))\n                (not (or false\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         false\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 3))))\n  (or (or false false)\n      false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
       {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "3",
-        "l2": "12"
-      },
-      {
-        "l1": "5",
-        "l2": "12"
-      },
-      {
-        "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "4",
-        "l2": "12"
-      },
-      {
-        "l1": "4",
-        "l2": "13"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "5",
-        "l2": "13"
-      },
-      {
-        "l1": "3",
-        "l2": "13"
-      },
-      {
-        "l1": "4",
-        "l2": "14"
-      },
-      {
-        "l1": "6",
-        "l2": "14"
-      },
-      {
-        "l1": "5",
-        "l2": "14"
-      },
-      {
-        "l1": "3",
-        "l2": "14"
-      },
-      {
-        "l1": "6",
-        "l2": "15"
-      },
-      {
-        "l1": "4",
-        "l2": "15"
-      },
-      {
-        "l1": "5",
-        "l2": "15"
-      },
-      {
-        "l1": "3",
-        "l2": "15"
-      },
-      {
-        "l1": "4",
-        "l2": "16"
-      },
-      {
-        "l1": "5",
-        "l2": "16"
-      },
-      {
         "l1": "3",
         "l2": "16"
       },
       {
-        "l1": "15",
-        "l2": "6"
+        "l1": "3",
+        "l2": "12"
       },
       {
-        "l1": "14",
-        "l2": "6"
+        "l1": "3",
+        "l2": "15"
       },
       {
-        "l1": "12",
-        "l2": "6"
+        "l1": "3",
+        "l2": "13"
+      },
+      {
+        "l1": "3",
+        "l2": "14"
       }
     ],
     "satisfied": true
   },
   {
     "interval": "[3, 3]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or (or false (= l2 16))\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!18 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!19 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!20 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!22 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!24 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!27 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!28 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!29 (or (or false (= l2 16))\n                (= l2 15)\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)))\n      (a!30 (or false\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!32 (or false\n                (= l2 5)\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!21 (and a!20 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!23 (and a!22 (not (or a!20 (= l2 9))) (= l1 8)))\n      (a!25 (and (or (or a!20 (= l2 9)) (= l2 8)) (not a!24) (= l1 7)))\n      (a!26 (not (or (or a!20 (= l2 9)) (= l2 8))))\n      (a!31 (or (or (or a!9 (= l2 14)) (= l2 13))\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)\n                (= l2 5))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false))\n      (a!17 (or (or (or a!2 false) false) a!16 false false false false false)))\n(let ((a!4 (or (or (or (or a!3 false) false) false) false)))\n  (or false\n      (or a!4 a!4)\n      (or (or (or a!3 false) false) false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or (or (or a!3 false) false) false)\n      a!6\n      (or (or a!3 false) false)\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      (or (or a!3 false) false)\n      a!8\n      false\n      (or a!3 false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or a!3 false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      a!3\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      a!3\n      a!12\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      a!14\n      false\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      a!17\n      a!17\n      (or a!2 false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      a!19\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      a!21\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      (and (or false (= l2 10) (= l2 11) false) (not a!20) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      (and (or a!20 (= l2 9)) (not a!22) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!23\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!25\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and a!24 a!26 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!4 a!4)\n      (or a!1 false)\n      (and a!27 (not a!28) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and a!28 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!29 (not a!30) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!30 (not a!29) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!31 (not a!32) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false)\n      (and a!32 (not a!31) (= l1 4))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false)))))",
+    "constraint": "(let ((a!1 (and (or (or false false)\n                    (= l2 16)\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false\n                    (= l2 6)\n                    (= l2 5))\n                (not (or false\n                         (= l2 5)\n                         (= l2 6)\n                         false\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 4))))\n  (or (or false false)\n      false\n      false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
       {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "5",
-        "l2": "12"
-      },
-      {
-        "l1": "5",
-        "l2": "14"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "4",
-        "l2": "14"
-      },
-      {
-        "l1": "4",
-        "l2": "15"
-      },
-      {
         "l1": "4",
         "l2": "16"
       },
       {
-        "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "5",
-        "l2": "16"
-      },
-      {
-        "l1": "6",
-        "l2": "15"
-      },
-      {
-        "l1": "6",
-        "l2": "14"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "5",
-        "l2": "13"
-      },
-      {
-        "l1": "4",
-        "l2": "13"
-      },
-      {
         "l1": "4",
         "l2": "12"
       },
       {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "5",
+        "l1": "4",
         "l2": "15"
       },
       {
-        "l1": "12",
-        "l2": "5"
+        "l1": "4",
+        "l2": "14"
       },
       {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
+        "l1": "4",
+        "l2": "13"
       }
     ],
     "satisfied": true
   },
   {
     "interval": "[4, 4]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or (or false (= l2 16))\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!18 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!19 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!20 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!22 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!24 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!27 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!28 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false))\n      (a!29 (or (or false (= l2 16))\n                (= l2 15)\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false\n                (= l2 6)))\n      (a!30 (or false\n                (= l2 6)\n                false\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!21 (and a!20 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!23 (and a!22 (not (or a!20 (= l2 9))) (= l1 8)))\n      (a!25 (and (or (or a!20 (= l2 9)) (= l2 8)) (not a!24) (= l1 7)))\n      (a!26 (not (or (or a!20 (= l2 9)) (= l2 8)))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false))\n      (a!17 (or (or a!2 false) a!16 false false false false false)))\n(let ((a!4 (or (or (or (or a!3 false) false) false)\n               (or (or (or a!3 false) false) false))))\n  (or false\n      a!4\n      (or (or a!3 false) false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or (or a!3 false) false)\n      a!6\n      (or a!3 false)\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      (or a!3 false)\n      a!8\n      false\n      a!3\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      a!3\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      a!12\n      false\n      false\n      false\n      (or (or a!2 false) false)\n      a!14\n      false\n      false\n      false\n      false\n      (or (or a!2 false) false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      a!4\n      a!17\n      a!17\n      a!2\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      a!2\n      a!19\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!21\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      (and (or false (= l2 10) (= l2 11) false) (not a!20) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and (or a!20 (= l2 9)) (not a!22) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!23\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      a!25\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and a!24 a!26 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!4\n      a!1\n      (and a!27 (not a!28) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!28 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false false)\n      (and a!29 (not a!30) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false false)\n      (and a!30 (not a!29) (= l1 5))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false)))))",
+    "constraint": "(let ((a!1 (and (or false\n                    (= l2 16)\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false\n                    (= l2 6))\n                (not (or false\n                         (= l2 6)\n                         false\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 5))))\n  (or false\n      false\n      false\n      false\n      false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "6",
-        "l2": "15"
-      },
-      {
-        "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "5",
-        "l2": "13"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "5",
-        "l2": "12"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "5",
-        "l2": "14"
-      },
-      {
-        "l1": "6",
-        "l2": "14"
-      },
       {
         "l1": "5",
         "l2": "16"
       },
       {
         "l1": "5",
+        "l2": "12"
+      },
+      {
+        "l1": "5",
         "l2": "15"
+      },
+      {
+        "l1": "5",
+        "l2": "13"
+      },
+      {
+        "l1": "5",
+        "l2": "14"
       }
     ],
     "satisfied": true
   },
   {
     "interval": "[5, 5]",
-    "constraint": "(let ((a!1 (or (or (or (or false false) false) false false false) false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or false\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or (or false (= l2 15))\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!17 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!18 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!19 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!21 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!23 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false))\n      (a!26 (or (or false (= l2 15))\n                (= l2 14)\n                (= l2 13)\n                (= l2 12)\n                false\n                (= l2 11)\n                (= l2 10)\n                (= l2 9)\n                (= l2 8)\n                (= l2 7)\n                false))\n      (a!27 (or (or false false)\n                (= l2 7)\n                (= l2 8)\n                (= l2 9)\n                (= l2 10)\n                (= l2 11)\n                false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!20 (and a!19 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!22 (and a!21 (not (or a!19 (= l2 9))) (= l1 8)))\n      (a!24 (and (or (or a!19 (= l2 9)) (= l2 8)) (not a!23) (= l1 7)))\n      (a!25 (not (or (or a!19 (= l2 9)) (= l2 8)))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false)))\n(let ((a!4 (or (or (or a!3 false) false) (or (or a!3 false) false))))\n  (or false\n      a!4\n      (or a!3 false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or a!3 false)\n      a!6\n      a!3\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      a!3\n      a!8\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      (or (or a!2 false) false)\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      (or (or a!2 false) false)\n      a!12\n      false\n      false\n      false\n      (or a!2 false)\n      a!14\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      a!4\n      (or a!2 a!16 false false false false false)\n      (or a!2 a!16 false false false false false)\n      (or (or (or a!1 false) false) false)\n      a!17\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!20\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and (or false (= l2 10) (= l2 11) false) (not a!19) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and (or a!19 (= l2 9)) (not a!21) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      a!22\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      a!24\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!23 a!25 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!4\n      (or (or (or false false) false) false false false)\n      (and a!26 (not a!27) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or false false) false) false false false)\n      (and a!27 (not a!26) (= l1 6))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false)))))",
+    "constraint": "(let ((a!1 (and (or false\n                    (= l2 15)\n                    (= l2 14)\n                    (= l2 13)\n                    (= l2 12)\n                    false\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    (= l2 8)\n                    (= l2 7)\n                    false)\n                (not (or (or false false)\n                         (= l2 7)\n                         (= l2 8)\n                         (= l2 9)\n                         (= l2 10)\n                         (= l2 11)\n                         false))\n                (= l1 6))))\n  (or (or false false)\n      false\n      false\n      false\n      false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
     "substitutions": [
       {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
         "l1": "6",
-        "l2": "13"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
+        "l2": "12"
       },
       {
         "l1": "6",
         "l2": "14"
       },
       {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
         "l1": "6",
-        "l2": "12"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
+        "l2": "13"
       },
       {
         "l1": "6",
@@ -1134,383 +164,8 @@
     "satisfied": true
   },
   {
-    "interval": "[6,  26]",
-    "constraint": "(let ((a!1 (or (or (or false false) false) false false false false))\n      (a!5 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!7 (or false\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!9 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!10 (or false\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!11 (or false\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!13 (or false\n                (= l2 13)\n                (= l2 14)\n                (= l2 15)\n                (= l2 16)\n                false\n                (= l2 1)\n                (= l2 2)\n                (= l2 3)\n                (= l2 4)\n                (= l2 5)\n                (= l2 6)\n                false))\n      (a!16 (and (or (or false false) false)\n                 (not (or (or false false) false))\n                 (= l1 11)))\n      (a!17 (and (or (or false false) (= l2 11))\n                 (not (or false (= l2 11) false))\n                 (= l1 10)))\n      (a!18 (and (or false (= l2 11) false)\n                 (not (or (or false false) (= l2 11)))\n                 (= l1 10)))\n      (a!19 (or (or (or false false) (= l2 11)) (= l2 10)))\n      (a!21 (or false (= l2 9) (= l2 10) (= l2 11) false))\n      (a!23 (or false (= l2 8) (= l2 9) (= l2 10) (= l2 11) false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!6 (and a!5 (not (or (or false false) false)) (= l1 16)))\n      (a!8 (and a!7 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!12 (and a!11 (not (or a!9 (= l2 14))) (= l1 13)))\n      (a!14 (and (or (or a!9 (= l2 14)) (= l2 13)) (not a!13) (= l1 12)))\n      (a!15 (not (or (or a!9 (= l2 14)) (= l2 13))))\n      (a!20 (and a!19 (not (or false (= l2 10) (= l2 11) false)) (= l1 9)))\n      (a!22 (and a!21 (not (or a!19 (= l2 9))) (= l1 8)))\n      (a!24 (and (or (or a!19 (= l2 9)) (= l2 8)) (not a!23) (= l1 7)))\n      (a!25 (not (or (or a!19 (= l2 9)) (= l2 8)))))\n(let ((a!3 (or (or (or (or a!2 false) false) false) false)))\n(let ((a!4 (or (or (or a!3 false) false) (or (or a!3 false) false))))\n  (or false\n      a!4\n      (or a!3 false)\n      (and (or (or false false) false) (not a!5) (= l1 16))\n      (or a!3 false)\n      a!6\n      a!3\n      (and (or (or false false) (= l2 16)) (not a!7) (= l1 15))\n      false\n      a!3\n      a!8\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!9 (not a!10) (= l1 14))\n      false\n      false\n      (or (or (or a!2 false) false) false)\n      (and a!10 (not a!9) (= l1 14))\n      false\n      false\n      (or (or a!2 false) false)\n      (and (or a!9 (= l2 14)) (not a!11) (= l1 13))\n      false\n      false\n      false\n      (or (or a!2 false) false)\n      a!12\n      false\n      false\n      false\n      (or a!2 false)\n      a!14\n      false\n      false\n      false\n      false\n      (or a!2 false)\n      (and a!13 a!15 (= l1 12))\n      false\n      false\n      false\n      false\n      a!4\n      (or a!2 a!16 false false false false false)\n      (or a!2 a!16 false false false false false)\n      (or (or (or a!1 false) false) false)\n      a!17\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or (or a!1 false) false) false)\n      a!18\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      a!20\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or (or a!1 false) false)\n      (and (or false (= l2 10) (= l2 11) false) (not a!19) (= l1 9))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      (and (or a!19 (= l2 9)) (not a!21) (= l1 8))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      (or a!1 false)\n      a!22\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      a!24\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!1\n      (and a!23 a!25 (= l1 7))\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      a!4)))))",
-    "substitutions": [
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "12",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "12",
-        "l2": "6"
-      },
-      {
-        "l1": "12",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "12",
-        "l2": "4"
-      },
-      {
-        "l1": "12",
-        "l2": "5"
-      },
-      {
-        "l1": "12",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      }
-    ],
-    "satisfied": true
-  },
-  {
-    "interval": "[27, 27]",
-    "constraint": "(let ((a!1 (or (or (or false false) false)\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false))\n      (a!3 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!5 (or false\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!7 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!8 (or false\n               (= l2 15)\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)\n               false))\n      (a!9 (or false\n               (= l2 14)\n               (= l2 15)\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)\n               false)))\n(let ((a!2 (or (or (or (or a!1 false) false) false) false))\n      (a!4 (and a!3 (not (or (or false false) false)) (= l1 16)))\n      (a!6 (and a!5 (not (or (or false false) (= l2 16))) (= l1 15)))\n      (a!10 (and a!9 (not (or a!7 (= l2 14))) (= l1 13))))\n  (or false\n      a!2\n      a!2\n      (or (or (or a!1 false) false) false)\n      (and (or (or false false) false) (not a!3) (= l1 16))\n      (or (or (or a!1 false) false) false)\n      a!4\n      (or (or a!1 false) false)\n      (and (or (or false false) (= l2 16)) (not a!5) (= l1 15))\n      false\n      (or (or a!1 false) false)\n      a!6\n      false\n      (or a!1 false)\n      (and a!7 (not a!8) (= l1 14))\n      false\n      false\n      (or a!1 false)\n      (and a!8 (not a!7) (= l1 14))\n      false\n      false\n      a!1\n      (and (or a!7 (= l2 14)) (not a!9) (= l1 13))\n      false\n      false\n      false\n      a!1\n      a!10\n      false\n      false\n      false)))",
-    "substitutions": [
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "1"
-      },
-      {
-        "l1": "13",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "13",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "13",
-        "l2": "2"
-      }
-    ],
-    "satisfied": true
-  },
-  {
-    "interval": "[28, 28]",
-    "constraint": "(let ((a!1 (or (or (or false false) false)\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false))\n      (a!2 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!4 (or false\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)))\n      (a!6 (or (or (or false false) (= l2 16)) (= l2 15)))\n      (a!7 (or false\n               (= l2 15)\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6)\n               false)))\n(let ((a!3 (and a!2 (not (or (or false false) false)) (= l1 16)))\n      (a!5 (and a!4 (not (or (or false false) (= l2 16))) (= l1 15))))\n  (or false\n      (or (or (or a!1 false) false) false)\n      (or (or (or a!1 false) false) false)\n      (or (or a!1 false) false)\n      (and (or (or false false) false) (not a!2) (= l1 16))\n      (or (or a!1 false) false)\n      a!3\n      (or a!1 false)\n      (and (or (or false false) (= l2 16)) (not a!4) (= l1 15))\n      false\n      (or a!1 false)\n      a!5\n      false\n      a!1\n      (and a!6 (not a!7) (= l1 14))\n      false\n      false\n      a!1\n      (and a!7 (not a!6) (= l1 14))\n      false\n      false)))",
-    "substitutions": [
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "14",
-        "l2": "6"
-      },
-      {
-        "l1": "14",
-        "l2": "5"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "14",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "14",
-        "l2": "4"
-      },
-      {
-        "l1": "14",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      }
-    ],
-    "satisfied": true
-  },
-  {
-    "interval": "[29, 29]",
-    "constraint": "(let ((a!1 (or (or (or false false) false)\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false))\n      (a!2 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5)))\n      (a!4 (or false\n               (= l2 16)\n               false\n               (= l2 1)\n               (= l2 2)\n               (= l2 3)\n               (= l2 4)\n               (= l2 5)\n               (= l2 6))))\n(let ((a!3 (and a!2 (not (or (or false false) false)) (= l1 16)))\n      (a!5 (and a!4 (not (or (or false false) (= l2 16))) (= l1 15))))\n  (or false\n      (or (or a!1 false) false)\n      (or (or a!1 false) false)\n      (or a!1 false)\n      (and (or (or false false) false) (not a!2) (= l1 16))\n      (or a!1 false)\n      a!3\n      a!1\n      (and (or (or false false) (= l2 16)) (not a!4) (= l1 15))\n      false\n      a!1\n      a!5\n      false)))",
-    "substitutions": [
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "2"
-      },
-      {
-        "l1": "15",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      },
-      {
-        "l1": "15",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "6"
-      },
-      {
-        "l1": "15",
-        "l2": "1"
-      },
-      {
-        "l1": "15",
-        "l2": "4"
-      }
-    ],
-    "satisfied": true
-  },
-  {
-    "interval": "[30, 30]",
-    "constraint": "(let ((a!1 (or (or (or false false) false)\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false))\n      (a!2 (or (or false false) (= l2 1) (= l2 2) (= l2 3) (= l2 4) (= l2 5))))\n(let ((a!3 (and a!2 (not (or (or false false) false)) (= l1 16))))\n  (or false\n      (or a!1 false)\n      (or a!1 false)\n      a!1\n      (and (or (or false false) false) (not a!2) (= l1 16))\n      a!1\n      a!3)))",
-    "substitutions": [
-      {
-        "l1": "16",
-        "l2": "5"
-      },
-      {
-        "l1": "16",
-        "l2": "2"
-      },
-      {
-        "l1": "16",
-        "l2": "3"
-      },
-      {
-        "l1": "16",
-        "l2": "1"
-      },
-      {
-        "l1": "16",
-        "l2": "4"
-      }
-    ],
-    "satisfied": true
-  },
-  {
-    "interval": "[31, 56]",
-    "constraint": "(let ((a!1 (or false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false)))\n  (or false a!1 a!1))",
+    "interval": "[6,  56]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
     "substitutions": [],
     "satisfied": false
   }

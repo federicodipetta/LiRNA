@@ -25,11 +25,11 @@ const NOT_PAIRED_SEQUENCE = `
 `
 
 const PSEUDOKNOT = `
-<>((((<>l2>) && !(<> l2<)) @ l1) || ((<>(l2<) && !(<> l2>)) @ l1))
+(((<>l2>) && !(<> l2<)) @ l1)
 `
 
 const HAIRPIN = `
- <>((. && [] .) @ l)
+    (. && [] .) @ l
 `
 
 function parseFormula(formula: string) {
@@ -166,6 +166,11 @@ const molecules: Molecule[] = [
             [81, 142],
             [82, 141]
         ]
+    },
+    {
+        name: "Not_Paired",
+        structure: "GGAAGGUUUUUCUUC".repeat(10), //len = 150
+        bonds: []
     }
 ]; // Reverse per avere le molecole più piccole prima, utile per il benchmark
 molecules.reverse();

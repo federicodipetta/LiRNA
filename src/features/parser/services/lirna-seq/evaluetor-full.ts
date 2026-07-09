@@ -308,7 +308,6 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
             },
             constraint: FALSE,
         }
-        
         const prev = {
             timeRange: {
                 start: context.sequenceStart,
@@ -316,7 +315,16 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
             },
             constraint: FALSE,
         }
-        satAt = satOr(context, satAt, [prev, newEntry, complementEntry]);
+        let result = [newEntry];
+
+        if (bond.start > context.sequenceStart) 
+            result.unshift(prev);
+
+        if (bond.start < context.sequenceLength)
+            result.push(complementEntry);
+            
+
+        satAt = satOr(context, satAt, result);
     }
 
     return satAt;

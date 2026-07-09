@@ -1,0 +1,95 @@
+[
+  {
+    "interval": "[0, -1]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[0, 0]",
+    "constraint": "(let ((a!1 (and (or false\n                    false\n                    (= l2 13)\n                    (= l2 12)\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    false\n                    (= l2 8)\n                    (= l2 7)\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4)\n                    false\n                    (= l2 3)\n                    (= l2 2))\n                (not (or false\n                         (= l2 2)\n                         (= l2 3)\n                         false\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         (= l2 7)\n                         (= l2 8)\n                         false))\n                (= l1 1))))\n  (or false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
+    "substitutions": [
+      {
+        "l1": "1",
+        "l2": "13"
+      },
+      {
+        "l1": "1",
+        "l2": "9"
+      },
+      {
+        "l1": "1",
+        "l2": "12"
+      },
+      {
+        "l1": "1",
+        "l2": "11"
+      },
+      {
+        "l1": "1",
+        "l2": "10"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1, 1]",
+    "constraint": "(let ((a!1 (and (or (or false false)\n                    (= l2 13)\n                    (= l2 12)\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    false\n                    (= l2 8)\n                    (= l2 7)\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4)\n                    false\n                    (= l2 3))\n                (not (or false\n                         (= l2 3)\n                         false\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         (= l2 7)\n                         (= l2 8)\n                         false))\n                (= l1 2))))\n  (or (or false false)\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
+    "substitutions": [
+      {
+        "l1": "2",
+        "l2": "13"
+      },
+      {
+        "l1": "2",
+        "l2": "9"
+      },
+      {
+        "l1": "2",
+        "l2": "12"
+      },
+      {
+        "l1": "2",
+        "l2": "10"
+      },
+      {
+        "l1": "2",
+        "l2": "11"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[2, 2]",
+    "constraint": "(let ((a!1 (and (or (or false false)\n                    (= l2 13)\n                    (= l2 12)\n                    (= l2 11)\n                    (= l2 10)\n                    (= l2 9)\n                    false\n                    (= l2 8)\n                    (= l2 7)\n                    (= l2 6)\n                    (= l2 5)\n                    (= l2 4)\n                    false)\n                (not (or (or false false)\n                         (= l2 4)\n                         (= l2 5)\n                         (= l2 6)\n                         (= l2 7)\n                         (= l2 8)\n                         false))\n                (= l1 3))))\n  (or (or false false)\n      false\n      a!1\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false\n      false))",
+    "substitutions": [
+      {
+        "l1": "3",
+        "l2": "9"
+      },
+      {
+        "l1": "3",
+        "l2": "13"
+      },
+      {
+        "l1": "3",
+        "l2": "10"
+      },
+      {
+        "l1": "3",
+        "l2": "11"
+      },
+      {
+        "l1": "3",
+        "l2": "12"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[3,  51]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

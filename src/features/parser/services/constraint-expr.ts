@@ -3,15 +3,15 @@ export type ConstraintValue = string | number | boolean;
 export type ConstraintAssignment = Record<string, ConstraintValue>;
 
 export type ConstraintExpr =
-  | { kind: "true" }
-  | { kind: "false" }
-  | { kind: "atom"; label: string; value: ConstraintValue }
-  | { kind: "not"; expr: ConstraintExpr }
-  | { kind: "and"; left: ConstraintExpr; right: ConstraintExpr }
-  | { kind: "or"; left: ConstraintExpr; right: ConstraintExpr };
+  | { kind: "true", simplified?: boolean }
+  | { kind: "false", simplified?: boolean }
+  | { kind: "atom"; simplified?: boolean; label: string; value: ConstraintValue }
+  | { kind: "not"; simplified?: boolean; expr: ConstraintExpr }
+  | { kind: "and"; simplified?: boolean; left: ConstraintExpr; right: ConstraintExpr }
+  | { kind: "or"; simplified?: boolean; left: ConstraintExpr; right: ConstraintExpr };
 
-export const TRUE: ConstraintExpr = { kind: "true" };
-export const FALSE: ConstraintExpr = { kind: "false" };
+export const TRUE: ConstraintExpr = { kind: "true", simplified: true };
+export const FALSE: ConstraintExpr = { kind: "false", simplified: true};
 
 export function eqConstraint(label: string, value: ConstraintValue): ConstraintExpr {
   return { kind: "atom", label, value };
@@ -46,6 +46,10 @@ function isNegationPair(left: ConstraintExpr, right: ConstraintExpr): boolean {
 }
 
 export function simplifyConstraint(expr: ConstraintExpr): ConstraintExpr {
+  if (expr.simplified === true) {
+    return expr;
+  }
+  expr.simplified = true;
   switch (expr.kind) {
     case "true":
     case "false":
@@ -66,7 +70,7 @@ export function simplifyConstraint(expr: ConstraintExpr): ConstraintExpr {
         return simplifyConstraint(inner.expr);
       }
 
-      return { kind: "not", expr: inner };
+      return { kind: "not", expr: inner, simplified: true };
     }
     case "and": {
       const left = simplifyConstraint(expr.left);
@@ -96,7 +100,7 @@ export function simplifyConstraint(expr: ConstraintExpr): ConstraintExpr {
         return left.value === right.value ? left : FALSE;
       }
 
-      return { kind: "and", left, right };
+      return { kind: "and", left, right, simplified: true };
     }
     case "or": {
       const left = simplifyConstraint(expr.left);
@@ -118,21 +122,21 @@ export function simplifyConstraint(expr: ConstraintExpr): ConstraintExpr {
         return left;
       }
 
-      return { kind: "or", left, right };
+      return { kind: "or", left, right, simplified: true };
     }
   }
 }
 
 export function negateConstraint(expr: ConstraintExpr): ConstraintExpr {
-  return simplifyConstraint({ kind: "not", expr });
+  return simplifyConstraint({ kind: "not", expr, simplified: false });
 }
 
 export function andConstraint(left: ConstraintExpr, right: ConstraintExpr): ConstraintExpr {
-  return simplifyConstraint({ kind: "and", left, right });
+  return simplifyConstraint({ kind: "and", left, right, simplified: false });
 }
 
 export function orConstraint(left: ConstraintExpr, right: ConstraintExpr): ConstraintExpr {
-  return simplifyConstraint({ kind: "or", left, right });
+  return simplifyConstraint({ kind: "or", left, right, simplified: false });
 }
 
 export function evaluateConstraint(

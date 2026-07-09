@@ -32,7 +32,7 @@ export function TextAreaField(props: {
 }
 
 export function AstNodeView({ node }: { node: LtlFormula }) {
-  if (node.kind === "true" || node.kind === "false") {
+  if (node.kind === "true" || node.kind === "false" || node.kind === "dot") {
     return <span className="text-sea">{node.kind}</span>;
   }
 
@@ -49,8 +49,15 @@ export function AstNodeView({ node }: { node: LtlFormula }) {
     );
   }
 
-  if (node.kind === "not" || node.kind === "next" || node.kind === "eventually") {
-    const operator = node.kind === "not" ? "!" : node.kind === "next" ? "O" : "<>";
+  if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always" || node.kind === "exists" || node.kind === "forall" || node.kind === "at") {
+    let operator = "";
+    if (node.kind === "not") operator = "!";
+    else if (node.kind === "next") operator = "O";
+    else if (node.kind === "eventually") operator = "<>";
+    else if (node.kind === "always") operator = "[]";
+    else if (node.kind === "exists") operator = `E${node.label}.`;
+    else if (node.kind === "forall") operator = `A${node.label}.`;
+    else if (node.kind === "at") operator = `@${node.label}`;
 
     return (
       <details open className="ml-4">
@@ -62,7 +69,7 @@ export function AstNodeView({ node }: { node: LtlFormula }) {
     );
   }
 
-  const operator = node.kind === "or" ? "|" : "U";
+  const operator = node.kind === "or" ? "|" : node.kind === "and" ? "&" : "U";
 
   return (
     <details open className="ml-4">

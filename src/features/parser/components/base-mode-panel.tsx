@@ -2,17 +2,18 @@
  * Base mode input/output panel
  */
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
-  buildSatContext,
   formatFormula,
   parseLtlFormula,
-  sat,
-  toReadableSatSet,
   type LtlFormula,
 } from "../services/lirna-seq";
+import { sat, buildSatContext, toReadableSatSet } from "../services/lirna-seq/evaluetor-full";
+import type { ReadableSatEntry, ReadableSubstitution } from "../services/lirna-seq/evaluetor-full";
 import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
+import { init } from "z3-solver";
+import { Z3Wrapper } from "../services/lirna-seq/z3Wrapper";
 
 interface BaseModeProps {
   sequenceInput: string;
@@ -34,48 +35,81 @@ export function BaseModePanel(props: BaseModeProps) {
     setThirdInput,
     parseResult,
   } = props;
+  const [z3Ready, setZ3Ready] = useState(false);
+  useEffect(() => {
+    init().then(() => setZ3Ready(true)); // o come inizializzi Z3
+  }, []);
 
   const sequenceError = parseResult.issues.find((issue) => issue.field === "sequence");
   const pairsError = parseResult.issues.find((issue) => issue.field === "pairs");
+  const [ltlPreview, setLtlPreview] = useState<{
+    syntaxError: string | null;
+    ast: LtlFormula | null;
+    normalized: string | null;
+    satReadable: Awaited<ReturnType<typeof toReadableSatSet>>;
+  }>({
+    syntaxError: null,
+    ast: null,
+    normalized: null,
+    satReadable: [],
+  });
+    
+    useEffect(() => {
+      if (!z3Ready) return;
+      if (!thirdInput.trim()) {
+        setLtlPreview({
+          syntaxError: null,
+          ast: null,
+          normalized: null,
+          satReadable: [],
+        });
+        return;
+      }
 
-  const ltlPreview = useMemo(() => {
-    if (!thirdInput.trim()) {
-      return {
-        syntaxError: null as string | null,
-        ast: null as LtlFormula | null,
-        normalized: null as string | null,
-        satReadable: [] as ReturnType<typeof toReadableSatSet>,
+      const parsedFormula = parseLtlFormula(thirdInput);
+      if (!parsedFormula.formula) {
+        setLtlPreview({
+          syntaxError: parsedFormula.error ?? "Invalid formula.",
+          ast: null,
+          normalized: null,
+          satReadable: [],
+        });
+        return;
+      }
+
+      const normalized = formatFormula(parsedFormula.formula);
+      const variables = extractVariablesFromAst(parsedFormula.formula);
+      const maxDomain = parseResult.data?.pairs.length ?? 0;
+      
+      const compute = async () => {
+
+        const satSet = parseResult.data
+          ? sat(
+              buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
+              parsedFormula.formula!,
+            )
+          : [];
+        const sharedWrapper = new Z3Wrapper(maxDomain, variables);
+        let satReadable : ReadableSatEntry[] = [];
+        try{
+           satReadable = parseResult.data
+            ? await toReadableSatSet(satSet, variables, maxDomain, sharedWrapper)
+            : [];
+        } catch(e) {
+          console.error("Error computing SAT set:", e);
+        }
+
+
+        setLtlPreview({
+          syntaxError: null,
+          ast: parsedFormula.formula,
+          normalized,
+          satReadable,
+        });
       };
-    }
 
-    const parsedFormula = parseLtlFormula(thirdInput);
-    if (!parsedFormula.formula) {
-      return {
-        syntaxError: parsedFormula.error ?? "Invalid formula.",
-        ast: null,
-        normalized: null,
-        satReadable: [],
-      };
-    }
-
-    const normalized = formatFormula(parsedFormula.formula);
-    const satReadable = parseResult.data
-      ? toReadableSatSet(
-          sat(
-            buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
-            parsedFormula.formula,
-          ),
-        )
-      : [];
-
-    return {
-      syntaxError: null,
-      ast: parsedFormula.formula,
-      normalized,
-      satReadable,
-    };
-  }, [thirdInput, parseResult.data]);
-
+      compute();
+  }, [thirdInput, parseResult.data, z3Ready]);
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <article className="glass-card space-y-4 rounded-3xl p-5 shadow-glow sm:p-6">
@@ -154,5 +188,28 @@ export function BaseModePanel(props: BaseModeProps) {
       </article>
     </div>
   );
+}
+
+function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
+  const variables = new Set<string>();
+  const variableFixed = new Set<string>();
+  function traverse(node: LtlFormula) {
+    if (node.kind === "rho") {
+      variables.add(node.rho.label);
+    } else if (node.kind === "not" || node.kind === "next" || node.kind === "eventually" || node.kind === "always") {
+      traverse(node.formula);
+    } else if (node.kind === "or" || node.kind === "and" || node.kind === "until") {
+      traverse(node.left);
+      traverse(node.right);
+    } else if (node.kind === "exists" || node.kind === "forall") {
+      variableFixed.add(node.label);
+      traverse(node.formula);
+    } else if (node.kind === "at") {
+      variables.add(node.label);
+      traverse(node.formula);
+    }
+  }
+  traverse(formula);
+  return new Set([...variables].filter((v) => !variableFixed.has(v)));
 }
 

@@ -1,0 +1,16 @@
+[
+  {
+    "interval": "[0,  46]",
+    "constraint": "(not (or false\n         false\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         false\n         true\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         false\n         false\n         false\n         false\n         false\n         false\n         true\n         true\n         true\n         true\n         true))",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[47, 47]",
+    "constraint": "(not (or false false))",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  }
+]

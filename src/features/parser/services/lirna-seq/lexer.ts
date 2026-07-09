@@ -112,6 +112,30 @@ export function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
+    if (source.startsWith("[]", i)) {
+      tokens.push({ type: "ALWAYS", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (source.startsWith("|>", i)) {
+      tokens.push({ type: "PIPE_IMPL", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (source.startsWith("&&", i)) {
+      tokens.push({ type: "AND", pos: i });
+      i += 2;
+      continue;
+    }
+
+    if (ch === "&") {
+      tokens.push({ type: "AND", pos: i });
+      i += 1;
+      continue;
+    }
+
     if (source.startsWith("||", i)) {
       tokens.push({ type: "OR", pos: i });
       i += 2;
@@ -154,6 +178,42 @@ export function tokenizeFormula(source: string): Token[] {
       continue;
     }
 
+    if (ch === "@") {
+      tokens.push({ type: "AT", pos: i });
+      i += 1;
+      continue;
+    }
+
+    if (ch === "E") {
+      i += 1;
+      i = skipSpaces(source, i);
+      if (!isIdentifierStart(source[i])) {
+        throw new Error(`Expected label after 'E' at position ${i + 1}`);
+      }
+      const { ident, end } = readIdentifier(source, i);
+      tokens.push({ type: "EXISTS", pos: i - 1, value: ident });
+      i = end;
+      continue;
+    }
+
+    if (ch === "A") {
+      i += 1;
+      i = skipSpaces(source, i);
+      if (!isIdentifierStart(source[i])) {
+        throw new Error(`Expected label after 'A' at position ${i + 1}`);
+      }
+      const { ident, end } = readIdentifier(source, i);
+      tokens.push({ type: "FORALL", pos: i - 1, value: ident });
+      i = end;
+      continue;
+    }
+
+    if (ch === ".") {
+      tokens.push({ type: "DOT", pos: i });
+      i += 1;
+      continue;
+    }   
+
     if (isIdentifierStart(ch)) {
       const { ident, end } = readIdentifier(source, i);
 
@@ -181,6 +241,18 @@ export function tokenizeFormula(source: string): Token[] {
         continue;
       }
 
+      if (ident.toLowerCase() === "and") {
+        tokens.push({ type: "AND", pos: i });
+        i = end;
+        continue;
+      }
+
+      if (ident.toLowerCase() === "always") {
+        tokens.push({ type: "ALWAYS", pos: i });
+        i = end;
+        continue;
+      }
+
       const direction = readRhoDirection(source, end);
       if (direction.direction) {
         tokens.push({
@@ -191,9 +263,13 @@ export function tokenizeFormula(source: string): Token[] {
         i = direction.end;
         continue;
       }
+
+      tokens.push({ type: "LABEL", value: ident, pos: i });
+      i = end;
+      continue;
     }
 
-    throw new Error(`Invalid token at position ${i + 1}`);
+    throw new Error(`Invalid token at position ${i + 1}, Token: ${ch}, in ${source.slice(i - 5, i + 10)}`);
   }
 
   tokens.push({ type: "EOF", pos: source.length });

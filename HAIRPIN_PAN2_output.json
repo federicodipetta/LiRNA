@@ -1,0 +1,40 @@
+[
+  {
+    "interval": "[0,  10]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[11, 11]",
+    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 8))\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [
+      {
+        "l": "8"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[12,  34]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[35, 35]",
+    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 17)))",
+    "substitutions": [
+      {
+        "l": "17"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[36, 51]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

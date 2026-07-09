@@ -1,0 +1,24 @@
+[
+  {
+    "interval": "[0,  14]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[15, 15]",
+    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 11))\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [
+      {
+        "l": "11"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[16,  56]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

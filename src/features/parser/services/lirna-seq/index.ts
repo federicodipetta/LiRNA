@@ -23,7 +23,7 @@ export {
 
 export type {
   AtomicRho,
-  LtlFormula,
+  LiRNAFormula as LtlFormula,
   ParsedFormulaResult,
   Token,
   TokenType,
@@ -35,24 +35,25 @@ export { parseLtlFormula } from "./parser";
 
 export type {
   ReadableSatEntry,
-  SatArc,
+  ReadableSubstitution,
   SatContext,
   SatEntry,
   SatSet,
   TimeRange,
-} from "./evaluator";
+} from "./evaluetor-full";
 
 export {
   buildSatContext,
   formatFormula,
   sat,
+  satAnd,
   satAtom,
   satEventually,
   satNext,
   satNot,
   satOr,
   satRho,
-  satTop,
+  satTrue,
   satUntil,
   toReadableSatSet,
-} from "./evaluator";
+} from "./evaluetor-full";

@@ -1,0 +1,8 @@
+[
+  {
+    "interval": "[0,  47]",
+    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

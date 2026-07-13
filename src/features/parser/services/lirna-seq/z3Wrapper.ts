@@ -17,36 +17,139 @@ async function getContext() {
 const ctx = (await getContext())("main");
 export const { Solver, Int, Or, And, Bool } = ctx;
 export const Z3 = ctx;
-export type Constraint = b;
+//export type Constraint = b;
+
+export type Constraint = ManualConstraint;
+
+export type ConstraintType = "true" | "false" | "eq" | "not" | "and" | "or";
+
+class ManualConstraint {
+    kind: ConstraintType;
+    innter?: ManualConstraint; 
+    left?: ManualConstraint;
+    right?: ManualConstraint;
+    label?: string;
+    value?: number;
 
 
+    constructor(kind: ConstraintType, innter?: ManualConstraint, left?: ManualConstraint, right?: ManualConstraint) {
+        this.kind = kind;
+        this.innter = innter;
+        this.left = left;
+        this.right = right;
+    }
 
-export function or(left: Constraint, right: Constraint): Constraint {
-    return Or(left, right);
+    public or(other: ManualConstraint): ManualConstraint {
+        return new ManualConstraint("or", undefined, this, other);
+    }
+
+    public and(other: ManualConstraint): ManualConstraint {
+        return new ManualConstraint("and", undefined, this, other);
+    }
+
+    public not(): ManualConstraint {
+        return new ManualConstraint("not", this);
+    }
+
+    public subsitute(label: string, value: number): ManualConstraint {
+        switch (this.kind) {
+            case "true":  return this;
+            case "false": return this;
+            case "not": return this.innter!.subsitute(label, value).not();
+            case "eq": {
+                if (this.label === label) {
+                    if (this.value === value) {
+                        return TRUE;
+                    } else {
+                        return FALSE;
+                    }
+                } else {
+                    return this;
+                }
+            }
+            default: {
+                throw new Error(`Substitution not implemented for constraint kind: ${this.kind}`);
+            }
+        }
+    }
+
+    public getVariables(): Set<string> {
+        let vars = new Set<string>();
+        this.getVariablesHelper(vars);
+        return vars;
+    }
+
+    private getVariablesHelper(set: Set<string>) {
+        switch (this.kind) {
+            case "eq":
+                set.add(this.label!);
+            default: return;
+        }
+    }
+
 }
 
-export function and(left: Constraint, right: Constraint): Constraint {
-    return And(left, right);
-}
 
+export const TRUE = new ManualConstraint("true");
+export const FALSE = new ManualConstraint("false");
+// export const TRUE = Bool.val(true);
+// export const FALSE = Bool.val(false);
+
+
+
+
+// export function or(left: Constraint, right: Constraint): Constraint {
+//     return Or(left, right);
+// }
+
+// export function and(left: Constraint, right: Constraint): Constraint {
+//     return And(left, right);
+// }
+
+// export function eq(variable: string, value: number): Constraint {
+//     return Int.const(variable).eq(value);
+// }
+
+// export function neq(variable: string, value: number): Constraint {
+//     return Int.const(variable).neq(value);
+// }
+
+// /**
+//  * constr \ [variable = value].
+//  */
+// export function substitute(constraint: Constraint, variable: string, value: number): Constraint {
+//     const varAst = Int.const(variable);
+//     return Z3.substitute(constraint, [varAst, Int.val(value)]) as Constraint;
+// }
+
+export function not(constraint: Constraint): Constraint {
+    return new ManualConstraint("not", constraint as ManualConstraint);
+    // return Z3.Not(constraint);
+}
 export function eq(variable: string, value: number): Constraint {
-    return Int.const(variable).eq(value);
+    return new ManualConstraint("eq", undefined, new ManualConstraint("true"), new ManualConstraint("true"));
+    // return Int.const(variable).eq(value);
 }
 
-export function neq(variable: string, value: number): Constraint {
-    return Int.const(variable).neq(value);
+
+export interface CPSSolver {
+    isSat(constraint: Constraint): Promise<boolean>;
+    getSolutions(constraint: Constraint): Promise<Record<string, string>[]>;
+    areEquivalent(a: Constraint, b: Constraint): Promise<boolean>;
 }
 
-/**
- * constr \ [variable = value].
- */
-export function substitute(constraint: Constraint, variable: string, value: number): Constraint {
-    const varAst = Int.const(variable);
-    return Z3.substitute(constraint, [varAst, Int.val(value)]) as Constraint;
+export class ManualSolver implements CPSSolver {
+    isSat(constraint: Constraint): Promise<boolean> {
+    }
+    getSolutions(constraint: Constraint): Promise<Record<string, string>[]> {
+        throw new Error("Method not implemented.");
+    }
+    areEquivalent(a: Constraint, b: Constraint): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
+
 }
 
-export const TRUE = Bool.val(true);
-export const FALSE = Bool.val(false);
 
 export class Z3Wrapper {
     private maxDomain: number;

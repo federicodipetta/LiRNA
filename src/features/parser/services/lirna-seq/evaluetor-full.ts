@@ -1,5 +1,5 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3, And } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3, And, ManualSolver } from "./z3Wrapper";
 
 export type BasePair = {
     id: string;
@@ -530,9 +530,9 @@ export interface ReadableSatEntry {
     satisfied: boolean;
 }
 
-export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
+export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number): Promise<ReadableSatEntry[]> {
     const result: ReadableSatEntry[] = [];
-    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+    const solver = new ManualSolver(maxDomain);
 
     const groups: {
         representative: Constraint;
@@ -550,7 +550,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
 
         const currentGroup = groups[groups.length - 1];
 
-        if (await wrapper.areEquivalent(entry.constraint, currentGroup.representative)) {
+        if (solver.areEquivalent(entry.constraint, currentGroup.representative)) {
             currentGroup.entries.push(entry);
         } else {
             groups.push({
@@ -561,7 +561,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     }
 
     for (const group of groups) {
-        const solutions = await wrapper.getSolutions(group.representative);
+        const solutions = solver.getSolutions(group.representative);   
 
         const readableSolutions = solutions.map(solution =>
             Object.keys(solution)
@@ -599,15 +599,10 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
 }
 
 export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<boolean> {
-    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
-    let solver = new Solver();
-    let constraint = FALSE;
-    variables.forEach(variable => {
-        const varInt = Int.const(variable);
-        solver.add(varInt.ge(0), varInt.le(maxDomain));
-    });
+    const solver = new ManualSolver(maxDomain);
+    
     for (const entry of set) {
-        if (await solver.check(entry.constraint) === "sat") {
+        if (solver.isSat(entry.constraint)) {
             return true;
         }
     }

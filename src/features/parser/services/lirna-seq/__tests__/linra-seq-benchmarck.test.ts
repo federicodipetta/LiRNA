@@ -289,7 +289,7 @@ describe("Benchmark", () => {
                     const one = await justOne(
                         satSet,
                         bench.vars,
-                        molecule.structure.length - 1
+                        molecule.bonds.length
                     );
 
                     const t2 = performance.now();
@@ -297,7 +297,7 @@ describe("Benchmark", () => {
                     const readable = await toReadableSatSet(
                         satSet,
                         bench.vars,
-                        molecule.structure.length - 1
+                        molecule.bonds.length
                     );
 
                     const t3 = performance.now();

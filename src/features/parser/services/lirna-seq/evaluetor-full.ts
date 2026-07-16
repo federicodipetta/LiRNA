@@ -1,5 +1,5 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3, And, ManualSolver } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, Solver, Int, Or, substitute, Z3, And, ManualSolver } from "./z3Wrapper";
 
 export type BasePair = {
     id: string;
@@ -561,23 +561,20 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     }
 
     for (const group of groups) {
-        const solutions = solver.getSolutions(group.representative);   
-
-        const readableSolutions = solutions.map(solution =>
-            Object.keys(solution)
-                .sort()
-                .reduce<ReadableSubstitution>((acc, variable) => {
-                    acc[variable] = solution[variable];
-                    return acc;
-                }, {})
-        );
+        const solutions = solver.getSolutions(group.representative).map((subst) => {
+            var record = {} as ReadableSubstitution
+            for (let assignment of subst) {
+                record[assignment.label] = assignment.value.toString();
+            }
+            return record;
+        });
 
         for (const entry of group.entries) {
             result.push({
                 interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
                 constraint: entry.constraint.toString(),
-                substitutions: readableSolutions,
-                satisfied: readableSolutions.length > 0,
+                substitutions: solutions,
+                satisfied: solutions.length > 0,
             });
         }
     }
@@ -598,7 +595,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     return mergedResult;
 }
 
-export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<boolean> {
+export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number): Promise<boolean> {
     const solver = new ManualSolver(maxDomain);
     
     for (const entry of set) {

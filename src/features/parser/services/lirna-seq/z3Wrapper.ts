@@ -39,23 +39,47 @@ class ManualConstraint {
         this.right = right;
     }
 
+
     public or(other: ManualConstraint): ManualConstraint {
-        return new ManualConstraint("or", undefined, this, other);
+        if (this.kind === "false" && other.kind === "false")
+            return FALSE;
+        else if (this.kind === "true" || other.kind === "true")
+            return TRUE;
+        else if (this.kind === "false")
+            return other;
+        else if (other.kind === "false")
+            return this;
+        else
+            return new ManualConstraint("or", undefined, this, other);
     }
 
     public and(other: ManualConstraint): ManualConstraint {
-        return new ManualConstraint("and", undefined, this, other);
+        if (this.kind === "false" || other.kind === "false")
+            return FALSE;
+        else if (this.kind === "true" && other.kind === "true")
+            return TRUE;
+        else if (this.kind === "true")
+            return other;
+        else if (other.kind == "true")
+            return this;
+        else
+            return new ManualConstraint("and", undefined, this, other);
     }
 
     public not(): ManualConstraint {
-        return new ManualConstraint("not", this);
+        if (this.kind === "true")
+            return FALSE;
+        else if (this.kind === "false")
+            return TRUE;
+        else
+            return new ManualConstraint("not", this);
     }
 
-    public subsitute(label: string, value: number): ManualConstraint {
+    public substitute(label: string, value: number): ManualConstraint {
         switch (this.kind) {
             case "true":  return this;
             case "false": return this;
-            case "not": return this.inner!.subsitute(label, value).not();
+            case "not": return this.inner!.substitute(label, value).not();
             case "eq": {
                 if (this.label === label) {
                     if (this.value === value) {
@@ -68,10 +92,10 @@ class ManualConstraint {
                 }
             }
             case "and": {
-                return this.left!.subsitute(label, value).and(this.right!.subsitute(label, value));
+                return this.left!.substitute(label, value).and(this.right!.substitute(label, value));
             }
             case "or": {
-                return this.left!.subsitute(label, value).or(this.right!.subsitute(label, value));
+                return this.left!.substitute(label, value).or(this.right!.substitute(label, value));
             }
         }
     }
@@ -111,6 +135,7 @@ class ManualConstraint {
                 if (this.label === variable) {
                     set.add(this.value!);
                 }
+                break;
             }
             case "true":
             case "false":
@@ -122,6 +147,17 @@ class ManualConstraint {
                 return;
             }
             case "not": this.inner!.getRelevantValuesHelper(variable, set);
+        }
+    }
+
+    public toString(): string {
+        switch (this.kind) {
+            case "and": return `(${this.left!.toString()} & ${this.right!.toString()})`;
+            case "or": return `(${this.left!.toString()} | ${this.right!.toString()})`;
+            case "not": return `!(${this.inner!.toString()})`;
+            case "eq": return `${this.label} = ${this.value}`;
+            case "true": return "true";
+            case "false": return "false";
         }
     }
 }
@@ -169,13 +205,13 @@ export function eq(variable: string, value: number): Constraint {
     // return Int.const(variable).eq(value);
 }
 
-export function substiture(constraint: Constraint, variable: string, value: number): Constraint {
-    return constraint.subsitute(variable, value);
+export function substitute(constraint: Constraint, variable: string, value: number): Constraint {
+    return constraint.substitute(variable, value);
 }
 
 export interface CPSSolver {
     isSat(constraint: Constraint): boolean
-    getSolutions(constraint: Constraint): Record<string, string>[][];
+    getSolutions(constraint: Constraint): Assignment[][];
     areEquivalent(a: Constraint, b: Constraint): boolean;
 }
 
@@ -183,27 +219,36 @@ type DomainCoanidates = {
     values: number[];
     representativeValue?: number;
 }
+
+type Assignment = {
+    label: string,
+    value: number,
+};
 export class ManualSolver implements CPSSolver {
     
     maxDomain: number;
-    variables?: Set<string>;
+    //variables?: Set<string>;
     constructor(maxDomain: number, variables?: Set<string>) {
         this.maxDomain = maxDomain;
-        this.variables = variables;
+        //this.variables = variables;
     }
 
     public isSat(constraint: Constraint): boolean {
-        var variables_relevantValues = new   Map<string, Set<number>>();
+
+        switch (constraint.kind) {
+            case "true": return true;
+            case "false": return false;
+        }
         const variables = constraint.getVariables();
         
         const sortedVariables = Array.from(variables).sort();
 
-        var domain = this.getDomainCandidates(constraint, sortedVariables[0]);
+        let domain = this.getDomainCandidates(constraint, sortedVariables[0]);
         
-        var iterator = domain.representativeValue !== undefined ? [...domain.values, domain.representativeValue] : domain.values;
+        let iterator = domain.representativeValue !== undefined ? [...domain.values, domain.representativeValue] : domain.values;
         
         for (let value of iterator) {
-            let newConstraint = constraint.subsitute(sortedVariables[0], value);
+            let newConstraint = constraint.substitute(sortedVariables[0], value);
             if (this.isSat(newConstraint)) {
                 return true;
             }
@@ -213,23 +258,22 @@ export class ManualSolver implements CPSSolver {
 
     getDomainCandidates(constraint: Constraint, variable: string): DomainCoanidates {
         const relevantValues = constraint.getRelevantValues(variable);
-        const representativeValues = new Array(this.maxDomain + 1).fill(0).map((_, i) => i).find(value => !relevantValues.has(value));
+        const representativeValues = new Array(this.maxDomain + 1).fill(0).map((_, i) => i + 1).find(value => !relevantValues.has(value));
         return {
             values: Array.from(relevantValues),
             representativeValue: representativeValues
         }
     }
     
-    public getSolutions(constraint: Constraint): Record<string, string>[][] {
-        var solutions: Record<string, string>[][] = [];
-        var assignments: Record<string, string>[] = [];
-        var variables = this.variables || constraint.getVariables();
+    public getSolutions(constraint: Constraint): Assignment[][] {
+        let solutions: Assignment[][] = [];
+        let assignments: Assignment[] = [];
+        let variables = constraint.getVariables();
         this.collectSolutions(constraint, Array.from(variables), 0, assignments, solutions);
         return solutions;
-
     }
 
-    collectSolutions(constraint: Constraint, variables: string[], index: number, assigments: Record<string, string>[], out: Record<string, string>[][]) {
+    collectSolutions(constraint: Constraint, variables: string[], index: number, assigments: Assignment[], out: Assignment[][]) {
         switch (constraint.kind) {
             case "false": return;
             case "true": {
@@ -238,34 +282,41 @@ export class ManualSolver implements CPSSolver {
             }
             default: {}
         }
-        // unreachable state
+
         if (index >= variables.length) {
+            // Residual constraint on variables outside `variables` (or otherwise
+            // unresolved) — evaluate it directly instead of dropping it.
+            if (this.isSat(constraint)) {
+                this.expandRemaining(variables, index, assigments, out);
+            }
             return;
         }
+
         let label = variables[index];
         for (let value = 0; value <= this.maxDomain; value++) {
-            let newConstraint = constraint.subsitute(label, value);
-            assigments.push({ [label]: value.toString() });
+            let newConstraint = constraint.substitute(label, value);
+            assigments.push({ label, value });
             this.collectSolutions(newConstraint, variables, index + 1, assigments, out);
             assigments.pop();
         }
     }
-
-    expandRemaining(variables: string[], index: number, assignments: Record<string, string>[], out: Record<string, string>[][]) {
+    expandRemaining(variables: string[], index: number, assignments: Assignment[], out: Assignment[][]) {
         if (index >= variables.length) {
             out.push([...assignments]);
             return;
         }
         const variable = variables[index];
         for (let value = 0; value <= 1; value++) {
-            assignments.push({ [variable]: value.toString() });
+            assignments.push({ label: variable, value });
             this.expandRemaining(variables, index + 1, assignments, out);
             assignments.pop();
         }
     }
-    
+
     public areEquivalent(a: Constraint, b: Constraint): boolean {
-        return false;
+        // a == b  <=>  (a AND NOT b) OR (NOT a AND b) is unsatisfiable
+        const diff = a.and(b.not()).or(a.not().and(b));
+        return !this.isSat(diff);
     }
 
 }

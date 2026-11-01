@@ -1,5 +1,5 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Solver, Int, Or, substitute, Z3, And, ManualSolver } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, substitute, ManualSolver } from "./z3Wrapper";
 
 export type BasePair = {
     id: string;

@@ -39,6 +39,7 @@ export interface BatchResultEntry {
   formula: string;
   errors?: string[];
   satResult?: Array<{ interval: string; constraint: string }> | null;
+  isValid?: boolean;
 }
 
 export interface BatchExportResult {

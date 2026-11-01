@@ -4,7 +4,7 @@ import { tokenizeFormula } from "../lexer";
 
 describe("lirna-seq-lexer", () => {
   it("tokenizes unary/binary operators and delimiters", () => {
-    const tokens = tokenizeFormula("[](!('A' & O(C)))@AE");
+    const tokens = tokenizeFormula("[](!('A' & O(C)))@Al El");
 
     expect(tokens.map((t) => t.type)).toEqual([
       "ALWAYS",
@@ -60,7 +60,7 @@ describe("lirna-seq-lexer", () => {
   });
 
   it("throws with position on invalid token", () => {
-    expect(() => tokenizeFormula("A ? B")).toThrow("Invalid token at position 3");
+    expect(() => tokenizeFormula("G ? B")).toThrow("Invalid token at position 3");
   });
 });
 

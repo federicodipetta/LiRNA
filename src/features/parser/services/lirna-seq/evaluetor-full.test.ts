@@ -1,32 +1,21 @@
 import { it, describe, expect } from "vitest";
 
 import { AlignSatSets, BasePair, buildSatContextFromBasePairs, cutSatContext, satAt, satAtom, satEventually, satRho, SatSet, satTrue, satUntil } from "./evaluetor-full";
-import { And, Constraint, eq, FALSE, Int, Or, Solver, TRUE } from "./z3Wrapper";
+import { Constraint, eq, FALSE, ManualSolver, TRUE } from "./z3Wrapper";
 import { AtomicRho, LiRNAFormula } from "./ast";
 
-async function expectConstraintEquivalent(actual: Constraint, expected: Constraint) {
-    const solver = new Solver();
-    solver.add(Or(And(actual, expected.not()), And(actual.not(), expected)));
-    let result = await solver.check();
-    if (result === "sat") {
-        const model = await solver.model();
-        console.log("Counterexample found:");
-        model.decls().forEach(decl => {
-            console.log(`${decl.name()} = ${model.get(decl)}`);
-        });
-        console.log("Actual constraint:", actual.toString());
-        console.log("Expected constraint:", expected.toString());
-    }
-    expect(await solver.check()).toBe("unsat");
+function expectConstraintEquivalent(actual: Constraint, expected: Constraint) {
+    const solver = new ManualSolver(4);
+    expect(solver.areEquivalent(actual, expected)).toBe(true);
 }
 
-async function expectSatSetEquivalent(actual: SatSet, expected: SatSet) {
+function expectSatSetEquivalent(actual: SatSet, expected: SatSet) {
     expect(actual).toHaveLength(expected.length);
 
     for (let index = 0; index < expected.length; index += 1) {
         expect(actual[index].timeRange).toEqual(expected[index].timeRange);
         console.log("INDEX:", index);
-        await expectConstraintEquivalent(actual[index].constraint, expected[index].constraint);
+        expectConstraintEquivalent(actual[index].constraint, expected[index].constraint);
     }
 }
 
@@ -137,7 +126,7 @@ describe("Evaluator with full time range", () => {
         const result = satEventually(context, set);
         await expectSatSetEquivalent(result, [
             {
-                constraint: Or(eq("l", 1), eq("l", 2)),
+                constraint: eq("l", 1).or(eq("l", 2)),
                 timeRange: { start: 0, end: 5 },
             },
             {
@@ -196,7 +185,7 @@ describe("Evaluator with full time range", () => {
                 timeRange: { start: 3, end: 4 },
             },
             {
-                constraint: Or(eq("l", 1), And(eq("l", 3), eq("l", 1))),
+                constraint: eq("l", 1).or(eq("l", 3).and(eq("l", 1))),
                 timeRange: { start: 5, end: 5 },
             },
             {

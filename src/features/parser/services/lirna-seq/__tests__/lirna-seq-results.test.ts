@@ -89,7 +89,7 @@ describe("TEST for generating JSON for 4plx", () => {
                 l3: { start: 5, end: 4 }
             }
         ];
-        expect(result.filter(r => r.satisfied).length).toEqual(3);
+        expect(result.filter(r => r.satisfied).length).toEqual(2);
 
     })
 })

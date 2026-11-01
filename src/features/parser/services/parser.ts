@@ -166,6 +166,7 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
         formula: struct.formula,
         errors,
         satResult: null,
+        isValid: false,
       });
       continue;
     }
@@ -180,6 +181,7 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
         formula: struct.formula,
         errors: [...errors, `formula: ${parsedFormula.error ?? "Invalid formula"}`],
         satResult: null,
+        isValid: true,
       });
       continue;
     }
@@ -204,6 +206,7 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
       pairs: parseResult.data.pairs,
       formula: formatFormula(parsedFormula.formula),
       satResult: satReadable,
+      isValid: true,
     });
   };
 

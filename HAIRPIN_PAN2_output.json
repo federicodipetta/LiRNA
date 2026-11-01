@@ -1,13 +1,29 @@
 [
   {
-    "interval": "[0,  10]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[0,  1]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   },
   {
-    "interval": "[11, 11]",
-    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 8))\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[2, 2]",
+    "constraint": "l = 3",
+    "substitutions": [
+      {
+        "l": "3"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[3,  11]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[12, 12]",
+    "constraint": "l = 8",
     "substitutions": [
       {
         "l": "8"
@@ -16,14 +32,30 @@
     "satisfied": true
   },
   {
-    "interval": "[12,  34]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[13,  25]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[26, 26]",
+    "constraint": "l = 13",
+    "substitutions": [
+      {
+        "l": "13"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[27,  34]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   },
   {
     "interval": "[35, 35]",
-    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 17)))",
+    "constraint": "l = 17",
     "substitutions": [
       {
         "l": "17"
@@ -33,7 +65,7 @@
   },
   {
     "interval": "[36, 51]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   }

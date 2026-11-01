@@ -1,13 +1,29 @@
 [
   {
-    "interval": "[0,  26]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[0,  3]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[4, 4]",
+    "constraint": "l = 5",
+    "substitutions": [
+      {
+        "l": "5"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[5,  26]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   },
   {
     "interval": "[27, 27]",
-    "constraint": "(or (or false false false false false)\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    (and true (not (or false false false false false)) (= l 18))\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "constraint": "l = 18",
     "substitutions": [
       {
         "l": "18"
@@ -16,14 +32,14 @@
     "satisfied": true
   },
   {
-    "interval": "[28,  54]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[28,  56]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   },
   {
-    "interval": "[55, 55]",
-    "constraint": "(let ((a!1 (or false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false\n               false)))\n  (or a!1 false false false (and true (not a!1) (= l 29))))",
+    "interval": "[57, 57]",
+    "constraint": "l = 29",
     "substitutions": [
       {
         "l": "29"
@@ -32,8 +48,8 @@
     "satisfied": true
   },
   {
-    "interval": "[56, 92]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[58, 92]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   }

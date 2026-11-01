@@ -1,0 +1,24 @@
+[
+  {
+    "interval": "[0,  886]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[887, 887]",
+    "constraint": "(l1 = 259 & (((((((((l1 = 432 | l1 = 370) | l1 = 356) | l1 = 353) | l1 = 319) | l1 = 314) | l1 = 309) | l1 = 284) | l1 = 259) | l1 = 259))",
+    "substitutions": [
+      {
+        "l1": "259"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[888,  1541]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

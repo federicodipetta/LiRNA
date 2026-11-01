@@ -1,0 +1,16 @@
+[
+  {
+    "interval": "[0,  1529]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1530,  1541]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  }
+]

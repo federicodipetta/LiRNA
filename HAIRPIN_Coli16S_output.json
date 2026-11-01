@@ -1,0 +1,472 @@
+[
+  {
+    "interval": "[0,  79]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[80, 80]",
+    "constraint": "l = 5",
+    "substitutions": [
+      {
+        "l": "5"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[81,  157]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[158, 158]",
+    "constraint": "l = 19",
+    "substitutions": [
+      {
+        "l": "19"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[159,  185]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[186, 186]",
+    "constraint": "l = 28",
+    "substitutions": [
+      {
+        "l": "28"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[187,  202]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[203, 203]",
+    "constraint": "l = 31",
+    "substitutions": [
+      {
+        "l": "31"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[204,  258]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[259, 259]",
+    "constraint": "l = 53",
+    "substitutions": [
+      {
+        "l": "53"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[260,  295]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[296, 296]",
+    "constraint": "l = 67",
+    "substitutions": [
+      {
+        "l": "67"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[297,  319]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[320, 320]",
+    "constraint": "l = 78",
+    "substitutions": [
+      {
+        "l": "78"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[321,  341]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[342, 342]",
+    "constraint": "l = 83",
+    "substitutions": [
+      {
+        "l": "83"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[343,  378]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[379, 379]",
+    "constraint": "l = 94",
+    "substitutions": [
+      {
+        "l": "94"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[380,  418]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[419, 419]",
+    "constraint": "l = 111",
+    "substitutions": [
+      {
+        "l": "111"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[420,  461]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[462, 462]",
+    "constraint": "l = 119",
+    "substitutions": [
+      {
+        "l": "119"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[463,  616]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[617, 617]",
+    "constraint": "l = 158",
+    "substitutions": [
+      {
+        "l": "158"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[618,  688]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[689, 689]",
+    "constraint": "l = 181",
+    "substitutions": [
+      {
+        "l": "181"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[690,  725]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[726, 726]",
+    "constraint": "l = 192",
+    "substitutions": [
+      {
+        "l": "192"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[727,  785]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[786, 786]",
+    "constraint": "l = 217",
+    "substitutions": [
+      {
+        "l": "217"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[787,  839]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[840, 840]",
+    "constraint": "l = 229",
+    "substitutions": [
+      {
+        "l": "229"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[841,  896]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[897, 897]",
+    "constraint": "l = 255",
+    "substitutions": [
+      {
+        "l": "255"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[898,  962]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[963, 963]",
+    "constraint": "l = 266",
+    "substitutions": [
+      {
+        "l": "266"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[964,  1011]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1012, 1012]",
+    "constraint": "l = 268",
+    "substitutions": [
+      {
+        "l": "268"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1013, 1026]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1027, 1027]",
+    "constraint": "l = 275",
+    "substitutions": [
+      {
+        "l": "275"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1028,  1075]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1076, 1076]",
+    "constraint": "l = 284",
+    "substitutions": [
+      {
+        "l": "284"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1077,  1088]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1089, 1089]",
+    "constraint": "l = 287",
+    "substitutions": [
+      {
+        "l": "287"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1090,  1133]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1134, 1134]",
+    "constraint": "l = 297",
+    "substitutions": [
+      {
+        "l": "297"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1135,  1164]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1165, 1165]",
+    "constraint": "l = 309",
+    "substitutions": [
+      {
+        "l": "309"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1166,  1264]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1265, 1265]",
+    "constraint": "l = 348",
+    "substitutions": [
+      {
+        "l": "348"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1266,  1313]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1314, 1314]",
+    "constraint": "l = 363",
+    "substitutions": [
+      {
+        "l": "363"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1315,  1355]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1356, 1356]",
+    "constraint": "l = 377",
+    "substitutions": [
+      {
+        "l": "377"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1357,  1448]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1449, 1449]",
+    "constraint": "l = 398",
+    "substitutions": [
+      {
+        "l": "398"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1450,  1514]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[1515, 1515]",
+    "constraint": "l = 434",
+    "substitutions": [
+      {
+        "l": "434"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[1516, 1541]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "interval": "[0,  881]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[882, 882]",
+    "constraint": "(l1 = 289 & ((l1 = 9 | l1 = 289) | l1 = 289))",
+    "substitutions": [
+      {
+        "l1": "289"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[883,  1529]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

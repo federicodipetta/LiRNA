@@ -1,22 +1,22 @@
 
-import { Bool as b, init, Solver as ISolver } from "z3-solver";
-let contextInstance: Awaited<ReturnType<typeof init>>["Context"] | null = null;
-let initPromise: Promise<void> | null = null;
+// import { Bool as b, init, Solver as ISolver } from "z3-solver";
+// let contextInstance: Awaited<ReturnType<typeof init>>["Context"] | null = null;
+// let initPromise: Promise<void> | null = null;
 
-async function getContext() {
-    if (contextInstance) return contextInstance;
-    if (!initPromise) {
-        initPromise = init().then(({ Context }) => {
-            contextInstance = Context;
-        });
-    }
-    await initPromise;
-    return contextInstance!;
-}
+// async function getContext() {
+//     if (contextInstance) return contextInstance;
+//     if (!initPromise) {
+//         initPromise = init().then(({ Context }) => {
+//             contextInstance = Context;
+//         });
+//     }
+//     await initPromise;
+//     return contextInstance!;
+// }
 
-const ctx = (await getContext())("main");
-export const { Solver, Int, Or, And, Bool } = ctx;
-export const Z3 = ctx;
+// const ctx = (await getContext())("main");
+// export const { Solver, Int, Or, And, Bool } = ctx;
+// export const Z3 = ctx;
 //export type Constraint = b;
 
 export type Constraint = ManualConstraint;
@@ -25,7 +25,7 @@ export type ConstraintType = "true" | "false" | "eq" | "not" | "and" | "or";
 
 class ManualConstraint {
     kind: ConstraintType;
-    inner?: ManualConstraint; 
+    inner?: ManualConstraint;
     left?: ManualConstraint;
     right?: ManualConstraint;
     label?: string;
@@ -77,7 +77,7 @@ class ManualConstraint {
 
     public substitute(label: string, value: number): ManualConstraint {
         switch (this.kind) {
-            case "true":  return this;
+            case "true": return this;
             case "false": return this;
             case "not": return this.inner!.substitute(label, value).not();
             case "eq": {
@@ -201,7 +201,10 @@ export function not(constraint: Constraint): Constraint {
 }
 
 export function eq(variable: string, value: number): Constraint {
-    return new ManualConstraint("eq", undefined, new ManualConstraint("true"), new ManualConstraint("true"));
+    let c = new ManualConstraint("eq", undefined, undefined, undefined);
+    c.label = variable;
+    c.value = value;
+    return c;
     // return Int.const(variable).eq(value);
 }
 
@@ -225,7 +228,7 @@ type Assignment = {
     value: number,
 };
 export class ManualSolver implements CPSSolver {
-    
+
     maxDomain: number;
     //variables?: Set<string>;
     constructor(maxDomain: number, variables?: Set<string>) {
@@ -240,13 +243,13 @@ export class ManualSolver implements CPSSolver {
             case "false": return false;
         }
         const variables = constraint.getVariables();
-        
+
         const sortedVariables = Array.from(variables).sort();
 
         let domain = this.getDomainCandidates(constraint, sortedVariables[0]);
-        
+
         let iterator = domain.representativeValue !== undefined ? [...domain.values, domain.representativeValue] : domain.values;
-        
+
         for (let value of iterator) {
             let newConstraint = constraint.substitute(sortedVariables[0], value);
             if (this.isSat(newConstraint)) {
@@ -264,7 +267,7 @@ export class ManualSolver implements CPSSolver {
             representativeValue: representativeValues
         }
     }
-    
+
     public getSolutions(constraint: Constraint): Assignment[][] {
         let solutions: Assignment[][] = [];
         let assignments: Assignment[] = [];
@@ -280,7 +283,7 @@ export class ManualSolver implements CPSSolver {
                 this.expandRemaining(variables, index, assigments, out);
                 return;
             }
-            default: {}
+            default: { }
         }
 
         if (index >= variables.length) {

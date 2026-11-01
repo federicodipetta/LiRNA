@@ -120,7 +120,7 @@ export function satAtom(context: SatContext, value: string): SatSet {
 
 export function satNext(set: SatSet): SatSet {
 
-    return set.map((entry) => {
+    let next = set.map((entry) => {
         entry.timeRange = {
             start: Math.max(entry.timeRange.start - 1, 0),
             end: entry.timeRange.end - 1,
@@ -129,6 +129,11 @@ export function satNext(set: SatSet): SatSet {
     })
         // Remove the entry corresponding to time 0, as it does not have a predecessor.
         .filter((entry) => entry.timeRange.end >= 0);
+    next.push({
+        constraint: FALSE,
+        timeRange: { start: set[set.length - 1].timeRange.end + 1, end: set[set.length - 1].timeRange.end + 1 },
+    })
+    return next;
 }
 
 export function satNot(set: SatSet): SatSet {
@@ -144,7 +149,7 @@ export function satNot(set: SatSet): SatSet {
 
 export function satRho(context: SatContext, rho: AtomicRho): SatSet {
     const entries: SatSet = [];
-    const orderedBonds = rho.kind === "up" 
+    const orderedBonds = rho.kind === "up"
         ? context.bonsFromStart.filter(bond => bond.start >= context.sequenceStart && bond.start <= context.sequenceLength)
         : context.bonsFromEnd.filter(bond => bond.end >= context.sequenceStart && bond.end <= context.sequenceLength);
     let lastPosition = context.sequenceStart;
@@ -317,12 +322,12 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
         }
         let result = [newEntry];
 
-        if (bond.start > context.sequenceStart) 
+        if (bond.start > context.sequenceStart)
             result.unshift(prev);
 
         if (bond.start < context.sequenceLength)
             result.push(complementEntry);
-            
+
 
         satAt = satOr(context, satAt, result);
     }
@@ -597,7 +602,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
 
 export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number): Promise<boolean> {
     const solver = new ManualSolver(maxDomain);
-    
+
     for (const entry of set) {
         if (solver.isSat(entry.constraint)) {
             return true;

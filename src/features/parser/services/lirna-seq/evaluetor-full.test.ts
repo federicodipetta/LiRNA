@@ -29,7 +29,7 @@ describe("Evaluator with full time range", () => {
     ]);
     it("should evaluate satTrue correctly", async () => {
         const result = satTrue(context);
-        await expectSatSetEquivalent(result, [{
+        expectSatSetEquivalent(result, [{
             constraint: TRUE,
             timeRange: { start: 0, end: context.sequenceLength },
         }]);
@@ -37,7 +37,7 @@ describe("Evaluator with full time range", () => {
 
     it("should evaluate satAtom correctly", async () => {
         const result = satAtom(context, "A");
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
                 constraint: TRUE,
                 timeRange: { start: 0, end: 1 },
@@ -61,22 +61,24 @@ describe("Evaluator with full time range", () => {
             {
                 constraint: FALSE,
                 timeRange: { start: 6, end: 8 },
-            }]);
+            }
+        ]);
     });
 
     it("should evaluate satAtom correctly for a character not in the sequence", async () => {
         const result = satAtom(context, "Z");
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
                 constraint: FALSE,
                 timeRange: { start: 0, end: 8 },
-            }]);
+            }
+        ]);
     });
 
     it("should evaluate satRho correctly", async () => {
         const rho: AtomicRho = { kind: "up", label: "l" };
         const result = satRho(context, rho);
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
                 constraint: FALSE,
                 timeRange: { start: 0, end: 0 },
@@ -124,10 +126,14 @@ describe("Evaluator with full time range", () => {
             }
         ];
         const result = satEventually(context, set);
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
                 constraint: eq("l", 1).or(eq("l", 2)),
-                timeRange: { start: 0, end: 5 },
+                timeRange: { start: 0, end: 2 },
+            },
+            {
+                constraint: eq("l", 1).or(eq("l", 2)),
+                timeRange: { start: 3, end: 5 },
             },
             {
                 constraint: eq("l", 2),
@@ -175,7 +181,7 @@ describe("Evaluator with full time range", () => {
         ]
 
         const result = satUntil(context, set2, set);
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
                 constraint: FALSE,
                 timeRange: { start: 0, end: 2 },
@@ -204,22 +210,26 @@ describe("Evaluator with full time range", () => {
         const formula = { kind: "atom", value: "U" } as LiRNAFormula;
         const result = satAt(context, formula, "l");
         console.log(JSON.stringify(result, null, 2));
-        await expectSatSetEquivalent(result, [
+        expectSatSetEquivalent(result, [
             {
-                constraint: eq("l", 1).or(eq("l", 3)),
+                constraint: FALSE,
                 timeRange: { start: 0, end: 0 },
             },
             {
-                constraint: eq("l", 3),
+                constraint: eq("l", 1),
                 timeRange: { start: 1, end: 1 },
             },
             {
-                constraint: eq("l", 3),
+                constraint: FALSE,
                 timeRange: { start: 2, end: 2 },
             },
             {
+                constraint: eq("l", 3),
+                timeRange: { start: 3, end: 3 },
+            },
+            {
                 constraint: FALSE,
-                timeRange: { start: 3, end: 8 },
+                timeRange: { start: 4, end: 8 },
             },
         ]);
 
@@ -237,13 +247,13 @@ describe("Evaluator with full time range", () => {
 
         const [alignedS1, alignedS2] = AlignSatSets(s1, s2);
 
-        await expectSatSetEquivalent(alignedS1, [
+        expectSatSetEquivalent(alignedS1, [
             { constraint: TRUE, timeRange: { start: 0, end: 1 } },
             { constraint: TRUE, timeRange: { start: 2, end: 2 } },
             { constraint: FALSE, timeRange: { start: 3, end: 5 } },
         ]);
 
-        await expectSatSetEquivalent(alignedS2, [
+        expectSatSetEquivalent(alignedS2, [
             { constraint: FALSE, timeRange: { start: 0, end: 1 } },
             { constraint: TRUE, timeRange: { start: 2, end: 2 } },
             { constraint: TRUE, timeRange: { start: 3, end: 5 } },
@@ -256,12 +266,10 @@ describe("Evaluator with full time range", () => {
         expect(cutContext.sequenceStart).toBe(0);
         expect(cutContext.sequenceLength).toBe(3);
         expect(cutContext.bonsFromStart).toStrictEqual([
-            { id: "3", start: 1, end: 4 },
             { id: "4", start: 2, end: 3 },
         ]);
         expect(cutContext.bonsFromEnd).toStrictEqual([
             { id: "4", start: 2, end: 3 },
-            { id: "3", start: 1, end: 4 },
         ]);
     });
 

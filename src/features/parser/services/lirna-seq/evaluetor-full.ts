@@ -512,16 +512,20 @@ export function cutSatContext(context: SatContext, start: number, end: number): 
         sequence: cutSequence,
         sequenceLength: cutSequence.length - 1,
         sequenceStart: 0,
-        bonsFromStart: context.bonsFromStart.map((bond) => ({
-            ...bond,
-            start: bond.start - start,
-            end: bond.end - start,
-        })),
-        bonsFromEnd: context.bonsFromEnd.map((bond) => ({
-            ...bond,
-            start: bond.start - start,
-            end: bond.end - start,
-        })),
+        bonsFromStart: context.bonsFromStart
+            .filter((bond) => bond.start >= start && bond.end <= end)
+            .map((bond) => ({
+                ...bond,
+                start: bond.start - start,
+                end: bond.end - start,
+            })),
+        bonsFromEnd: context.bonsFromEnd
+            .filter((bond) => bond.start >= start && bond.end <= end)
+            .map((bond) => ({
+                ...bond,
+                start: bond.start - start,
+                end: bond.end - start,
+            })),
     };
 }
 

@@ -13,7 +13,6 @@ import type { ReadableSatEntry, ReadableSubstitution } from "../services/lirna-s
 import type { ParseResult } from "../types/parser";
 import { TextAreaField, AstNodeView } from "./form-fields";
 import { init } from "z3-solver";
-import { Z3Wrapper } from "../services/lirna-seq/z3Wrapper";
 
 interface BaseModeProps {
   sequenceInput: string;
@@ -53,62 +52,62 @@ export function BaseModePanel(props: BaseModeProps) {
     normalized: null,
     satReadable: [],
   });
-    
-    useEffect(() => {
-      if (!z3Ready) return;
-      if (!thirdInput.trim()) {
-        setLtlPreview({
-          syntaxError: null,
-          ast: null,
-          normalized: null,
-          satReadable: [],
-        });
-        return;
-      }
 
-      const parsedFormula = parseLtlFormula(thirdInput);
-      if (!parsedFormula.formula) {
-        setLtlPreview({
-          syntaxError: parsedFormula.error ?? "Invalid formula.",
-          ast: null,
-          normalized: null,
-          satReadable: [],
-        });
-        return;
-      }
+  useEffect(() => {
+    if (!z3Ready) return;
+    if (!thirdInput.trim()) {
+      setLtlPreview({
+        syntaxError: null,
+        ast: null,
+        normalized: null,
+        satReadable: [],
+      });
+      return;
+    }
 
-      const normalized = formatFormula(parsedFormula.formula);
-      const variables = extractVariablesFromAst(parsedFormula.formula);
-      const maxDomain = parseResult.data?.pairs.length ?? 0;
-      
-      const compute = async () => {
+    const parsedFormula = parseLtlFormula(thirdInput);
+    if (!parsedFormula.formula) {
+      setLtlPreview({
+        syntaxError: parsedFormula.error ?? "Invalid formula.",
+        ast: null,
+        normalized: null,
+        satReadable: [],
+      });
+      return;
+    }
 
-        const satSet = parseResult.data
-          ? sat(
-              buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
-              parsedFormula.formula!,
-            )
+    const normalized = formatFormula(parsedFormula.formula);
+    const variables = extractVariablesFromAst(parsedFormula.formula);
+    const maxDomain = parseResult.data?.pairs.length ?? 0;
+
+    const compute = async () => {
+
+      const satSet = parseResult.data
+        ? sat(
+          buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
+          parsedFormula.formula!,
+        )
+        : [];
+      // const sharedWrapper = new Z3Wrapper(maxDomain, variables);
+      let satReadable: ReadableSatEntry[] = [];
+      try {
+        satReadable = parseResult.data
+          ? await toReadableSatSet(satSet, variables, maxDomain)
           : [];
-        const sharedWrapper = new Z3Wrapper(maxDomain, variables);
-        let satReadable : ReadableSatEntry[] = [];
-        try{
-           satReadable = parseResult.data
-            ? await toReadableSatSet(satSet, variables, maxDomain, sharedWrapper)
-            : [];
-        } catch(e) {
-          console.error("Error computing SAT set:", e);
-        }
+      } catch (e) {
+        console.error("Error computing SAT set:", e);
+      }
 
 
-        setLtlPreview({
-          syntaxError: null,
-          ast: parsedFormula.formula,
-          normalized,
-          satReadable,
-        });
-      };
+      setLtlPreview({
+        syntaxError: null,
+        ast: parsedFormula.formula,
+        normalized,
+        satReadable,
+      });
+    };
 
-      compute();
+    compute();
   }, [thirdInput, parseResult.data, z3Ready]);
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -190,7 +189,7 @@ export function BaseModePanel(props: BaseModeProps) {
   );
 }
 
-function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
+function extractVariablesFromAst(formula: LtlFormula): Set<string> {
   const variables = new Set<string>();
   const variableFixed = new Set<string>();
   function traverse(node: LtlFormula) {

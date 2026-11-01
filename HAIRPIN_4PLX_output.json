@@ -1,13 +1,29 @@
 [
   {
-    "interval": "[0,  23]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[0,  4]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[5, 5]",
+    "constraint": "l = 5",
+    "substitutions": [
+      {
+        "l": "5"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[6,  23]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   },
   {
     "interval": "[24, 24]",
-    "constraint": "(or (or false false false)\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    (and true (not (or false false false)) (= l 14))\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "constraint": "l = 14",
     "substitutions": [
       {
         "l": "14"
@@ -16,8 +32,24 @@
     "satisfied": true
   },
   {
-    "interval": "[25,  75]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[25,  45]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[46, 46]",
+    "constraint": "l = 25",
+    "substitutions": [
+      {
+        "l": "25"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[47, 75]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   }

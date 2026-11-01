@@ -1,0 +1,296 @@
+[
+  {
+    "interval": "[0,  77]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[78, 78]",
+    "constraint": "l = 52",
+    "substitutions": [
+      {
+        "l": "52"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[79,  152]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[153, 153]",
+    "constraint": "l = 85",
+    "substitutions": [
+      {
+        "l": "85"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[154,  180]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[181, 181]",
+    "constraint": "l = 88",
+    "substitutions": [
+      {
+        "l": "88"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[182,  201]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[202, 202]",
+    "constraint": "l = 96",
+    "substitutions": [
+      {
+        "l": "96"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[203,  253]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[254, 254]",
+    "constraint": "l = 112",
+    "substitutions": [
+      {
+        "l": "112"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[255,  290]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[291, 291]",
+    "constraint": "l = 120",
+    "substitutions": [
+      {
+        "l": "120"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[292,  315]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[316, 316]",
+    "constraint": "l = 126",
+    "substitutions": [
+      {
+        "l": "126"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[317,  336]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[337, 337]",
+    "constraint": "l = 131",
+    "substitutions": [
+      {
+        "l": "131"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[338,  373]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[374, 374]",
+    "constraint": "l = 140",
+    "substitutions": [
+      {
+        "l": "140"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[375,  413]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[414, 414]",
+    "constraint": "l = 149",
+    "substitutions": [
+      {
+        "l": "149"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[415,  456]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[457, 457]",
+    "constraint": "l = 164",
+    "substitutions": [
+      {
+        "l": "164"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[458,  611]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[612, 612]",
+    "constraint": "l = 218",
+    "substitutions": [
+      {
+        "l": "218"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[613,  683]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[684, 684]",
+    "constraint": "l = 250",
+    "substitutions": [
+      {
+        "l": "250"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[685,  720]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[721, 721]",
+    "constraint": "l = 252",
+    "substitutions": [
+      {
+        "l": "252"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[722,  780]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[781, 781]",
+    "constraint": "l = 265",
+    "substitutions": [
+      {
+        "l": "265"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[782,  834]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[835, 835]",
+    "constraint": "l = 284",
+    "substitutions": [
+      {
+        "l": "284"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[836,  891]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[892, 892]",
+    "constraint": "l = 293",
+    "substitutions": [
+      {
+        "l": "293"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[893,  949]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[950, 950]",
+    "constraint": "l = 324",
+    "substitutions": [
+      {
+        "l": "324"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[951, 1529]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

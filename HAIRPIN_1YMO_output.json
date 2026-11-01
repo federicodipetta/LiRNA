@@ -1,7 +1,23 @@
 [
   {
-    "interval": "[0,  46]",
-    "constraint": "(or false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false\n    false)",
+    "interval": "[0,  21]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[22, 22]",
+    "constraint": "l = 15",
+    "substitutions": [
+      {
+        "l": "15"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[23, 46]",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   }

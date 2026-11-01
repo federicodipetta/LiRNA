@@ -1,5 +1,5 @@
 import { AtomicRho, LiRNAFormula as Formula } from "./ast";
-import { Constraint, TRUE, FALSE, eq, Z3Wrapper, Solver, Int, Or, substitute, Z3, And } from "./z3Wrapper";
+import { Constraint, TRUE, FALSE, eq, Solver, Int, Or, substitute, Z3, And, ManualSolver } from "./z3Wrapper";
 
 export type BasePair = {
     id: string;
@@ -120,7 +120,7 @@ export function satAtom(context: SatContext, value: string): SatSet {
 
 export function satNext(set: SatSet): SatSet {
 
-    return set.map((entry) => {
+    let next = set.map((entry) => {
         entry.timeRange = {
             start: Math.max(entry.timeRange.start - 1, 0),
             end: entry.timeRange.end - 1,
@@ -129,6 +129,11 @@ export function satNext(set: SatSet): SatSet {
     })
         // Remove the entry corresponding to time 0, as it does not have a predecessor.
         .filter((entry) => entry.timeRange.end >= 0);
+    next.push({
+        constraint: FALSE,
+        timeRange: { start: set[set.length - 1].timeRange.end + 1, end: set[set.length - 1].timeRange.end + 1 },
+    })
+    return next;
 }
 
 export function satNot(set: SatSet): SatSet {
@@ -144,7 +149,7 @@ export function satNot(set: SatSet): SatSet {
 
 export function satRho(context: SatContext, rho: AtomicRho): SatSet {
     const entries: SatSet = [];
-    const orderedBonds = rho.kind === "up" 
+    const orderedBonds = rho.kind === "up"
         ? context.bonsFromStart.filter(bond => bond.start >= context.sequenceStart && bond.start <= context.sequenceLength)
         : context.bonsFromEnd.filter(bond => bond.end >= context.sequenceStart && bond.end <= context.sequenceLength);
     let lastPosition = context.sequenceStart;
@@ -308,7 +313,6 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
             },
             constraint: FALSE,
         }
-        
         const prev = {
             timeRange: {
                 start: context.sequenceStart,
@@ -316,7 +320,16 @@ export function satAt(context: SatContext, formula: Formula, label: string): Sat
             },
             constraint: FALSE,
         }
-        satAt = satOr(context, satAt, [prev, newEntry, complementEntry]);
+        let result = [newEntry];
+
+        if (bond.start > context.sequenceStart)
+            result.unshift(prev);
+
+        if (bond.start < context.sequenceLength)
+            result.push(complementEntry);
+
+
+        satAt = satOr(context, satAt, result);
     }
 
     return satAt;
@@ -522,9 +535,9 @@ export interface ReadableSatEntry {
     satisfied: boolean;
 }
 
-export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<ReadableSatEntry[]> {
+export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxDomain: number): Promise<ReadableSatEntry[]> {
     const result: ReadableSatEntry[] = [];
-    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
+    const solver = new ManualSolver(maxDomain);
 
     const groups: {
         representative: Constraint;
@@ -542,7 +555,7 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
 
         const currentGroup = groups[groups.length - 1];
 
-        if (await wrapper.areEquivalent(entry.constraint, currentGroup.representative)) {
+        if (solver.areEquivalent(entry.constraint, currentGroup.representative)) {
             currentGroup.entries.push(entry);
         } else {
             groups.push({
@@ -553,23 +566,20 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     }
 
     for (const group of groups) {
-        const solutions = await wrapper.getSolutions(group.representative);
-
-        const readableSolutions = solutions.map(solution =>
-            Object.keys(solution)
-                .sort()
-                .reduce<ReadableSubstitution>((acc, variable) => {
-                    acc[variable] = solution[variable];
-                    return acc;
-                }, {})
-        );
+        const solutions = solver.getSolutions(group.representative).map((subst) => {
+            var record = {} as ReadableSubstitution
+            for (let assignment of subst) {
+                record[assignment.label] = assignment.value.toString();
+            }
+            return record;
+        });
 
         for (const entry of group.entries) {
             result.push({
                 interval: `[${entry.timeRange.start}, ${entry.timeRange.end}]`,
                 constraint: entry.constraint.toString(),
-                substitutions: readableSolutions,
-                satisfied: readableSolutions.length > 0,
+                substitutions: solutions,
+                satisfied: solutions.length > 0,
             });
         }
     }
@@ -590,16 +600,11 @@ export async function toReadableSatSet(set: SatSet, variables: Set<string>, maxD
     return mergedResult;
 }
 
-export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number, wrapper?: Z3Wrapper): Promise<boolean> {
-    wrapper = wrapper || new Z3Wrapper(maxDomain, variables);
-    let solver = new Solver();
-    let constraint = FALSE;
-    variables.forEach(variable => {
-        const varInt = Int.const(variable);
-        solver.add(varInt.ge(0), varInt.le(maxDomain));
-    });
+export async function justOne(set: SatSet, variables: Set<string>, maxDomain: number): Promise<boolean> {
+    const solver = new ManualSolver(maxDomain);
+
     for (const entry of set) {
-        if (await solver.check(entry.constraint) === "sat") {
+        if (solver.isSat(entry.constraint)) {
             return true;
         }
     }

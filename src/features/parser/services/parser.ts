@@ -164,7 +164,6 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
         sequence: struct.sequence,
         pairs: [],
         formula: struct.formula,
-        isValid: false,
         errors,
         satResult: null,
       });
@@ -173,29 +172,28 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
 
     const parsedFormula = parseLtlFormula(struct.formula);
     if (!parsedFormula.formula) {
-      results.push({ 
+      results.push({
         id: `structure_${index + 1}`,
         name: normalizedName,
         sequence: struct.sequence,
         pairs: parseResult.data.pairs,
         formula: struct.formula,
-        isValid: false,
         errors: [...errors, `formula: ${parsedFormula.error ?? "Invalid formula"}`],
         satResult: null,
       });
       continue;
     }
 
-    
+
     const variables = extractVariablesFromAst(parsedFormula.formula);
-    const maxDomain = parseResult.data?.pairs.length ?? 0; 
+    const maxDomain = parseResult.data?.pairs.length ?? 0;
     const satSet = parseResult.data ? sat(
       buildSatContext(parseResult.data.sequence, parseResult.data.pairs),
       parsedFormula.formula
     ) : [];
 
-    const satReadable = parseResult.data 
-      ? await toReadableSatSet(satSet, variables, maxDomain) 
+    const satReadable = parseResult.data
+      ? await toReadableSatSet(satSet, variables, maxDomain)
       : [];
 
 
@@ -205,7 +203,6 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
       sequence: struct.sequence,
       pairs: parseResult.data.pairs,
       formula: formatFormula(parsedFormula.formula),
-      isValid: true,
       satResult: satReadable,
     });
   };
@@ -218,7 +215,7 @@ export async function processBatchStructures(structures: BatchInputStructure[]):
 }
 
 
-function extractVariablesFromAst(formula: LtlFormula) : Set<string> {
+function extractVariablesFromAst(formula: LtlFormula): Set<string> {
   const variables = new Set<string>();
   const variableFixed = new Set<string>();
   function traverse(node: LtlFormula) {

@@ -1,0 +1,16 @@
+[
+  {
+    "interval": "[0,  2839]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[2840, 2840]",
+    "constraint": "true",
+    "substitutions": [
+      {}
+    ],
+    "satisfied": true
+  }
+]

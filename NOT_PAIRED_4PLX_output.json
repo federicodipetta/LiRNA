@@ -1,7 +1,7 @@
 [
   {
     "interval": "[0,  75]",
-    "constraint": "(not (or false\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         true\n         true\n         true\n         true\n         true\n         false\n         false\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         false\n         false\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         true\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         false\n         true\n         true\n         true\n         true\n         true\n         false))",
+    "constraint": "false",
     "substitutions": [],
     "satisfied": false
   }

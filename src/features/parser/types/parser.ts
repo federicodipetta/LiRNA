@@ -37,7 +37,6 @@ export interface BatchResultEntry {
   sequence: string;
   pairs: IndexPair[];
   formula: string;
-  isValid: boolean;
   errors?: string[];
   satResult?: Array<{ interval: string; constraint: string }> | null;
 }

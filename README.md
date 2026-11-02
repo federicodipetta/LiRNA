@@ -1,81 +1,77 @@
 # LiRNA
 
-LiRNA è una repository per l'analisi di strutture di RNA attraverso formule
-temporali del linguaggio LiRNA. Il progetto combina:
+LiRNA is a repository for analyzing RNA structures through temporal formulas
+written in the LiRNA language. The project includes:
 
-- una web app React distribuita anche come applicazione desktop tramite Tauri;
-- un parser ed evaluatore riutilizzabile in TypeScript;
-- una CLI Node.js per usare le stesse funzionalità da terminale;
-- package condivisi per il parsing delle formule e delle sequenze RNA.
+- a React web application distributed as a Tauri desktop application;
+- a reusable TypeScript parser and evaluator;
+- a Node.js CLI for terminal-based workflows;
+- shared packages for LiRNA formulas and RNA sequence processing.
 
-L'obiettivo è rappresentare una struttura RNA come una sequenza di basi e un
-insieme di coppie di indici, quindi verificare proprietà espresse con formule
-LiRNA. L'applicazione React offre un'interfaccia interattiva, mentre la CLI e i
-package permettono di integrare la stessa logica in altri progetti o
-pipeline di analisi.
+The project represents an RNA structure as a nucleotide sequence and a list
+of base-pair indices. LiRNA formulas can then be used to describe temporal and
+structural properties of that RNA.
 
-## Indice
+## Table of contents
 
-- [Avvio rapido](#avvio-rapido)
-- [Formule LiRNA](#formule-lirna)
-- [Struttura del progetto](#struttura-del-progetto)
-- [Comandi principali](#comandi-principali)
+- [Quick start](#quick-start)
+- [LiRNA formulas](#lirna-formulas)
+- [Project structure](#project-structure)
+- [Main commands](#main-commands)
 - [CLI](#cli)
-- [Package riutilizzabili](#package-riutilizzabili)
-- [Test e build](#test-e-build)
+- [Reusable packages](#reusable-packages)
+- [Testing and builds](#testing-and-builds)
+- [GitHub Pages](#github-pages)
 
-## Avvio rapido
+## Quick start
 
-Requisiti:
+### Requirements
 
-- Node.js 20 o superiore;
+- Node.js 20 or later;
 - npm;
-- Rust e le dipendenze Tauri solo per lo sviluppo dell'app desktop.
+- Rust and the Tauri prerequisites if you want to run the desktop application.
 
-Installazione:
+Install the dependencies from the repository root:
 
 ```bash
 npm ci
 ```
 
-Avvio dell'app React in modalità sviluppo:
+Start the React application in development mode:
 
 ```bash
 npm run dev
 ```
 
-L'app è disponibile normalmente su `http://localhost:5173` per Vite oppure
-sulla porta configurata da Tauri quando viene avviata tramite Tauri.
-
-Build completa:
+Build all packages, the CLI, and the React application:
 
 ```bash
 npm run build
 ```
 
-La build compila in ordine i package condivisi, la CLI e l'app React. Il
-risultato dell'app web viene generato in `apps/react/dist`.
+The React build is generated in `apps/react/dist`.
 
-## Formule LiRNA
+## LiRNA formulas
 
-Le formule LiRNA descrivono proprietà temporali della sequenza e delle coppie
-di basi. Gli atomi che rappresentano basi RNA sono:
+LiRNA formulas describe temporal properties of an RNA sequence and its base
+pairs.
+
+### Nucleotide atoms
+
+The supported RNA nucleotide atoms are:
 
 ```text
 A   C   G   U
 ```
 
-È possibile scriverli anche tra apici o virgolette:
+Atoms can also be enclosed in single or double quotes:
 
 ```text
 'A'
 "U"
 ```
 
-La forma quotata è utile quando si vuole rendere esplicito che il simbolo è
-una base della sequenza.
-
-### Costanti e punto corrente
+### Constants and current position
 
 ```text
 true
@@ -83,44 +79,43 @@ false
 .
 ```
 
-- `true` è sempre soddisfatta;
-- `false` non è mai soddisfatta;
-- `.` rappresenta il punto corrente della valutazione.
+- `true` is always satisfied;
+- `false` is never satisfied;
+- `.` represents the current position in the evaluation.
 
-### Operatori logici
+### Logical operators
 
 ```text
-!formula              negazione
-formula & formula     congiunzione
-formula && formula    congiunzione
-formula | formula     disgiunzione
-formula || formula    disgiunzione
+!formula              negation
+formula & formula     conjunction
+formula && formula    conjunction
+formula | formula     disjunction
+formula || formula    disjunction
 ```
 
-Sono accettate anche le forme testuali `and` e `or`:
+The textual aliases `and` and `or` are also supported:
 
 ```text
 !("A" && "U")
 ("A" and "C") or "G"
 ```
 
-Le parentesi possono essere usate per rendere esplicita la precedenza:
+Parentheses can be used to make precedence explicit:
 
 ```text
 !("A" || "G") && <> "U"
 ```
 
-### Operatori temporali
+### Temporal operators
 
 ```text
-O formula       prossimo stato (next)
-<> formula      prima o poi (eventually)
-[] formula      sempre (always)
-formula U formula
-                fino a quando (until)
+O formula             next state
+<> formula            eventually
+[] formula            always
+formula U formula     until
 ```
 
-Esempi:
+Examples:
 
 ```text
 O "A"
@@ -129,36 +124,33 @@ O "A"
 "A" U "G"
 ```
 
-Gli operatori `O`, `<>` e `[]` sono unari. L'operatore `U` combina una formula
-sinistra e una destra:
+The operators `O`, `<>`, and `[]` are unary. `U` combines a left-hand and a
+right-hand formula:
 
 ```text
 ("A" || "C") U ("G" && <> "U")
 ```
 
-### Rho: attraversamento delle coppie
+### Rho expressions
 
-Un'espressione rho seleziona l'inizio o la fine delle coppie di basi. La
-sintassi generale è:
+A rho expression selects the start or end of a base pair. The basic syntax is:
 
 ```text
-label>       estremità iniziale della coppia
-label<       estremità finale della coppia
+label>               pair start
+label<               pair end
 ```
 
-Sono disponibili anche le forme testuali `up` e `down`:
+The textual forms `up` and `down` are also supported:
 
 ```text
 l>
 l up
-l up
 
 l<
 l down
-l down
 ```
 
-Esempi:
+Examples:
 
 ```text
 <>(l>)
@@ -166,73 +158,71 @@ Esempi:
 [] !(l down)
 ```
 
-In queste formule `l` è una variabile associata alle coppie incontrate durante
-la valutazione.
+Here, `l` is a variable associated with the base pairs encountered during
+evaluation.
 
-### Quantificatori
+### Quantifiers
 
-I quantificatori fissano una variabile rho su un dominio di possibili coppie:
+Quantifiers bind a rho variable over the possible base pairs:
 
 ```text
-Elabel formula       esiste una coppia label
-Alabel formula       per ogni coppia label
+Elabel formula       exists a pair labelled label
+Alabel formula       for every pair labelled label
 ```
 
-Esempi:
+Examples:
 
 ```text
 El <> (l> && "A")
 Al [] !(l< && "G")
 ```
 
-Sono supportate anche etichette più lunghe, composte da lettere, numeri e
-underscore:
+Labels may contain letters, numbers, and underscores:
 
 ```text
 Epair <> (pair> && "U")
 A_selected [] !(selected<)
 ```
 
-### Operatore `@`
+### The `@` operator
 
-L'operatore `@` valuta una formula in relazione a una specifica etichetta:
+The `@` operator evaluates a formula in relation to a specific label:
 
 ```text
 formula @ label
 ```
 
-Esempio:
+Example:
 
 ```text
 (<>(l>) && !(<> l<)) @ l
 ```
 
-### Operatore `|>`
+### The `|>` operator
 
-`|>` è una forma abbreviata per esprimere un passaggio verso una coppia
-etichettata. La formula:
+`|>` is a shorthand for expressing a transition toward a labelled pair:
 
 ```text
 "A" |> l
 ```
 
-viene interpretata come:
+It is interpreted as:
 
 ```text
 <>(l< && O("A"))
 ```
 
-È possibile combinarla con gli altri operatori:
+It can be combined with the other operators:
 
 ```text
 ("A" && O("U")) |> pair
 ```
 
-### Formula completa di esempio
+### Complete example
 
-La seguente formula cerca una sequenza che raggiunga una coppia all'inizio,
-verifichi una base `U`, e successivamente raggiunga la fine della stessa
-struttura:
+The following formula looks for a structure that reaches one pair start,
+contains a `U`, then reaches another pair start and eventually reaches the
+corresponding pair ends:
 
 ```text
 <>(
@@ -249,109 +239,109 @@ struttura:
 )
 ```
 
-Gli spazi e gli a capo sono ignorati dal lexer.
+Whitespace and line breaks are ignored by the lexer.
 
-## Struttura del progetto
+## Project structure
 
 ```text
 LiRNA/
 ├── apps/
-│   ├── lirna-cli/               # CLI Node.js
+│   ├── lirna-cli/               # Node.js CLI
 │   │   ├── src/
 │   │   └── package.json
-│   └── react/                   # App React + Tauri
+│   └── react/                   # React + Tauri application
 │       ├── src/
 │       ├── public/
 │       ├── src-tauri/
 │       ├── vite.config.ts
 │       └── package.json
 ├── packages/
-│   ├── LiRNA-parser/            # Formule, AST, valutatore e strutture
-│   └── LiRNA-sequence/          # Normalizzazione e validazione RNA
+│   ├── LiRNA-parser/            # Formula, AST, evaluator, and structure parser
+│   └── LiRNA-sequence/          # RNA normalization and validation
 ├── .github/workflows/
-│   └── deploy-pages.yml         # Deploy su GitHub Pages
-├── package.json                 # Workspace npm e script root
+│   └── deploy-pages.yml         # GitHub Pages deployment
+├── package.json                 # npm workspace and root scripts
 └── package-lock.json
 ```
 
 ### `@lirna/sequence`
 
-Contiene la logica indipendente per le sequenze:
+This package contains environment-independent RNA sequence utilities:
 
-- rimozione degli spazi;
-- normalizzazione in maiuscolo;
-- validazione dei caratteri `A`, `C`, `G` e `U`;
-- parsing strutturato con messaggi di errore.
+- whitespace removal;
+- uppercase normalization;
+- validation of `A`, `C`, `G`, and `U`;
+- structured sequence parsing with validation errors.
 
 ### `@lirna/parser`
 
-Contiene:
+This package contains:
 
-- lexer delle formule;
-- parser e AST LiRNA;
-- formattazione delle formule;
-- parser di sequenze, coppie e file `.aas`;
-- valutatore delle formule;
-- algebra delle constraint;
-- test del linguaggio e del valutatore.
+- the LiRNA lexer;
+- the LiRNA parser and AST;
+- formula formatting;
+- sequence, pair, and `.aas` file parsing;
+- formula evaluation;
+- constraint algebra;
+- parser and evaluator tests.
 
 ### `apps/react`
 
-Contiene l'interfaccia grafica e l'integrazione desktop:
+This directory contains the graphical and desktop application:
 
-- componenti React;
-- hook e servizi specifici dell'interfaccia;
-- configurazione Vite e Tailwind;
-- progetto Rust/Tauri in `src-tauri`.
+- React components;
+- application-specific hooks and services;
+- Vite and Tailwind configuration;
+- the Rust/Tauri project in `src-tauri`.
 
 ### `apps/lirna-cli`
 
-È il consumer Node.js del parser. Non dipende da React, Vite o Tauri e può
-essere trasformato in un package CLI pubblicabile separatamente.
+This is the Node.js CLI consumer of the parser. It does not depend on React,
+Vite, or Tauri and can be published independently in the future.
 
-## Comandi principali
+## Main commands
 
-### Sviluppo React
+### React development
 
 ```bash
 npm run dev
 ```
 
-### Build React
+### React build
 
 ```bash
 npm run build:react
 ```
 
-### Preview della build web
+### Preview the web build
 
 ```bash
 npm run preview
 ```
 
-### Sviluppo Tauri
+### Tauri development
 
 ```bash
 npm run tauri dev
 ```
 
-La configurazione Tauri si trova in
+The Tauri configuration is located at
 [`apps/react/src-tauri/tauri.conf.json`](apps/react/src-tauri/tauri.conf.json).
-Tauri usa la build generata in `apps/react/dist`.
+Tauri uses the build generated in `apps/react/dist`.
 
-### Build completa del workspace
+### Full workspace build
 
 ```bash
 npm run build
 ```
 
-### Test completi
+### Full test suite
 
 ```bash
 npm test
 ```
 
-Test mirati:
+Run tests for a specific package:
 
 ```bash
 npm run test --workspace @lirna/sequence
@@ -360,13 +350,13 @@ npm run test --workspace @lirna/parser
 
 ## CLI
 
-Compilazione:
+Build the CLI:
 
 ```bash
 npm run build --workspace @lirna/cli
 ```
 
-Parsing di una sequenza, di alcune coppie e di una formula:
+Parse a sequence, a pair list, and a formula:
 
 ```bash
 node apps/lirna-cli/dist/index.js \
@@ -375,39 +365,38 @@ node apps/lirna-cli/dist/index.js \
   --formula "<>(l up)"
 ```
 
-Su Windows PowerShell è possibile usare una singola riga:
+On Windows PowerShell:
 
 ```powershell
 node apps\lirna-cli\dist\index.js --sequence AUAUA --pairs "(0,1);(1,4)" --formula "<>(l up)"
 ```
 
-Parsing di un file `.aas`:
+Parse an `.aas` file:
 
 ```bash
 node apps/lirna-cli/dist/index.js --input structure.aas
 ```
 
-Un file `.aas` contiene la sequenza nella prima riga e la lista delle coppie
-nella seconda:
+An `.aas` file contains the sequence on the first line and the pair list on
+the second line:
 
 ```text
 AUAUA
 (0,1);(1,4)
 ```
 
-La CLI restituisce JSON su standard output. In caso di errore di parsing
-restituisce il JSON diagnostico su standard error e termina con codice diverso
-da zero.
+The CLI writes JSON to standard output. If parsing fails, it writes diagnostic
+JSON or an error message to standard error and exits with a non-zero status.
 
-## Utilizzo dei package in un altro progetto
+## Using the packages in another project
 
-Una volta pubblicati su npm:
+After publishing the packages to npm:
 
 ```bash
 npm install @lirna/parser @lirna/sequence
 ```
 
-Esempio TypeScript:
+Example TypeScript usage:
 
 ```ts
 import {
@@ -429,27 +418,25 @@ const structure = parseWorkbenchInput(
 const formula = parseLtlFormula("<>(l up && \"A\")");
 ```
 
-I package non utilizzano API React o browser e sono quindi utilizzabili sia in
-un'app Node.js/CLI sia in una web app.
+The packages do not depend on React or browser APIs and can therefore be used
+from both Node.js/CLI applications and web applications.
 
 ## GitHub Pages
 
-Il workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) viene
-eseguito sui push sul branch `release` o manualmente tramite
-`workflow_dispatch`.
+The [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) workflow runs on
+pushes to the `release` branch or manually through `workflow_dispatch`.
 
-Il workflow:
+The workflow:
 
-1. installa le dipendenze con `npm ci`;
-2. compila i package e l'app React;
-3. usa il base path `/LiRNA/`;
-4. pubblica `apps/react/dist` su GitHub Pages.
+1. installs dependencies with `npm ci`;
+2. builds the shared packages and the React application;
+3. uses `/LiRNA/` as the base path;
+4. publishes `apps/react/dist` to GitHub Pages.
 
-## Note di sviluppo
+## Development notes
 
-- Gli import interni dei package compilati usano estensioni `.js` per essere
-  compatibili con Node.js ESM.
-- La logica specifica dell'interfaccia, come l'orchestrazione dei risultati
-  batch, resta nell'app React.
-- La logica condivisa deve essere aggiunta a `@lirna/parser` o
-  `@lirna/sequence`, evitando dipendenze da React o Tauri.
+- Compiled package imports use `.js` extensions for Node.js ESM compatibility.
+- UI-specific logic, such as batch result orchestration, remains in the React
+  application.
+- Shared functionality should be added to `@lirna/parser` or
+  `@lirna/sequence`, without introducing React or Tauri dependencies.

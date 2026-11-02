@@ -1,0 +1,8 @@
+[
+  {
+    "interval": "[0,  47]",
+    "constraint": "(((((l2 = 5 | l2 = 4) | l2 = 3) | l2 = 2) & !((((l2 = 2 | l2 = 3) | l2 = 4) | l2 = 5))) & l1 = 1)",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

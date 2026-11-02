@@ -1,0 +1,28 @@
+{
+  "name": "@lirna/parser",
+  "version": "0.1.0",
+  "description": "Parser and evaluator for LiRNA formulas and RNA structures.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lirna/sequence": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vitest": "^2.1.9"
+  }
+}

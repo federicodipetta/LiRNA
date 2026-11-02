@@ -1,0 +1,37 @@
+[
+  {
+    "interval": "[0,  3]",
+    "constraint": "(((l1 = 2 & (l2 = 3 & l3 = 4)) | (l1 = 1 & (l2 = 2 & l3 = 3))) & ((l3 = 3 & (l2 = 2 & l1 = 1)) | (l3 = 4 & (l2 = 3 & l1 = 2))))",
+    "substitutions": [
+      {
+        "l1": "1",
+        "l2": "2",
+        "l3": "3"
+      },
+      {
+        "l1": "2",
+        "l2": "3",
+        "l3": "4"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[4, 4]",
+    "constraint": "((l1 = 2 & (l2 = 3 & l3 = 4)) & ((l3 = 3 & (l2 = 2 & l1 = 1)) | (l3 = 4 & (l2 = 3 & l1 = 2))))",
+    "substitutions": [
+      {
+        "l1": "2",
+        "l2": "3",
+        "l3": "4"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[5,  18]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

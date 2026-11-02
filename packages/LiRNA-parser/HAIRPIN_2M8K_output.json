@@ -1,0 +1,56 @@
+[
+  {
+    "interval": "[0,  3]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[4, 4]",
+    "constraint": "l = 5",
+    "substitutions": [
+      {
+        "l": "5"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[5,  19]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[20, 20]",
+    "constraint": "l = 15",
+    "substitutions": [
+      {
+        "l": "15"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[21, 21]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  },
+  {
+    "interval": "[22, 22]",
+    "constraint": "l = 16",
+    "substitutions": [
+      {
+        "l": "16"
+      }
+    ],
+    "satisfied": true
+  },
+  {
+    "interval": "[23, 47]",
+    "constraint": "false",
+    "substitutions": [],
+    "satisfied": false
+  }
+]

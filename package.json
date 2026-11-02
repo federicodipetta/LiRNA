@@ -3,14 +3,22 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "test": "vitest run",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "dev": "vite --config apps/react/vite.config.ts",
+    "dev:react": "vite --config apps/react/vite.config.ts",
+    "build": "npm run build --workspace @lirna/sequence && npm run build --workspace @lirna/parser && npm run build --workspace @lirna/cli && npm run build:react",
+    "build:react": "tsc -p apps/react/tsconfig.json && vite build --config apps/react/vite.config.ts",
+    "test": "npm run build --workspaces --if-present && vitest run",
+    "preview": "vite preview --config apps/react/vite.config.ts",
+    "tauri": "tauri --config apps/react/src-tauri/tauri.conf.json"
   },
   "dependencies": {
+    "@lirna/parser": "0.1.0",
+    "@lirna/sequence": "0.1.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "react": "^19.1.0",
